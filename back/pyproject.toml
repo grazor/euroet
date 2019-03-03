@@ -69,18 +69,3 @@ py36 = true
 line-length = 118
 skip-string-normalization = true
 exclude = ".git|.mypy_cache|front|migrations/|settings/|urls.py"
-
-[tool.isort]
-line_length = 120
-skip = "migrations"
-indent = "    "
-multi_line_output = 5
-length_sort = true
-include_trailing_comma = true
-
-known_django = "django"
-known_euroet_apps = "server"
-sections = "FUTURE,STDLIB,THIRDPARTY,DJANGO,EUROET_APPS,LOCALFOLDER"
-default_section = "THIRDPARTY"
-no_lines_before = "LOCALFOLDER"
-
