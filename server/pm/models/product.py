@@ -1,0 +1,20 @@
+from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=128)
+
+    project = models.ForeignKey('Project', null=True, blank=True, related_name='products', on_delete=models.CASCADE)
+    components = models.ManyToManyField('Component', through='ProductComponent')
+
+    updated_by = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='updated')
+    updated_at = models.DateTimeField(auto_now=True)
+
+    created_by = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    created_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.name}'
