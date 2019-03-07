@@ -25,7 +25,7 @@ class User(AbstractUser):
     role = models.CharField(
         max_length=16, choices=as_choices(Roles), default=Roles.guest.name, db_index=True, help_text=_('User role')
     )
-    avatar = models.CharField(max_length=255, null=True, blank=True)
+    photo = models.FilePathField(max_length=255, null=True, blank=True)
 
     @property
     def initials(self) -> str:

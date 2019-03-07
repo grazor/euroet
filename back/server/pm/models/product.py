@@ -5,6 +5,7 @@ User = get_user_model()
 
 
 class Product(models.Model):
+    slug = models.SlugField(db_index=True)
     name = models.CharField(max_length=128)
 
     project = models.ForeignKey('Project', null=True, blank=True, related_name='products', on_delete=models.CASCADE)
@@ -16,5 +17,8 @@ class Product(models.Model):
     created_by = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ('project', 'slug')
+
     def __str__(self) -> str:
-        return f'{self.name}'
+        return f'{self.project_slug}/{self.slug} ({self.name})'

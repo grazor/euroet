@@ -1,3 +1,6 @@
+test:
+	DJANGO_ENV=testing py.test tests
+
 run:
 	./manage.py runserver
 
@@ -6,11 +9,12 @@ lint:
 	mypy server
 	black --check server
 
-black:
+format:
+	isort --recursive server
 	black server
-
-test:
-	DJANGO_ENV=testing py.test tests
 
 clean:
 	find -type d -name "__pycache__" -exec rm -rf {} \;
+
+shell:
+	./manage.py shell_plus

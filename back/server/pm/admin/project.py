@@ -12,6 +12,6 @@ class AccessInline(admin.TabularInline):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'created_at', 'is_frozen', 'is_removed')
+    list_display = ('slug', 'name', 'created_at', 'is_frozen', 'is_removed')
     list_filter = ('is_frozen', 'is_removed')
     inlines = (AccessInline,)

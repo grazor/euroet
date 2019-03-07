@@ -31,13 +31,13 @@ INSTALLED_APPS += (
 # https://docs.djangoproject.com/en/1.11/ref/settings/#std:setting-STATICFILES_DIRS
 
 STATICFILES_DIRS: Tuple[str, ...] = (
-    os.path.join(BASE_DIR, 'front/build'),
+    os.path.join(BASE_DIR, '../front/build'),
 )
 
 WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'front/build',
-        'STATS_FILE': os.path.join(BASE_DIR, 'front/stats.json'),
+        'STATS_FILE': os.path.join(BASE_DIR, '../front/stats.json'),
         'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
     }
 }

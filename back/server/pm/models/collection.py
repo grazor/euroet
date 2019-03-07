@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 
 
 class Collection(models.Model):
-    slug = models.CharField(max_length=16, primary_key=True)
+    slug = models.SlugField(max_length=16, primary_key=True)
     name = models.CharField(max_length=128, null=True, blank=True)
     desctiption = models.TextField(max_length=2048, null=True, blank=True)
 

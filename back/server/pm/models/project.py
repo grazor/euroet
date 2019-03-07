@@ -1,12 +1,18 @@
+import logging
+from typing import Optional
+
 from django.db import models
 from django.dispatch import receiver
-from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 
-User = get_user_model()
+from server.users.models import User
+from server.pm.models.project_access import ProjectAccess
+
+logger = logging.getLogger('pm')
 
 
 class Project(models.Model):
+    slug = models.SlugField(primary_key=True)
     name = models.CharField(max_length=128)
     description = models.TextField(max_length=2048, null=True, blank=True)
 
@@ -20,17 +26,25 @@ class Project(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def owner(self) -> Optional[User]:
+        owner = None
+        try:
+            owner = ProjectAccess.objects.get(project=self, access_type=ProjectAccess.AccessType.own.name)
+        except ProjectAccess.DoesNotExist:
+            logger.error(f'Project {self.slug} has no owner')
+        return owner
+
     def __str__(self) -> str:
-        return f'{self.name}'
+        return f'{self.slug} ({self.name})'
 
 
 @receiver(post_save, sender=Project)
 def create_owner(sender, instance, created, **kwargs):
-    from server.pm.models import ProjectAccess
-
     if not instance.created_by:
         return
 
-    ProjectAccess.objects.create(
-        project=instance, user=instance.created_by, access_type=ProjectAccess.ACCESS_TYPE_OWN
-    )
+    if created:
+        ProjectAccess.objects.create(
+            project=instance, user=instance.created_by, access_type=ProjectAccess.AccessType.own.name
+        )
