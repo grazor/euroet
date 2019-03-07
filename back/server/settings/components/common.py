@@ -15,6 +15,7 @@ INSTALLED_APPS: Tuple[str, ...] = (
     # et apps
     'server.users',
     'server.pm',
+    'server.lib',
 
     # Default django apps:
     'django.contrib.auth',

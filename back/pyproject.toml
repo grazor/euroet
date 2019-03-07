@@ -63,6 +63,7 @@ django-extensions = "^2.1"
 django-webpack-loader = "^0.6.0"
 isort = "^4.3"
 ipdb = "^0.11.0"
+django-seed = {git = "https://github.com/grazor/django-seed.git"}
 
 
 [tool.black]

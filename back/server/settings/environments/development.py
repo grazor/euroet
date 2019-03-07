@@ -25,6 +25,7 @@ INSTALLED_APPS += (
     'nplusone.ext.django',
 
     'webpack_loader',
+    'django_seed',
 )
 
 # Static files:
