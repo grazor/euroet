@@ -1,6 +1,9 @@
 test:
 	DJANGO_ENV=testing py.test tests
 
+test_recreate:
+	DJANGO_ENV=testing py.test tests --create-db --no-migrations
+
 test_pdb:
 	DJANGO_ENV=testing py.test tests -s --timeout 0
 

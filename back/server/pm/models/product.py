@@ -21,4 +21,4 @@ class Product(models.Model):
         unique_together = ('project', 'slug')
 
     def __str__(self) -> str:
-        return f'{self.project_slug}/{self.slug} ({self.name})'
+        return f'{self.project_id}/{self.slug} ({self.name})'

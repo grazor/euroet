@@ -5,7 +5,7 @@ from server.pm.models import Project, ProjectAccess
 
 class AccessInline(admin.TabularInline):
     raw_id_fields = ('user',)
-    fields = ('user', 'access_type', 'is_active', 'is_starred')
+    fields = ('user', 'access_type', 'is_starred')
     model = ProjectAccess
     extra = 1
 

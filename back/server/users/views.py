@@ -9,6 +9,10 @@ from server.users.serializers import UserTokenSerializer
 class LoginView(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
 
+    def get_query(self):
+        q = super().get_query()
+        return q.select_related('authtoken')
+
     def post(self, request, fmt=None):
         serializer = UserTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

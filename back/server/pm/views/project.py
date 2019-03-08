@@ -1,5 +1,3 @@
-from typing import Any, Dict
-
 from rest_framework import viewsets, permissions
 
 from server.pm.models import Project
@@ -13,7 +11,7 @@ class ProjectViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        filters: Dict[str, Any] = {}
+        qs = Project.objects.all().prefetch_related('access', 'access__user')
         if not user.is_superuser:
-            filters = {'projectaccess__user': user, 'projectaccess__is_active': True}
-        return Project.objects.filter(**filters)
+            qs = qs.filter(access__user=user)
+        return qs

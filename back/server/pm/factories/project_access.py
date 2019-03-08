@@ -12,7 +12,6 @@ class ProjectAccessFactory(factory.DjangoModelFactory):
     project = factory.SubFactory(ProjectFactory)
     user = factory.SubFactory(UserFactory)
     is_starred = False
-    is_active = True
 
 
 class OwnProjectAccess(ProjectAccessFactory):

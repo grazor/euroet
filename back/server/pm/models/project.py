@@ -1,4 +1,3 @@
-import logging
 from typing import Optional
 
 from django.db import models
@@ -7,8 +6,6 @@ from django.db.models.signals import post_save
 
 from server.users.models import User
 from server.pm.models.project_access import ProjectAccess
-
-logger = logging.getLogger('pm')
 
 
 class Project(models.Model):
@@ -19,7 +16,7 @@ class Project(models.Model):
     users = models.ManyToManyField(User, through='ProjectAccess', through_fields=('project', 'user'))
 
     is_frozen = models.BooleanField(default=False)
-    is_removed = models.BooleanField(default=False)
+    is_removed = models.BooleanField(default=False, db_index=True)
 
     created_by = models.ForeignKey(
         User, related_name='created_projects', blank=True, null=True, on_delete=models.SET_NULL
@@ -28,12 +25,9 @@ class Project(models.Model):
 
     @property
     def owner(self) -> Optional[User]:
-        owner = None
-        try:
-            owner = ProjectAccess.objects.get(project=self, access_type=ProjectAccess.AccessType.own.name)
-        except ProjectAccess.DoesNotExist:
-            logger.error(f'Project {self.slug} has no owner')
-        return owner.user
+        """Returns project owner assuming access is prefetched threrore avoids filtering access qs."""
+        owner = next(filter(lambda x: x.access_type == ProjectAccess.AccessType.own.name, self.access.all()), None)
+        return owner and owner.user
 
     def __str__(self) -> str:
         return f'{self.slug} ({self.name})'
