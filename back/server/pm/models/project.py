@@ -33,7 +33,7 @@ class Project(models.Model):
             owner = ProjectAccess.objects.get(project=self, access_type=ProjectAccess.AccessType.own.name)
         except ProjectAccess.DoesNotExist:
             logger.error(f'Project {self.slug} has no owner')
-        return owner
+        return owner.user
 
     def __str__(self) -> str:
         return f'{self.slug} ({self.name})'

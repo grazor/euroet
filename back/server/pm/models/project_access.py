@@ -13,7 +13,7 @@ class ProjectAccess(models.Model):
     class AccessType(Enum):
         own = _('Owner')
         read = _('Read access')
-        edit = _('Edit access')
+        write = _('Edit access')
 
     project = models.ForeignKey('Project', on_delete=models.CASCADE, related_name='access')
     user = models.ForeignKey(User, on_delete=models.CASCADE)

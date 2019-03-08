@@ -411,6 +411,7 @@ django = ">=1.11"
 reference = "656391d7670baa41ecca6be765617833027da6ea"
 type = "git"
 url = "https://github.com/grazor/django-seed.git"
+
 [[package]]
 category = "main"
 description = "Organize Django settings into multiple files and directories. Easily override and modify settings. Use wildcards and optional settings files."
@@ -512,6 +513,17 @@ name = "eradicate"
 optional = false
 python-versions = "*"
 version = "1.0"
+
+[[package]]
+category = "dev"
+description = "A versatile test fixtures replacement based on thoughtbot's factory_bot for Ruby."
+name = "factory-boy"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "2.11.1"
+
+[package.dependencies]
+Faker = ">=0.7.0"
 
 [[package]]
 category = "main"
@@ -1415,6 +1427,14 @@ flake8-polyfill = "*"
 mando = ">=0.6,<0.7"
 
 [[package]]
+category = "dev"
+description = "The standard Python readline extension statically linked against the GNU readline library."
+name = "readline"
+optional = false
+python-versions = "*"
+version = "6.2.4.1"
+
+[[package]]
 category = "main"
 description = "Python HTTP for Humans."
 name = "requests"
@@ -1703,7 +1723,7 @@ python-versions = ">=2.7"
 version = "0.3.3"
 
 [metadata]
-content-hash = "72a865084e2c5ac561f64a664426c2eb3ffba252a3828d2d3c418382dc98d85f"
+content-hash = "3fd5a25394c32c84a11013365141622efe08ea273cd53ea5d2ff6e5e8b150b6a"
 python-versions = "3.6.6"
 
 [metadata.hashes]
@@ -1758,6 +1778,7 @@ dotenv-linter = ["4932a0209e2fdcd42c4ce2e3e1f121e836209b8401cb35ab6bc99cc22c7808
 dparse = ["00a5fdfa900629e5159bf3600d44905b333f4059a3366f28e0dbd13eeab17b19", "cef95156fa0adedaf042cd42f9990974bec76f25dfeca4dc01f381a243d5aa5b"]
 dump-env = ["b3c45839e2183ce86ddee7f88478b12411092b154c9a1d56ed20dd0885ff79a1", "ca07a06cffe316b42b4a7a5720b4deac62a6dcaad02f0bae431b94a1aa2cd63a"]
 eradicate = ["4ffda82aae6fd49dfffa777a857cb758d77502a1f2e0f54c9ac5155a39d2d01a"]
+factory-boy = ["6f25cc4761ac109efd503f096e2ad99421b1159f01a29dbb917359dcd68e08ca", "d552cb872b310ae78bd7429bf318e42e1e903b1a109e899a523293dfa762ea4f"]
 faker = ["16342dca4d92bfc83bab6a7daf6650e0ab087605a66bc38f17523fdb01757910", "d871ea315b2dcba9138b8344f2c131a76ac62d6227ca39f69b0c889fec97376c"]
 flake8 = ["6a35f5b8761f45c5513e3405f110a86bea57982c3b75b766ce7b65217abe1670", "c01f8a3963b3571a8e6bd7a4063359aff90749e160778e03817cd9b71c9e07d2"]
 flake8-bandit = ["5eac24fa9fef532e4e4ce599c5b3c5248c5cc435d2927537b529b0a7bcb72467", "be5840923ccf06cac6a8893a2f0abc17f03b6b9fdb5284d796f722b69c8f840b"]
@@ -1842,6 +1863,7 @@ python-decouple = ["1317df14b43efee4337a4aa02914bf004f010cd56d6c4bd894e6474ec8c4
 pytz = ["32b0891edff07e28efe91284ed9c31e123d84bea3fd98e1f72be2508f43ef8d9", "d5f05e487007e29e03409f9398d074e158d920d36eb82eaf66fb1136b0c5374c"]
 pyyaml = ["3d7da3009c0f3e783b2c873687652d83b1bbfd5c88e9813fb7e5b03c0dd3108b", "3ef3092145e9b70e3ddd2c7ad59bdd0252a94dfe3949721633e41344de00a6bf", "40c71b8e076d0550b2e6380bada1f1cd1017b882f7e16f09a65be98e017f211a", "558dd60b890ba8fd982e05941927a3911dc409a63dcb8b634feaa0cda69330d3", "a7c28b45d9f99102fa092bb213aa12e0aaf9a6a1f5e395d36166639c1f96c3a1", "aa7dd4a6a427aed7df6fb7f08a580d68d9b118d90310374716ae90b710280af1", "bc558586e6045763782014934bfaf39d48b8ae85a2713117d16c39864085c613", "d46d7982b62e0729ad0175a9bc7e10a566fc07b224d2c79fafb5e032727eaa04", "d5eef459e30b09f5a098b9cea68bebfeb268697f78d647bd255a085371ac7f3f", "e01d3203230e1786cd91ccfdc8f8454c8069c91bee3962ad93b87a4b2860f537", "e170a9e6fcfd19021dd29845af83bb79236068bf5fd4df3327c1be18182b2531"]
 radon = ["38e495a4aa4c1d7293d3c1733393961fb52209c9bc2d75163c3ba8124d8bbbaa", "f893f2faa632a060f6d0f01843d10a0395515bde865c759c0dd3f15239caf11b"]
+readline = ["6b34cf7c651791c3017b9cf31c74ef99b9050d14ae55a32898f2eb41787ca00a", "c157d3cf5f97794f0153cfc8ca90c9e11f810b8045d4a0acd33046379342f163", "d91a3294f027fb0d3b124117c550312f45eded265e01c62fd3470c28cda0e346", "e00f86e03dfe52e7d1502cec5c64070b32621c85509c0081a4cfa6a0294bd107"]
 requests = ["502a824f31acdacb3a35b6690b5fbf0bc41d63a24a45c4004352b0242707598e", "7bf2a778576d825600030a110f3c0e3e8edc51dfaafe1c146e39a2027784957b"]
 restructuredtext-lint = ["82880a8de8a41bfc84f533744091b1ead8e2ab9ad6c0a3f60f4750ef6c802350"]
 safety = ["0a3a8a178a9c96242b224f033ee8d1d130c0448b0e6622d12deaf37f6c3b4e59", "5059f3ffab3648330548ea9c7403405bbfaf085b11235770825d14c58f24cb78"]
