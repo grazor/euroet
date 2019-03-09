@@ -1,12 +1,13 @@
 from rest_framework import viewsets, permissions
 
 from server.pm.models import Project
+from server.pm.permissions import CanUpdateProject
 from server.pm.serializers import ProjectSerializer
 
 
 class ProjectViewset(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, CanUpdateProject)
     pagination_class = None
 
     def get_queryset(self):

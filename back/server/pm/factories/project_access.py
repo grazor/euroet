@@ -9,18 +9,21 @@ faker = Faker()
 
 
 class ProjectAccessFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = ProjectAccess
+
     project = factory.SubFactory(ProjectFactory)
     user = factory.SubFactory(UserFactory)
     is_starred = False
 
 
-class OwnProjectAccess(ProjectAccessFactory):
+class OwnProjectAccessFactory(ProjectAccessFactory):
     access_type = ProjectAccess.AccessType.own.name
 
 
-class ReadProjectAccess(ProjectAccessFactory):
+class ReadProjectAccessFactory(ProjectAccessFactory):
     access_type = ProjectAccess.AccessType.read.name
 
 
-class WriteProjectAccess(ProjectAccessFactory):
+class WriteProjectAccessFactory(ProjectAccessFactory):
     access_type = ProjectAccess.AccessType.write.name

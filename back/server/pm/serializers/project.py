@@ -8,8 +8,9 @@ from server.pm.serializers.project_access import ProjectAccessSerializer
 class ProjectSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
     access = ProjectAccessSerializer(read_only=True, many=True)
+    created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Project
 
-        fields = ('slug', 'name', 'description', 'is_frozen', 'created_at', 'owner', 'access')
+        fields = ('slug', 'name', 'description', 'is_frozen', 'created_by', 'created_at', 'owner', 'access')
