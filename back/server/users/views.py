@@ -1,6 +1,6 @@
 from knox.views import LoginView as KnoxLoginView
-from rest_framework import permissions
 
+from rest_framework import permissions
 from django.contrib.auth import login
 
 from server.users.serializers import UserTokenSerializer

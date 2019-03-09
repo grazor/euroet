@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from rest_framework.authtoken.serializers import AuthTokenSerializer
-
 from django.contrib.auth import get_user_model
+from rest_framework.authtoken.serializers import AuthTokenSerializer
 
 User = get_user_model()
 

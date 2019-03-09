@@ -1,22 +1,32 @@
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 
-from server.pm.models import ProjectAccess
+from server.pm.models import Product, ProjectAccess
 from server.users.models import User
+
+
+def can_access_product(user: User, product: Product, read_only: bool) -> bool:
+    """Checks whether user can edit project, assuming access table is prefetched."""
+    if user.role == User.Roles.admin.name:
+        return True
+
+    access = next(filter(lambda x: x.user == user, product.access.all()), None)
+    return (
+        access
+        and (
+            read_only
+            or access.access_type in [ProjectAccess.AccessType.own.name, ProjectAccess.AccessType.write.name]
+        )
+        or False
+    )
 
 
 class CanUpdateProject(BasePermission):
     def has_object_permission(self, request, view, obj):
-        """Checks whether user can edit project, assuming access table is prefetched."""
-        if request.method in SAFE_METHODS:
-            return True
+        read_only = request.method in SAFE_METHODS
+        return can_access_product(request.user, obj, read_only)
 
-        user = request.user
-        if user.role == User.Roles.admin.name:
-            return True
 
-        access = next(filter(lambda x: x.user == user, obj.access.all()), None)
-        return (
-            access
-            and access.access_type in [ProjectAccess.AccessType.own.name, ProjectAccess.AccessType.write.name]
-            or False
-        )
+class HasProjectDetailAccess(BasePermission):
+    def has_permission(self, request, view):
+        read_only = request.method in SAFE_METHODS
+        return can_access_product(request.user, request.project, read_only)

@@ -27,7 +27,7 @@ admin.autodiscover()
 urlpatterns = [
     # Apps:
     path('api/users/', include(users_urls)),
-    path('api/pm/', include(pm_urls)),
+    path('api/', include(pm_urls)),
 
     # Health checks:
     path('health/', include(health_urls)),  # noqa: DJ05
