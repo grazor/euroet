@@ -30,3 +30,13 @@ class HasProjectDetailAccess(BasePermission):
     def has_permission(self, request, view):
         read_only = request.method in SAFE_METHODS
         return can_access_product(request.user, request.project, read_only)
+
+
+class IsAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.role == User.Roles.admin.name
+
+
+class IsWriteableForAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS or request.user.role == User.Roles.admin.name

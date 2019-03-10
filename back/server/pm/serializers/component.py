@@ -5,10 +5,10 @@ from server.pm.serializers.collection import CollectionSerializer
 
 
 class ComponentSerializer(serializers.ModelSerializer):
-    collection = CollectionSerializer()
-    total_price = serializers.DecimalField(max_digits=12, decimal_places=3)
+    collection = CollectionSerializer(read_only=True)
+    total_price = serializers.DecimalField(read_only=True, max_digits=12, decimal_places=3)
 
     class Meta:
         model = Component
-        fields = ('code', 'description', 'price', 'collection', 'total_price')
+        fields = ('id', 'code', 'description', 'price', 'collection', 'total_price')
         read_only_fields = ('total_price',)
