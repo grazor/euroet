@@ -7,6 +7,7 @@ User = get_user_model()
 class Product(models.Model):
     slug = models.SlugField(db_index=True)
     name = models.CharField(max_length=128)
+    description = models.TextField(max_length=2048, null=True, blank=True)
 
     project = models.ForeignKey('Project', null=True, blank=True, related_name='products', on_delete=models.CASCADE)
     components = models.ManyToManyField('Component', through='ProductComponent')
@@ -18,6 +19,8 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        # Making possible to use same slug within multiple projects
+        # Therefore keeping auto id field as primary key
         unique_together = ('project', 'slug')
 
     def __str__(self) -> str:

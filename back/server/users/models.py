@@ -23,7 +23,7 @@ class User(AbstractUser):
     email = models.EmailField(_('Email address'), unique=True)  # unique not blank
 
     role = models.CharField(
-        max_length=16, choices=as_choices(Roles), default=Roles.guest.name, db_index=True, help_text=_('User role')
+        max_length=16, choices=as_choices(Roles), default=Roles.guest.name, db_index=True, help_text=_('Euroet role')
     )
     photo = models.FilePathField(max_length=255, null=True, blank=True)
 

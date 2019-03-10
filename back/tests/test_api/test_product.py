@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from server.pm.factories import ProjectFactory, ReadProjectAccessFactory, WriteProjectAccessFactory
+from server.pm.factories import ProductFactory, ProjectFactory, ReadProjectAccessFactory, WriteProjectAccessFactory
 from server.users.factories import AdminFactory, ManagerFactory
 
 
@@ -62,3 +62,22 @@ def test_product_add_read_permission_fails(db, api_client):
     api_client.force_authenticate(user=access.user)
     response = api_client.post(url, data={'slug': 'test', 'name': 'test'})
     assert response.status_code == 403, 'Can create products with read permission'
+
+
+def test_product_info_path(db, api_client):
+    product = ProductFactory()
+
+    url = reverse('product-detail', kwargs={'project_slug': product.project.slug, 'slug': product.slug})
+    api_client.force_authenticate(user=product.project.created_by)
+    response = api_client.get(url)
+    assert response.status_code == 200, 'Can not access product'
+
+
+def test_product_invalid_path(db, api_client):
+    product = ProductFactory()
+    project = WriteProjectAccessFactory(user=product.project.created_by).project
+
+    url = reverse('product-detail', kwargs={'project_slug': project.slug, 'slug': product.slug})
+    api_client.force_authenticate(user=product.project.created_by)
+    response = api_client.get(url)
+    assert response.status_code == 404, 'Can access product by invalid path'

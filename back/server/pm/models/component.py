@@ -19,5 +19,10 @@ class Component(models.Model):
     )
     collection = models.ForeignKey('Collection', blank=True, null=True, on_delete=models.SET_NULL)
 
+    @property
+    def total_price(self) -> Decimal:
+        discount_pc: Decimal = self.collection.discount if self.collection else 0.0
+        return self.price * (Decimal('1.0') - discount_pc / Decimal('100.0'))
+
     def __str__(self) -> str:
         return f'{self.code} ({self.description})'

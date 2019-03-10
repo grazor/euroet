@@ -2,8 +2,8 @@ import factory
 from faker import Faker
 
 from server.pm.models import ProjectAccess
-from server.pm.factories import ProjectFactory
 from server.users.factories import UserFactory
+from server.pm.factories.project import ProjectFactory
 
 faker = Faker()
 

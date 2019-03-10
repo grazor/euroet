@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
@@ -14,6 +16,10 @@ class ProductComponent(models.Model):
 
     updated_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def aggregated_price(self) -> Decimal:
+        return self.component.total_price * Decimal(self.qty)
 
     class Meta:
         unique_together = ('product', 'component')
