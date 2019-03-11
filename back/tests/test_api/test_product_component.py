@@ -77,5 +77,53 @@ def test_find_components(db, api_client):
     assert response.status_code == 200, 'Can not get recommendations'
 
     data = response.json()
-    assert {x['code'] for x in data} == {x.code for x in good}
-    assert not {x['code'] for x in data}.intersection({x.code for x in other})
+    found = {x['code'] for x in data}
+    assert found == {x.code for x in good}
+    assert not found.intersection({x.code for x in other})
+
+
+def test_find_components_exclusion(db, api_client):
+    good = [
+        ComponentFactory(code='AB1234 AAA'),
+        ComponentFactory(code='AB1234 AAB'),
+        ComponentFactory(code='AB1234 AAC'),
+    ]
+    used = good.pop()
+    other = [ComponentFactory(code='BB222 DEF'), ComponentFactory(code='CC133 PQR')]
+    product_component = ProductComponentFactory(component=used)
+    product = product_component.product
+
+    url = reverse(
+        'product-component-find', kwargs={'project_slug': product.project.slug, 'product_slug': product.slug}
+    )
+    api_client.force_authenticate(user=product.project.created_by)
+    response = api_client.get(url, data={'q': 'B123'})
+    assert response.status_code == 200, 'Can not get recommendations'
+
+    data = response.json()
+    found = {x['code'] for x in data}
+    assert found == {x.code for x in good}
+    assert not found.union({used}).intersection({x.code for x in other})
+
+
+def test_find_components_cyrillic(db, api_client):
+    good = [
+        ComponentFactory(code='Тест 123'),
+        ComponentFactory(code='234 тест'),
+        ComponentFactory(code='Тесто 456'),
+        ComponentFactory(code='Текст 456'),
+    ]
+    other = [ComponentFactory(code='Код 444'), ComponentFactory(code='Что-то')]
+    product = ProductFactory()
+
+    url = reverse(
+        'product-component-find', kwargs={'project_slug': product.project.slug, 'product_slug': product.slug}
+    )
+    api_client.force_authenticate(user=product.project.created_by)
+    response = api_client.get(url, data={'q': 'ТЕСТЫ'})
+    assert response.status_code == 200, 'Can not get recommendations'
+
+    data = response.json()
+    found = {x['code'] for x in data}
+    assert found == {x.code for x in good}
+    assert not found.intersection({x.code for x in other})
