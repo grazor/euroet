@@ -19,10 +19,12 @@ import {
   makeSelectLocation,
 } from './selectors';
 
+import IndexPage from 'containers/IndexPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
 
 import LoginRoute from 'components/LoginRoute';
 import PrivateRoute from 'components/PrivateRoute';
+import EuroetNav from 'components/EuroetNav';
 
 /* eslint-disable react/prefer-stateless-function */
 export class App extends React.Component {
@@ -34,14 +36,17 @@ export class App extends React.Component {
         <Helmet titleTemplate="%s - Euroet" defaultTitle="Euroet">
           <meta name="description" content="Euroet engineering application" />
         </Helmet>
-        <Switch>
-          <LoginRoute
-            exact
-            path="/login"
-            component={LoginPage}
-            isAuthenticated={auth}
-          />
-        </Switch>
+        <EuroetNav>
+          <Switch>
+            <Route exact path="/" component={IndexPage} />
+            <LoginRoute
+              exact
+              path="/login"
+              component={LoginPage}
+              isAuthenticated={auth}
+            />
+          </Switch>
+        </EuroetNav>
       </div>
     );
   }

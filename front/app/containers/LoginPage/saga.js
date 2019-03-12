@@ -36,7 +36,7 @@ function* authorize({ email: username, password }) {
 }
 
 function* logout() {
-  yield call(fetchJSON, '/api/users/auth/logout/', { method: 'POST' });
+  yield call(fetchJSON, '/api/users/auth/logout/', { method: 'GET' });
   localStorage.removeItem('token');
   yield put({ type: LOGOUT_SUCCESS, payload: token });
 }

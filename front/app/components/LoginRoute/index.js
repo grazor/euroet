@@ -1,12 +1,8 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
-const LoginRoute = ({
-  location,
-  isAuthenticated,
-  component: Component,
-  ...rest
-}) => {
+const LoginRoute = props => {
+  const { location, isAuthenticated, component: Component, ...rest } = props;
   const from = (location.state && location.state.from) || '/';
 
   return (
