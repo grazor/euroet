@@ -3,11 +3,14 @@ from knox.views import LoginView as KnoxLoginView
 from rest_framework import permissions
 from django.contrib.auth import login
 
-from server.users.serializers import UserTokenSerializer
+from server.users.serializers import UserTokenSerializer, UserSerializer
 
 
 class LoginView(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
+
+    def get_user_serializer_class(self):
+        return UserSerializer
 
     def get_query(self):
         q = super().get_query()

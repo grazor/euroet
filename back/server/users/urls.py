@@ -10,5 +10,4 @@ knox_urlpatterns = [
     path('logoutall/', knox_views.LogoutAllView.as_view(), name='knox_logoutall'),
 ]
 
-
-urlpatterns = [path('v1/auth/', include(knox_urlpatterns))]
+urlpatterns = [path('auth/', include(knox_urlpatterns))]

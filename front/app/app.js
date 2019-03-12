@@ -32,6 +32,11 @@ import configureStore from './configureStore';
 // Import i18n messages
 import { translationMessages } from './i18n';
 
+// MUI
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import theme from 'utils/mui_theme';
+
 // Observe loading of Open Sans (to remove open sans, remove the <link> tag in
 // the index.html file and this observer)
 const openSansObserver = new FontFaceObserver('Open Sans', {});
@@ -51,7 +56,10 @@ const render = messages => {
     <Provider store={store}>
       <LanguageProvider messages={messages}>
         <ConnectedRouter history={history}>
-          <App />
+          <MuiThemeProvider theme={theme}>
+            <CssBaseline />
+            <App />
+          </MuiThemeProvider>
         </ConnectedRouter>
       </LanguageProvider>
     </Provider>,

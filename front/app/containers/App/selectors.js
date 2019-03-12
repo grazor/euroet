@@ -4,34 +4,19 @@
 
 import { createSelector } from 'reselect';
 
-const selectGlobal = state => state.get('global');
+const selectAuth = state => state.get('auth');
 
 const selectRouter = state => state.get('router');
 
-const makeSelectCurrentUser = () =>
-  createSelector(selectGlobal, globalState => globalState.get('currentUser'));
+const makeSelectUser = () =>
+  createSelector(selectAuth, authState => authState.get('user'));
 
-const makeSelectLoading = () =>
-  createSelector(selectGlobal, globalState => globalState.get('loading'));
-
-const makeSelectError = () =>
-  createSelector(selectGlobal, globalState => globalState.get('error'));
-
-const makeSelectRepos = () =>
-  createSelector(selectGlobal, globalState =>
-    globalState.getIn(['userData', 'repositories']),
-  );
+const makeSelectIsAuthenticated = () =>
+  createSelector(selectAuth, authState => authState.get('isAuthenticated'));
 
 const makeSelectLocation = () =>
   createSelector(selectRouter, routerState =>
     routerState.get('location').toJS(),
   );
 
-export {
-  selectGlobal,
-  makeSelectCurrentUser,
-  makeSelectLoading,
-  makeSelectError,
-  makeSelectRepos,
-  makeSelectLocation,
-};
+export { makeSelectUser, makeSelectIsAuthenticated, makeSelectLocation };
