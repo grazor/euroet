@@ -1,4 +1,5 @@
 from rest_framework import viewsets, permissions
+from django.db.models import Max
 
 from server.pm.models import Project
 from server.pm.permissions import CanUpdateProject
@@ -15,4 +16,8 @@ class ProjectViewset(viewsets.ModelViewSet):
         qs = Project.objects.all().prefetch_related('access', 'access__user')
         if not user.is_superuser:
             qs = qs.filter(access__user=user)
+
+        if self.action == 'list':
+            qs = qs.annotate(last_update_at=Max('products__updated_at')).order_by('-last_update_at')
+
         return qs

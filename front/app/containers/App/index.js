@@ -20,10 +20,12 @@ import {
   makeSelectLocation,
 } from './selectors';
 
-import IndexPage from 'containers/IndexPage/Loadable';
-import LoginPage from 'containers/LoginPage/Loadable';
 import { fetchUser } from './actions';
 import authSaga from './saga';
+
+import IndexPage from 'containers/IndexPage/Loadable';
+import LoginPage from 'containers/LoginPage/Loadable';
+import ProjectsPage from 'containers/ProjectsPage/Loadable';
 
 import LoginRoute from 'components/LoginRoute';
 import PrivateRoute from 'components/PrivateRoute';
@@ -52,6 +54,12 @@ export class App extends React.Component {
               exact
               path="/login"
               component={LoginPage}
+              isAuthenticated={auth}
+            />
+            <PrivateRoute
+              exact
+              path="/projects"
+              component={ProjectsPage}
               isAuthenticated={auth}
             />
           </Switch>
