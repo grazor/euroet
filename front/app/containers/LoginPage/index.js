@@ -26,7 +26,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 import { makeSelectUser } from './selectors';
 import messages from './messages';
-import { login } from './actions';
+import { login } from 'containers/App/actions';
 import history from 'utils/history';
 
 const styles = theme => ({

@@ -34,7 +34,7 @@ import UsersIcon from '@material-ui/icons/People';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
-import { logout } from 'containers/LoginPage/actions';
+import { logout } from 'containers/App/actions';
 
 import {
   makeSelectUser,

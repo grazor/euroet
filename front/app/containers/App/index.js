@@ -22,8 +22,8 @@ import {
 
 import IndexPage from 'containers/IndexPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
-import { fetchUser } from 'containers/LoginPage/actions';
-import authSaga from 'containers/LoginPage/saga';
+import { fetchUser } from './actions';
+import authSaga from './saga';
 
 import LoginRoute from 'components/LoginRoute';
 import PrivateRoute from 'components/PrivateRoute';
