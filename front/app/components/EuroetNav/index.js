@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 
@@ -23,6 +22,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Avatar from '@material-ui/core/Avatar';
 
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import HomeIcon from '@material-ui/icons/Home';
@@ -113,8 +113,12 @@ class PersistentDrawerLeft extends React.Component {
     this.setState({ open: isOpened });
   };
 
+  logoutUser = () => {
+    this.props.dispatch(logout());
+  };
+
   render() {
-    const { classes, theme, isAuthenticated } = this.props;
+    const { classes, theme, isAuthenticated, user } = this.props;
     const { open } = this.state;
 
     return (
@@ -144,15 +148,20 @@ class PersistentDrawerLeft extends React.Component {
               >
                 <FormattedMessage {...messages.appname} />
               </Typography>
-              {!isAuthenticated ? (
+              {isAuthenticated ? (
+                <Button color="inherit" onClick={this.logoutUser}>
+                  <FormattedMessage {...messages.logoutbutton} />
+                </Button>
+              ) : (
                 <Button color="inherit" component={Link} to="/login">
                   <FormattedMessage {...messages.loginbutton} />
                 </Button>
-              ) : (
-                <Button color="inherit" onClick={this.props.logout}>
-                  <FormattedMessage {...messages.logoutbutton} />
-                </Button>
               )}
+              {user ? (
+                <Avatar style={{ backgroundColor: user.color }}>
+                  {user.initials}
+                </Avatar>
+              ) : null}
             </Toolbar>
           </AppBar>
           <Drawer
@@ -250,29 +259,8 @@ PersistentDrawerLeft.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
-  logout: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = createStructuredSelector({
-  user: makeSelectUser(),
-  isAuthenticated: makeSelectIsAuthenticated(),
-  location: makeSelectLocation(),
-});
-
-const mapDispatchToProps = dispatch => ({
-  dispatch,
-  logout: () => {
-    dispatch(logout());
-  },
-});
-
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
 const withStyle = withStyles(styles, { withTheme: true });
 
-export default compose(
-  withConnect,
-  withStyle,
-)(PersistentDrawerLeft);
+export default compose(withStyle)(PersistentDrawerLeft);

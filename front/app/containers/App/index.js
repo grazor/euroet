@@ -12,6 +12,7 @@ import { compose } from 'redux';
 
 import { Helmet } from 'react-helmet';
 import { Switch, Route } from 'react-router-dom';
+import injectSaga from 'utils/injectSaga';
 
 import {
   makeSelectUser,
@@ -21,6 +22,8 @@ import {
 
 import IndexPage from 'containers/IndexPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
+import { fetchUser } from 'containers/LoginPage/actions';
+import authSaga from 'containers/LoginPage/saga';
 
 import LoginRoute from 'components/LoginRoute';
 import PrivateRoute from 'components/PrivateRoute';
@@ -28,15 +31,21 @@ import EuroetNav from 'components/EuroetNav';
 
 /* eslint-disable react/prefer-stateless-function */
 export class App extends React.Component {
+  componentDidMount() {
+    if (this.props.isAuthenticated) {
+      this.props.getUser();
+    }
+  }
+
   render() {
-    const { isAuthenticated: auth } = this.props;
+    const { isAuthenticated: auth, user, dispatch } = this.props;
 
     return (
       <div>
         <Helmet titleTemplate="%s - Euroet" defaultTitle="Euroet">
           <meta name="description" content="Euroet engineering application" />
         </Helmet>
-        <EuroetNav>
+        <EuroetNav isAuthenticated={auth} user={user} dispatch={dispatch}>
           <Switch>
             <Route exact path="/" component={IndexPage} />
             <LoginRoute
@@ -58,6 +67,19 @@ const mapStateToProps = createStructuredSelector({
   location: makeSelectLocation(),
 });
 
-const withConnect = connect(mapStateToProps);
+const mapDispatchToProps = dispatch => ({
+  dispatch,
+  getUser: () => dispatch(fetchUser()),
+});
 
-export default compose(withConnect)(App);
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+const withSaga = injectSaga({ key: 'auth', saga: authSaga });
+
+export default compose(
+  withConnect,
+  withSaga,
+)(App);

@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, put, takeEvery } from 'redux-saga/effects';
 
 import fetchJSON from 'utils/fetchjson';
 
@@ -6,6 +6,9 @@ import {
   AUTH_REQUEST,
   AUTH_SUCCESS,
   AUTH_FAILURE,
+  USER_REQUEST,
+  USER_SUCCESS,
+  USER_FAILURE,
   LOGOUT_REQUEST,
   LOGOUT_SUCCESS,
 } from './constants';
@@ -35,15 +38,29 @@ function* authorize({ email: username, password }) {
   }
 }
 
-function* logout() {
-  yield call(fetchJSON, '/api/users/auth/logout/', { method: 'GET' });
-  localStorage.removeItem('token');
-  yield put({ type: LOGOUT_SUCCESS, payload: token });
+function* getUser(action) {
+  try {
+    const user = yield call(fetchJSON, '/api/users/user/', { method: 'GET' });
+    yield put({ type: USER_SUCCESS, user });
+  } catch (error) {
+    localStorage.removeItem('token');
+    yield put({ type: USER_FAILURE });
+  }
+}
+
+function* logout(action) {
+  try {
+    yield call(fetchJSON, '/api/users/auth/logout/', { method: 'POST' });
+  } finally {
+    localStorage.removeItem('token');
+    yield put({ type: LOGOUT_SUCCESS });
+  }
 }
 
 function* authSaga() {
-  yield takeLatest(AUTH_REQUEST, authorize);
-  yield takeLatest(LOGOUT_REQUEST, logout);
+  yield takeEvery(AUTH_REQUEST, authorize);
+  yield takeEvery(USER_REQUEST, getUser);
+  yield takeEvery(LOGOUT_REQUEST, logout);
 }
 
 export default authSaga;

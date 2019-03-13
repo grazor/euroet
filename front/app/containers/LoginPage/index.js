@@ -24,11 +24,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 
-import injectSaga from 'utils/injectSaga';
-import injectReducer from 'utils/injectReducer';
 import { makeSelectUser } from './selectors';
-import reducer from './reducer';
-import saga from './saga';
 import messages from './messages';
 import { login } from './actions';
 import history from 'utils/history';
@@ -161,13 +157,9 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withReducer = injectReducer({ key: 'auth', reducer });
-const withSaga = injectSaga({ key: 'auth', saga });
 const withStyle = withStyles(styles);
 
 export default compose(
-  withReducer,
-  withSaga,
   withConnect,
   withStyle,
 )(LoginPage);
