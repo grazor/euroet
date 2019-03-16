@@ -37,6 +37,7 @@ import { translationMessages } from './i18n';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from 'utils/mui_theme';
+import Moment from 'react-moment';
 
 // Observe loading of Open Sans (to remove open sans, remove the <link> tag in
 // the index.html file and this observer)
@@ -46,6 +47,8 @@ const openSansObserver = new FontFaceObserver('Open Sans', {});
 openSansObserver.load().then(() => {
   document.body.classList.add('fontLoaded');
 });
+
+Moment.startPooledTimer();
 
 // Create redux store with history
 const initialState = {};
@@ -61,7 +64,7 @@ const render = messages => {
             <CssBaseline />
             <SnackbarProvider
               maxSnack={3}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             >
               <App />
             </SnackbarProvider>

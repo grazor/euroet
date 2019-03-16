@@ -6,6 +6,13 @@ const theme = createMuiTheme({
     type: 'light',
     primary: Colors.deepOrange,
   },
+  overrides: {
+    MUIDataTable: {
+      responsiveScroll: {
+        maxHeight: 'none',
+      },
+    },
+  },
 });
 
 export default theme;

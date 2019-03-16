@@ -67,6 +67,7 @@ function* logout(action) {
     localStorage.removeItem('token');
     yield put({ type: LOGOUT_SUCCESS });
   }
+  yield put(notifySuccess('Logged out'));
 }
 
 function* authSaga() {

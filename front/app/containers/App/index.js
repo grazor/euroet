@@ -26,7 +26,7 @@ import Notifier from './Notifier';
 
 import IndexPage from 'containers/IndexPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
-import ProjectsPage from 'containers/ProjectsPage/Loadable';
+import ProjectsPage from 'containers/ProjectsPage';
 
 import LoginRoute from 'components/LoginRoute';
 import PrivateRoute from 'components/PrivateRoute';

@@ -14,18 +14,9 @@ import { compose } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
-import IconButton from '@material-ui/core/IconButton';
-import MUIDataTable from 'mui-datatables';
-import Moment from 'react-moment';
 import Paper from '@material-ui/core/Paper';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Avatar from '@material-ui/core/Avatar';
-import Tooltip from '@material-ui/core/Tooltip';
-
 import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 ///import AddProjectDialog from 'components/AddProjectDialog/Loadable';
 
@@ -34,6 +25,7 @@ import { fetchProjects } from './actions';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import { makeSelectProjects, makeSelectIsLoading } from './selectors';
+import ProjectsTable from './ProjectsTable';
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
@@ -54,10 +46,6 @@ const styles = theme => ({
     paddingTop: 32,
     paddingLeft: 16,
     paddingRight: 16,
-  },
-  MUIDataTableHeadCell: {
-    width: 10,
-    backgroundColor: '#FF0000',
   },
 });
 
@@ -118,31 +106,6 @@ class ProjectsPage extends React.Component {
 
     if (isLoading && projects.size == 0) return loadingView;
 
-    const data = projects.map(p => [
-      p.name,
-      p.description,
-      p.owner ? (
-        <Tooltip title={`${p.owner.last_name} ${p.owner.first_name}`}>
-          <Avatar style={{ backgroundColor: p.owner.color }}>
-            {p.owner.initials}
-          </Avatar>
-        </Tooltip>
-      ) : null,
-      <Moment date={p.last_update_at} fromNow locale="en" />,
-      <React.Fragment>
-        <IconButton aria-label="Favorite" onClick={this.toggleStar(p.slug)}>
-          {p.is_starred ? (
-            <FavoriteIcon color="primary" />
-          ) : (
-            <FavoriteBorderIcon />
-          )}
-        </IconButton>
-        <IconButton aria-label="Edit" onClick={this.openProjectPage(p.slug)}>
-          <EditIcon color="inherit" />
-        </IconButton>
-      </React.Fragment>,
-    ]);
-
     /*<AddProjectDialog
           open={this.state.createDialog}
           onCancel={this.onCancelDialog}
@@ -150,11 +113,10 @@ class ProjectsPage extends React.Component {
         />*/
     return (
       <React.Fragment>
-        <MUIDataTable
-          title="Projects"
-          columns={this.columns}
-          options={this.options}
-          data={data}
+        <ProjectsTable
+          projects={projects}
+          toggleStar={this.toggleStar}
+          openProjectPage={this.openProjectPage}
         />
         <Fab
           color="primary"
