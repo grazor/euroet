@@ -13,6 +13,13 @@ import {
   LOGOUT_SUCCESS,
 } from './constants';
 
+import {
+  notifySuccess,
+  notifyWarning,
+  notifyError,
+  notifyApiError,
+} from './actions';
+
 function* authorize({ email: username, password }) {
   localStorage.removeItem('token');
   const options = {
@@ -29,12 +36,16 @@ function* authorize({ email: username, password }) {
     );
     localStorage.setItem('token', token);
     yield put({ type: AUTH_SUCCESS, user });
-  } catch (error) {
-    let message;
-    if (error.status >= 500) message = 'Server error';
-    else message = error.json();
+    yield put(notifySuccess('Authenticated'));
+  } catch ({ status, data = {}, error = null }) {
     localStorage.removeItem('token');
-    yield put({ type: AUTH_FAILURE, error: message });
+    yield put({ type: AUTH_FAILURE });
+
+    if (status != null && status >= 500) {
+      yield put(notifyError('Internal server error'));
+    } else {
+      yield put(notifyApiError(data));
+    }
   }
 }
 
@@ -45,6 +56,7 @@ function* getUser(action) {
   } catch (error) {
     localStorage.removeItem('token');
     yield put({ type: USER_FAILURE });
+    yield put(notifyWarning('Failed to fetch profile info'));
   }
 }
 

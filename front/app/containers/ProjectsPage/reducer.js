@@ -14,7 +14,6 @@ import {
 export const initialState = fromJS({
   projects: [],
   isLoading: false,
-  error: null,
 });
 
 function projectsPageReducer(state = initialState, action) {
@@ -25,7 +24,7 @@ function projectsPageReducer(state = initialState, action) {
     case PROJECTS_SUCCESS:
       return state.set('projects', action.projects).set('isLoading', false);
     case PROJECTS_FAILURE:
-      return state.set('error', action.message).set('isLoading', false);
+      return state.set('isLoading', false);
 
     default:
       return state;

@@ -22,6 +22,7 @@ import {
 
 import { fetchUser } from './actions';
 import authSaga from './saga';
+import Notifier from './Notifier';
 
 import IndexPage from 'containers/IndexPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
@@ -47,6 +48,7 @@ export class App extends React.Component {
         <Helmet titleTemplate="%s - Euroet" defaultTitle="Euroet">
           <meta name="description" content="Euroet engineering application" />
         </Helmet>
+        <Notifier />
         <EuroetNav isAuthenticated={auth} user={user} dispatch={dispatch}>
           <Switch>
             <Route exact path="/" component={IndexPage} />
@@ -85,7 +87,7 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withSaga = injectSaga({ key: 'auth', saga: authSaga });
+const withSaga = injectSaga({ key: 'global', saga: authSaga });
 
 export default compose(
   withConnect,

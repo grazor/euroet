@@ -8,6 +8,8 @@ import {
   PROJECTS_FAILURE,
 } from './constants';
 
+import { notifyWarning } from 'containers/App/actions';
+
 function* getProjects() {
   const options = {
     method: 'GET',
@@ -27,8 +29,9 @@ function* getProjects() {
         break;
       default:
         message = 'Something went wrong';
-        yield put({ type: PROJECTS_FAILURE, message: message });
     }
+    yield put({ type: PROJECTS_FAILURE });
+    yield put(notifyWarning(message));
   }
 }
 

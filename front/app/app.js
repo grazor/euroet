@@ -16,6 +16,7 @@ import { ConnectedRouter } from 'connected-react-router/immutable';
 import FontFaceObserver from 'fontfaceobserver';
 import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
+import { SnackbarProvider } from 'notistack';
 
 // Import root app
 import App from 'containers/App';
@@ -58,7 +59,12 @@ const render = messages => {
         <ConnectedRouter history={history}>
           <MuiThemeProvider theme={theme}>
             <CssBaseline />
-            <App />
+            <SnackbarProvider
+              maxSnack={3}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+              <App />
+            </SnackbarProvider>
           </MuiThemeProvider>
         </ConnectedRouter>
       </LanguageProvider>
