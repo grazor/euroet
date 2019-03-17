@@ -14,12 +14,20 @@ import injectSaga from 'utils/injectSaga';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
+import { find } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 
+import ProjectDialog from './ProjectDialog';
 import ProjectsTable from './ProjectsTable';
 import reducer from './reducer';
 import saga from './saga';
-import { fetchProjects } from './actions';
+import {
+  addProject,
+  deleteProject,
+  fetchProjects,
+  toggleProjectStar,
+  updateProject,
+} from './actions';
 import { makeSelectIsLoading, makeSelectProjects } from './selectors';
 
 const styles = theme => ({
@@ -43,7 +51,8 @@ const styles = theme => ({
 
 class ProjectsPage extends React.Component {
   state = {
-    createDialog: false,
+    showProjectDialog: false,
+    project: null,
   };
 
   componentDidMount() {
@@ -55,14 +64,31 @@ class ProjectsPage extends React.Component {
   };
 
   onToggleDialog = isOn => () => {
-    this.setState({ createDialog: isOn });
+    this.setState({ showProjectDialog: isOn, project: null });
   };
 
-  onSubmitDialog = () => ({ name, description }) => {
-    this.setState({ createDialog: false });
+  onSubmitAction = ({ originalSlug, ...rest }) => {
+    this.setState({ showProjectDialog: false, project: null });
+    if (originalSlug == null) {
+      this.props.addProject(rest);
+    } else {
+      this.props.updateProject({ originalSlug, ...rest });
+    }
   };
 
-  toggleStar = slug => () => {};
+  onDeleteAction = () => slug => {
+    this.setState({ showProjectDialog: false, project: null });
+    this.props.deleteProject(slug);
+  };
+
+  toggleStar = slug => () => {
+    this.props.toggleProjectStar(slug);
+  };
+
+  editProject = slug => () => {
+    const project = find(this.props.projects, ['slug', slug]);
+    this.setState({ showProjectDialog: true, project });
+  };
 
   columns = [
     { name: 'Name', options: { filter: false, sort: true } },
@@ -91,10 +117,18 @@ class ProjectsPage extends React.Component {
 
     return (
       <React.Fragment>
+        <ProjectDialog
+          project={this.state.project}
+          open={this.state.showProjectDialog}
+          onCancel={this.onToggleDialog(false)}
+          onSubmit={this.onSubmitAction}
+          onDelete={this.onDeleteAction}
+        />
         <ProjectsTable
           projects={projects}
           toggleStar={this.toggleStar}
           openProjectPage={this.openProjectPage}
+          editProject={this.editProject}
         />
         <Fab
           color="primary"
@@ -111,6 +145,10 @@ class ProjectsPage extends React.Component {
 
 ProjectsPage.propTypes = {
   fetchProjects: PropTypes.func.isRequired,
+  addProject: PropTypes.func.isRequired,
+  updateProject: PropTypes.func.isRequired,
+  deleteProject: PropTypes.func.isRequired,
+  toggleProjectStar: PropTypes.func.isRequired,
   projects: PropTypes.array.isRequired,
   isLoading: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
@@ -123,7 +161,16 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ fetchProjects }, dispatch);
+  bindActionCreators(
+    {
+      fetchProjects,
+      addProject,
+      updateProject,
+      deleteProject,
+      toggleProjectStar,
+    },
+    dispatch,
+  );
 
 const withConnect = connect(
   mapStateToProps,

@@ -2,6 +2,7 @@ import Avatar from '@material-ui/core/Avatar';
 import EditIcon from '@material-ui/icons/Edit';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import ForwardIcon from '@material-ui/icons/Forward';
 import IconButton from '@material-ui/core/IconButton';
 import MUIDataTable from 'mui-datatables';
 import Moment from 'react-moment';
@@ -16,7 +17,7 @@ const styles = () => ({
     minWidth: 80,
   },
   actionsColumn: {
-    minWidth: 100,
+    minWidth: 160,
   },
 });
 
@@ -52,7 +53,13 @@ class ProjectsTable extends React.Component {
   };
 
   mapProjectsToTableData() {
-    const { projects, toggleStar, openProjectPage, classes } = this.props;
+    const {
+      projects,
+      toggleStar,
+      openProjectPage,
+      editProject,
+      classes,
+    } = this.props;
     return projects.map(p => [
       p.name,
       p.description,
@@ -86,8 +93,11 @@ class ProjectsTable extends React.Component {
             <FavoriteBorderIcon />
           )}
         </IconButton>
-        <IconButton aria-label="Edit" onClick={openProjectPage(p.slug)}>
+        <IconButton aria-label="Edit" onClick={editProject(p.slug)}>
           <EditIcon color="inherit" />
+        </IconButton>
+        <IconButton aria-label="Open" onClick={openProjectPage(p.slug)}>
+          <ForwardIcon color="inherit" />
         </IconButton>
       </div>,
     ]);
@@ -111,6 +121,7 @@ ProjectsTable.propTypes = {
   classes: PropTypes.object.isRequired,
   projects: PropTypes.array.isRequired,
   toggleStar: PropTypes.func.isRequired,
+  editProject: PropTypes.func.isRequired,
   openProjectPage: PropTypes.func.isRequired,
 };
 
