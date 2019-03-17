@@ -4,15 +4,14 @@
  *
  */
 
-import React from 'react';
+import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React from 'react';
+import Typography from '@material-ui/core/Typography';
 import { FormattedMessage } from 'react-intl';
 import { compose } from 'redux';
-
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 
 import messages from './messages';
 

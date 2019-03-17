@@ -1,14 +1,17 @@
+/* eslint-disable prefer-promise-reject-errors */
+
 export default (url, options = {}) => {
   const token = localStorage.getItem('token');
+  let requestOptions = options;
   if (token)
-    options = {
+    requestOptions = {
       ...options,
       headers: { ...options.headers, Authorization: `Token ${token}` },
     };
 
-  return new Promise((resolve, reject) => {
-    return fetch(url, options)
-      .then(response => (response.status == 204 ? resolve({}) : response))
+  return new Promise((resolve, reject) =>
+    fetch(url, requestOptions)
+      .then(response => (response.status === 204 ? resolve({}) : response))
       .then(
         response =>
           response.status >= 500
@@ -22,6 +25,6 @@ export default (url, options = {}) => {
         ({ status, data }) =>
           status >= 400 ? reject({ status, data }) : resolve(data),
       )
-      .catch(error => reject({ status: null, error }));
-  });
+      .catch(error => reject({ status: null, error })),
+  );
 };

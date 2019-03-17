@@ -1,17 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import MUIDataTable from 'mui-datatables';
-import { compose } from 'redux';
-import { withStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import Moment from 'react-moment';
-import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '@material-ui/core/Avatar';
 import EditIcon from '@material-ui/icons/Edit';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import IconButton from '@material-ui/core/IconButton';
+import MUIDataTable from 'mui-datatables';
+import Moment from 'react-moment';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Tooltip from '@material-ui/core/Tooltip';
+import { compose } from 'redux';
+import { withStyles } from '@material-ui/core/styles';
 
-const styles = theme => ({
+const styles = () => ({
   dateColumn: {
     minWidth: 80,
   },
@@ -31,12 +31,12 @@ class ProjectsTable extends React.Component {
 
   sortTable = (data, colIndex, order) => {
     const getKey = item =>
-      item.type && item.type == 'div' ? item.props.sortKey : item;
+      item.type && item.type === 'div' ? item.props.sortkey : item;
 
     return data.sort(
       (a, b) =>
         (getKey(a.data[colIndex]) < getKey(b.data[colIndex]) ? -1 : 1) *
-        (order == 'desc' ? 1 : -1),
+        (order === 'desc' ? 1 : -1),
     );
   };
 
@@ -57,7 +57,7 @@ class ProjectsTable extends React.Component {
       p.name,
       p.description,
       p.owner ? (
-        <div sortKey={`${p.owner.last_name} ${p.owner.first_name}`}>
+        <div sortkey={`${p.owner.last_name} ${p.owner.first_name}`}>
           <Tooltip title={`${p.owner.last_name} ${p.owner.first_name}`}>
             <Avatar style={{ backgroundColor: p.owner.color }}>
               {p.owner.initials}
@@ -65,7 +65,7 @@ class ProjectsTable extends React.Component {
           </Tooltip>
         </div>
       ) : null,
-      <div className={classes.dateColumn} sortKey={+new Date(p.last_update_at)}>
+      <div className={classes.dateColumn} sortkey={+new Date(p.last_update_at)}>
         <Tooltip
           title={
             <Moment
@@ -106,6 +106,13 @@ class ProjectsTable extends React.Component {
     );
   }
 }
+
+ProjectsTable.propTypes = {
+  classes: PropTypes.object.isRequired,
+  projects: PropTypes.array.isRequired,
+  toggleStar: PropTypes.func.isRequired,
+  openProjectPage: PropTypes.func.isRequired,
+};
 
 const withStyle = withStyles(styles);
 

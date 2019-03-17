@@ -6,19 +6,20 @@
 
 import { fromJS } from 'immutable';
 import { map } from 'lodash';
+
 import {
+  AUTH_FAILURE,
   AUTH_REQUEST,
   AUTH_SUCCESS,
-  AUTH_FAILURE,
-  USER_REQUEST,
-  USER_SUCCESS,
-  USER_FAILURE,
   LOGOUT_REQUEST,
   LOGOUT_SUCCESS,
-  NOTIFY_SUCCESS,
-  NOTIFY_WARNING,
   NOTIFY_ERROR,
   NOTIFY_REMOVE,
+  NOTIFY_SUCCESS,
+  NOTIFY_WARNING,
+  USER_FAILURE,
+  USER_REQUEST,
+  USER_SUCCESS,
 } from './constants';
 
 export const initialState = fromJS({
@@ -27,7 +28,7 @@ export const initialState = fromJS({
   notifications: [],
 });
 
-var NOTIFICATION_KEY = 0;
+let NOTIFICATION_KEY = 0;
 
 const NOTIFICATION_VARIANTS = {
   [NOTIFY_SUCCESS]: 'success',
@@ -37,12 +38,12 @@ const NOTIFICATION_VARIANTS = {
 
 function buildNotifications(message, type) {
   let messages = message;
-  if (typeof message == 'string') {
+  if (typeof message === 'string') {
     messages = [message];
   }
-  return map(messages, message => ({
-    key: NOTIFICATION_KEY++,
-    message,
+  return map(messages, body => ({
+    key: NOTIFICATION_KEY++, // eslint-disable-line no-plusplus
+    message: body,
     options: {
       variant: NOTIFICATION_VARIANTS[type],
     },
@@ -74,7 +75,7 @@ function loginPageReducer(state = initialState, action) {
 
     case NOTIFY_REMOVE:
       return state.update('notifications', notifications =>
-        notifications.filter(item => item.key != action.key),
+        notifications.filter(item => item.key !== action.key),
       );
 
     default:

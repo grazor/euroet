@@ -1,14 +1,14 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
 
 const PrivateRoute = props => {
   const { location, isAuthenticated, component: Component, ...rest } = props;
   return (
     <Route
       {...rest}
-      render={props =>
+      render={componentProps =>
         isAuthenticated ? (
-          <Component {...props} />
+          <Component {...componentProps} />
         ) : (
           <Redirect
             push

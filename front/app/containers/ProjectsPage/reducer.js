@@ -5,10 +5,11 @@
  */
 
 import { fromJS } from 'immutable';
+
 import {
+  PROJECTS_FAILURE,
   PROJECTS_REQUEST,
   PROJECTS_SUCCESS,
-  PROJECTS_FAILURE,
 } from './constants';
 
 export const initialState = fromJS({
@@ -22,7 +23,9 @@ function projectsPageReducer(state = initialState, action) {
     case PROJECTS_REQUEST:
       return state.set('isLoading', true);
     case PROJECTS_SUCCESS:
-      return state.set('projects', action.projects).set('isLoading', false);
+      return state
+        .set('projects', fromJS(action.projects))
+        .set('isLoading', false);
     case PROJECTS_FAILURE:
       return state.set('isLoading', false);
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
 
 const LoginRoute = props => {
   const { location, isAuthenticated, component: Component, ...rest } = props;
@@ -8,11 +8,11 @@ const LoginRoute = props => {
   return (
     <Route
       {...rest}
-      render={props =>
+      render={componentProps =>
         isAuthenticated ? (
           <Redirect push to={{ pathname: from }} />
         ) : (
-          <Component {...props} />
+          <Component {...componentProps} />
         )
       }
     />

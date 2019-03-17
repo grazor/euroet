@@ -4,16 +4,16 @@
  *
  */
 
-import { transform, join } from 'lodash';
+import { transform } from 'lodash';
 
 import {
   AUTH_REQUEST,
-  USER_REQUEST,
   LOGOUT_REQUEST,
-  NOTIFY_SUCCESS,
-  NOTIFY_WARNING,
   NOTIFY_ERROR,
   NOTIFY_REMOVE,
+  NOTIFY_SUCCESS,
+  NOTIFY_WARNING,
+  USER_REQUEST,
 } from './constants';
 
 export function login(email, password) {
@@ -58,20 +58,21 @@ export function notifyError(message) {
 }
 
 export function notifyApiError(message) {
-  if (typeof message == 'string') {
+  if (typeof message === 'string') {
     return notifyError(message);
   }
   if (message.non_field_errors != null) {
     return notifyError(message.non_field_errors);
   }
-  let errors = transform(
-    message,
-    (result, value, key) => {
-      result.push(`${key}: ${value}`);
-    },
-    [],
+  return notifyError(
+    transform(
+      message,
+      (result, value, key) => {
+        result.push(`${key}: ${value}`);
+      },
+      [],
+    ),
   );
-  return notifyError(errors);
 }
 
 export function notifyRemove(key) {

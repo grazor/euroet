@@ -2,10 +2,11 @@
  * Create the store with dynamic reducers
  */
 
-import { createStore, applyMiddleware, compose } from 'redux';
+import createSagaMiddleware from 'redux-saga';
+import { applyMiddleware, compose, createStore } from 'redux';
 import { fromJS } from 'immutable';
 import { routerMiddleware } from 'connected-react-router/immutable';
-import createSagaMiddleware from 'redux-saga';
+
 import createReducer from './reducers';
 
 const sagaMiddleware = createSagaMiddleware();

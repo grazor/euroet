@@ -3,6 +3,7 @@
  */
 
 import 'whatwg-fetch';
+
 import request from '../request';
 
 describe('request', () => {

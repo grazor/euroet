@@ -4,30 +4,22 @@
  *
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
-
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import LockIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-
-import { makeSelectUser } from './selectors';
-import messages from './messages';
+import { compose, bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { login } from 'containers/App/actions';
-import history from 'utils/history';
 
 const styles = theme => ({
   main: {
@@ -73,11 +65,6 @@ export class LoginPage extends React.Component {
   onSubmit = () => () => {
     const { email, password } = this.state;
     this.props.login(email, password);
-  };
-
-  componentWillReceiveProps = nextProps => {
-    const { user } = nextProps;
-    if (user) history.push('/');
   };
 
   render() {
@@ -136,24 +123,14 @@ export class LoginPage extends React.Component {
 }
 
 LoginPage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  login: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = createStructuredSelector({
-  user: makeSelectUser(),
-});
-
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatch,
-    login: (email, password) => {
-      dispatch(login(email, password));
-    },
-  };
-}
+const mapDispatchToProps = dispatch => bindActionCreators({ login }, dispatch);
 
 const withConnect = connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 );
 

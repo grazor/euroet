@@ -1,13 +1,12 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable import/no-unresolved */
-import React, { Component } from 'react';
+import { Component } from 'react';
+import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
-import { makeSelectNotifications } from './selectors';
-
-import { bindActionCreators } from 'redux';
 import { withSnackbar } from 'notistack';
+
+import { makeSelectNotifications } from './selectors';
 import { notifyRemove } from './actions';
 
 class Notifier extends Component {
@@ -21,10 +20,12 @@ class Notifier extends Component {
     const { notifications: currentSnacks } = this.props;
     let notExists = false;
     for (let i = 0; i < newSnacks.length; i += 1) {
-      if (notExists) continue;
       notExists =
         notExists ||
         !currentSnacks.filter(({ key }) => newSnacks[i].key === key).length;
+      if (notExists) {
+        break;
+      }
     }
     return notExists;
   }

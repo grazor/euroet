@@ -2,14 +2,14 @@
  * Test injectors
  */
 
-import { memoryHistory } from 'react-router-dom';
-import { shallow } from 'enzyme';
 import React from 'react';
 import { identity } from 'lodash';
+import { memoryHistory } from 'react-router-dom';
+import { shallow } from 'enzyme';
 
+import * as reducerInjectors from '../reducerInjectors';
 import configureStore from '../../configureStore';
 import injectReducer from '../injectReducer';
-import * as reducerInjectors from '../reducerInjectors';
 
 // Fixtures
 const Component = () => null;

@@ -7,37 +7,32 @@
 
 // Needed for redux-saga es6 generator support
 import '@babel/polyfill';
-
-// Import all the third party stuff
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router/immutable';
-import FontFaceObserver from 'fontfaceobserver';
-import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
-import { SnackbarProvider } from 'notistack';
-
-// Import root app
-import App from 'containers/App';
-
-// Import Language Provider
-import LanguageProvider from 'containers/LanguageProvider';
-
 // Load the favicon and the .htaccess file
 import '!file-loader?name=[name].[ext]!./images/favicon.ico';
 import 'file-loader?name=.htaccess!./.htaccess'; // eslint-disable-line import/extensions
 
-import configureStore from './configureStore';
-
-// Import i18n messages
-import { translationMessages } from './i18n';
-
+// Import root app
+import App from 'containers/App';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import FontFaceObserver from 'fontfaceobserver';
+// Import Language Provider
+import LanguageProvider from 'containers/LanguageProvider';
+import Moment from 'react-moment';
 // MUI
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
-import CssBaseline from '@material-ui/core/CssBaseline';
+// Import all the third party stuff
+import React from 'react';
+import ReactDOM from 'react-dom';
+import history from 'utils/history';
 import theme from 'utils/mui_theme';
-import Moment from 'react-moment';
+import { ConnectedRouter } from 'connected-react-router/immutable';
+import { Provider } from 'react-redux';
+import { SnackbarProvider } from 'notistack';
+
+import configureStore from './configureStore';
+// Import i18n messages
+import { translationMessages } from './i18n';
 
 // Observe loading of Open Sans (to remove open sans, remove the <link> tag in
 // the index.html file and this observer)

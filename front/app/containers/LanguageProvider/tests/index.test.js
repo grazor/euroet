@@ -1,12 +1,11 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import { Provider } from 'react-redux';
 import { browserHistory } from 'react-router-dom';
+import { mount, shallow } from 'enzyme';
 
-import ConnectedLanguageProvider, { LanguageProvider } from '../index';
 import configureStore from '../../../configureStore';
-
+import ConnectedLanguageProvider, { LanguageProvider } from '../index';
 import { translationMessages } from '../../../i18n';
 
 const messages = defineMessages({

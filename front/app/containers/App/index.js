@@ -3,45 +3,40 @@
  * App
  */
 
-import React from 'react';
-
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
-
-import { Helmet } from 'react-helmet';
-import { Switch, Route } from 'react-router-dom';
-import injectSaga from 'utils/injectSaga';
-
-import {
-  makeSelectUser,
-  makeSelectIsAuthenticated,
-  makeSelectLocation,
-} from './selectors';
-
-import { fetchUser } from './actions';
-import authSaga from './saga';
-import Notifier from './Notifier';
-
+import EuroetNav from 'components/EuroetNav';
 import IndexPage from 'containers/IndexPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
-import ProjectsPage from 'containers/ProjectsPage';
-
 import LoginRoute from 'components/LoginRoute';
 import PrivateRoute from 'components/PrivateRoute';
-import EuroetNav from 'components/EuroetNav';
+import ProjectsPage from 'containers/ProjectsPage/Loadable';
+import PropTypes from 'prop-types';
+import React from 'react';
+import injectSaga from 'utils/injectSaga';
+import { Helmet } from 'react-helmet';
+import { Route, Switch } from 'react-router-dom';
+import { bindActionCreators, compose } from 'redux';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+
+import Notifier from './Notifier';
+import authSaga from './saga';
+import { fetchUser, logout } from './actions';
+import {
+  makeSelectIsAuthenticated,
+  makeSelectLocation,
+  makeSelectUser,
+} from './selectors';
 
 /* eslint-disable react/prefer-stateless-function */
 export class App extends React.Component {
   componentDidMount() {
     if (this.props.isAuthenticated) {
-      this.props.getUser();
+      this.props.fetchUser();
     }
   }
 
   render() {
-    const { isAuthenticated: auth, user, dispatch } = this.props;
+    const { isAuthenticated: auth, user, logout: doLogout } = this.props;
 
     return (
       <div>
@@ -49,7 +44,7 @@ export class App extends React.Component {
           <meta name="description" content="Euroet engineering application" />
         </Helmet>
         <Notifier />
-        <EuroetNav isAuthenticated={auth} user={user} dispatch={dispatch}>
+        <EuroetNav isAuthenticated={auth} user={user} logout={doLogout}>
           <Switch>
             <Route exact path="/" component={IndexPage} />
             <LoginRoute
@@ -71,16 +66,21 @@ export class App extends React.Component {
   }
 }
 
+App.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired,
+  fetchUser: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
+  user: PropTypes.object,
+};
+
 const mapStateToProps = createStructuredSelector({
   user: makeSelectUser(),
   isAuthenticated: makeSelectIsAuthenticated(),
   location: makeSelectLocation(),
 });
 
-const mapDispatchToProps = dispatch => ({
-  dispatch,
-  getUser: () => dispatch(fetchUser()),
-});
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ fetchUser, logout }, dispatch);
 
 const withConnect = connect(
   mapStateToProps,

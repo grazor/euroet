@@ -1,14 +1,12 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
-
 import fetchJSON from 'utils/fetchjson';
+import { call, put, takeLatest } from 'redux-saga/effects';
+import { notifyWarning } from 'containers/App/actions';
 
 import {
+  PROJECTS_FAILURE,
   PROJECTS_REQUEST,
   PROJECTS_SUCCESS,
-  PROJECTS_FAILURE,
 } from './constants';
-
-import { notifyWarning } from 'containers/App/actions';
 
 function* getProjects() {
   const options = {
@@ -17,7 +15,7 @@ function* getProjects() {
 
   try {
     const projects = yield call(fetchJSON, '/api/projects/', options);
-    yield put({ type: PROJECTS_SUCCESS, projects: projects });
+    yield put({ type: PROJECTS_SUCCESS, projects });
   } catch (error) {
     let message;
     switch (error.status) {

@@ -4,31 +4,24 @@
  *
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
-
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Fab from '@material-ui/core/Fab';
-import Paper from '@material-ui/core/Paper';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import AddIcon from '@material-ui/icons/Add';
-
-///import AddProjectDialog from 'components/AddProjectDialog/Loadable';
-
-import { fetchProjects } from './actions';
-
-import injectSaga from 'utils/injectSaga';
+import Fab from '@material-ui/core/Fab';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Paper from '@material-ui/core/Paper';
+import PropTypes from 'prop-types';
+import React from 'react';
 import injectReducer from 'utils/injectReducer';
-import { makeSelectProjects, makeSelectIsLoading } from './selectors';
+import injectSaga from 'utils/injectSaga';
+import { compose, bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { withStyles } from '@material-ui/core/styles';
+
 import ProjectsTable from './ProjectsTable';
 import reducer from './reducer';
 import saga from './saga';
-import messages from './messages';
+import { fetchProjects } from './actions';
+import { makeSelectIsLoading, makeSelectProjects } from './selectors';
 
 const styles = theme => ({
   root: {
@@ -62,16 +55,11 @@ class ProjectsPage extends React.Component {
     this.props.history.push(`/project/${slug}`);
   };
 
-  onFabClick = event => {
-    this.setState({ createDialog: true });
+  onToggleDialog = isOn => () => {
+    this.setState({ createDialog: isOn });
   };
 
-  onCancelDialog = () => {
-    this.setState({ createDialog: false });
-  };
-
-  onSubmitDialog = values => {
-    const { name, description } = values;
+  onSubmitDialog = () => ({ name, description }) => {
     this.setState({ createDialog: false });
   };
 
@@ -104,13 +92,8 @@ class ProjectsPage extends React.Component {
       </Paper>
     );
 
-    if (isLoading && projects.size == 0) return loadingView;
+    if (isLoading && projects.size === 0) return loadingView;
 
-    /*<AddProjectDialog
-          open={this.state.createDialog}
-          onCancel={this.onCancelDialog}
-          onSubmit={this.onSubmitDialog}
-        />*/
     return (
       <React.Fragment>
         <ProjectsTable
@@ -122,7 +105,7 @@ class ProjectsPage extends React.Component {
           color="primary"
           aria-label="Add"
           className={classes.fab}
-          onClick={this.onFabClick}
+          onClick={this.onToggleDialog(true)}
         >
           <AddIcon />
         </Fab>
@@ -132,8 +115,11 @@ class ProjectsPage extends React.Component {
 }
 
 ProjectsPage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   fetchProjects: PropTypes.func.isRequired,
+  projects: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  history: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -141,12 +127,8 @@ const mapStateToProps = createStructuredSelector({
   isLoading: makeSelectIsLoading(),
 });
 
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatch,
-    fetchProjects: () => dispatch(fetchProjects()),
-  };
-}
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ fetchProjects }, dispatch);
 
 const withConnect = connect(
   mapStateToProps,

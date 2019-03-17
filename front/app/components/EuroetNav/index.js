@@ -1,46 +1,35 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
-
-import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/SwipeableDrawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import AdminIcon from '@material-ui/icons/VerifiedUser';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/SwipeableDrawer';
+import GearIcon from '@material-ui/icons/Settings';
+import HomeIcon from '@material-ui/icons/Home';
+import IconButton from '@material-ui/core/IconButton';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Avatar from '@material-ui/core/Avatar';
-
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import HomeIcon from '@material-ui/icons/Home';
 import MailIcon from '@material-ui/icons/Mail';
-import GearIcon from '@material-ui/icons/Settings';
-import AdminIcon from '@material-ui/icons/VerifiedUser';
+import MenuIcon from '@material-ui/icons/Menu';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import UsersIcon from '@material-ui/icons/People';
-
+import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
+import { compose } from 'redux';
+import { withStyles } from '@material-ui/core/styles';
+
 import messages from './messages';
-
-import { logout } from 'containers/App/actions';
-
-import {
-  makeSelectUser,
-  makeSelectIsAuthenticated,
-  makeSelectLocation,
-} from 'containers/App/selectors';
 
 const drawerWidth = 240;
 
@@ -113,12 +102,8 @@ class PersistentDrawerLeft extends React.Component {
     this.setState({ open: isOpened });
   };
 
-  logoutUser = () => {
-    this.props.dispatch(logout());
-  };
-
   render() {
-    const { classes, theme, isAuthenticated, user } = this.props;
+    const { classes, theme, isAuthenticated, user, logout } = this.props;
     const { open } = this.state;
 
     return (
@@ -149,7 +134,7 @@ class PersistentDrawerLeft extends React.Component {
                 <FormattedMessage {...messages.appname} />
               </Typography>
               {isAuthenticated ? (
-                <Button color="inherit" onClick={this.logoutUser}>
+                <Button color="inherit" onClick={logout}>
                   <FormattedMessage {...messages.logoutbutton} />
                 </Button>
               ) : (
@@ -258,7 +243,7 @@ class PersistentDrawerLeft extends React.Component {
 PersistentDrawerLeft.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
 };
 
 const withStyle = withStyles(styles, { withTheme: true });

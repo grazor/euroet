@@ -1,23 +1,21 @@
+import fetchJSON from 'utils/fetchjson';
 import { call, put, takeEvery } from 'redux-saga/effects';
 
-import fetchJSON from 'utils/fetchjson';
-
 import {
+  AUTH_FAILURE,
   AUTH_REQUEST,
   AUTH_SUCCESS,
-  AUTH_FAILURE,
-  USER_REQUEST,
-  USER_SUCCESS,
-  USER_FAILURE,
   LOGOUT_REQUEST,
   LOGOUT_SUCCESS,
+  USER_FAILURE,
+  USER_REQUEST,
+  USER_SUCCESS,
 } from './constants';
-
 import {
+  notifyApiError,
+  notifyError,
   notifySuccess,
   notifyWarning,
-  notifyError,
-  notifyApiError,
 } from './actions';
 
 function* authorize({ email: username, password }) {
@@ -49,7 +47,7 @@ function* authorize({ email: username, password }) {
   }
 }
 
-function* getUser(action) {
+function* getUser() {
   try {
     const user = yield call(fetchJSON, '/api/users/user/', { method: 'GET' });
     yield put({ type: USER_SUCCESS, user });
@@ -60,7 +58,7 @@ function* getUser(action) {
   }
 }
 
-function* logout(action) {
+function* logout() {
   try {
     yield call(fetchJSON, '/api/users/auth/logout/', { method: 'POST' });
   } finally {

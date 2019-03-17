@@ -124,14 +124,13 @@ module.exports = options => ({
     }),
 
     // moment.js hacks
-    //new webpack.IgnorePlugin(/\.\/locale$/),
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /(en|ru)$/),
+    new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /(en|ru)$/),
   ]),
   resolve: {
     modules: ['node_modules', 'app'],
     extensions: ['.js', '.jsx', '.react.js'],
     mainFields: ['browser', 'jsnext:main', 'main'],
-    alias: {moment$: 'moment/moment.js'},
+    alias: { moment$: 'moment/moment.js' },
   },
   devtool: options.devtool,
   target: 'web', // Make web variables accessible to webpack, e.g. window

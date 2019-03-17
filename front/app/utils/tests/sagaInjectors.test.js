@@ -7,8 +7,8 @@ import { put } from 'redux-saga/effects';
 
 import configureStore from '../../configureStore';
 import getInjectors, {
-  injectSagaFactory,
   ejectSagaFactory,
+  injectSagaFactory,
 } from '../sagaInjectors';
 import { DAEMON, ONCE_TILL_UNMOUNT, RESTART_ON_REMOUNT } from '../constants';
 

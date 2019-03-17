@@ -20,8 +20,8 @@ const serverDjango = 'http://localhost:8000';
 
 // If you need a backend, e.g. an API, add your custom backend-specific middleware here
 // app.use('/api', myApi);
-app.all(['/api/*', '/static/*', '/docs/*', '/admin*'], function(req, res) {
-    apiProxy.web(req, res, {target: serverDjango});
+app.all(['/api/*', '/static/*', '/docs/*', '/admin*'], (req, res) => {
+  apiProxy.web(req, res, { target: serverDjango });
 });
 
 // In production we need to pass these values in instead of relying on webpack

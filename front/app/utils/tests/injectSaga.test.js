@@ -2,14 +2,14 @@
  * Test injectors
  */
 
+import React from 'react';
 import { memoryHistory } from 'react-router-dom';
 import { put } from 'redux-saga/effects';
 import { shallow } from 'enzyme';
-import React from 'react';
 
+import * as sagaInjectors from '../sagaInjectors';
 import configureStore from '../../configureStore';
 import injectSaga from '../injectSaga';
-import * as sagaInjectors from '../sagaInjectors';
 
 // Fixtures
 const Component = () => null;
