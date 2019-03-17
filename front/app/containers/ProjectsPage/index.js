@@ -6,13 +6,12 @@
 
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Paper from '@material-ui/core/Paper';
+import LoadingBar from 'components/LoadingBar';
 import PropTypes from 'prop-types';
 import React from 'react';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
-import { compose, bindActionCreators } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { withStyles } from '@material-ui/core/styles';
@@ -86,13 +85,9 @@ class ProjectsPage extends React.Component {
   render() {
     const { classes, projects, isLoading } = this.props;
 
-    const loadingView = (
-      <Paper className={classes.loadingRoot}>
-        <LinearProgress color="primary" />
-      </Paper>
-    );
-
-    if (isLoading && projects.size === 0) return loadingView;
+    if (isLoading && projects.length === 0) {
+      return <LoadingBar />;
+    }
 
     return (
       <React.Fragment>
