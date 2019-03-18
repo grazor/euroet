@@ -6,7 +6,18 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
+import { compose } from 'redux';
 import { slugify } from 'transliteration';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = () => ({
+  root: {
+    display: 'flex',
+  },
+  grow: {
+    flexGrow: 1,
+  },
+});
 
 class ProjectDialog extends React.Component {
   state = {
@@ -110,6 +121,7 @@ class ProjectDialog extends React.Component {
     });
 
   render() {
+    const { classes } = this.props;
     return (
       <div>
         <Dialog
@@ -148,12 +160,14 @@ class ProjectDialog extends React.Component {
               fullWidth
             />
           </DialogContent>
-          <DialogActions>
-            {this.props.project ? (
-              <Button onClick={this.onDelete} color="primary">
-                Delete
-              </Button>
-            ) : null}
+          <DialogActions className={classes.root}>
+            <div className={classes.grow}>
+              {this.props.project ? (
+                <Button onClick={this.onDelete} color="primary">
+                  Delete
+                </Button>
+              ) : null}
+            </div>
 
             <Button onClick={this.onCancel} color="primary">
               Cancel
@@ -174,6 +188,9 @@ ProjectDialog.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   project: PropTypes.object,
+  classes: PropTypes.object.isRequired,
 };
 
-export default ProjectDialog;
+const withStyle = withStyles(styles);
+
+export default compose(withStyle)(ProjectDialog);
