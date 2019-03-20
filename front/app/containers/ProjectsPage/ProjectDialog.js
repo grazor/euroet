@@ -11,7 +11,7 @@ import { slugify } from 'transliteration';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = () => ({
-  root: {
+  buttonsRoot: {
     display: 'flex',
   },
   grow: {
@@ -160,10 +160,10 @@ class ProjectDialog extends React.Component {
               fullWidth
             />
           </DialogContent>
-          <DialogActions className={classes.root}>
+          <DialogActions className={classes.buttonsRoot}>
             <div className={classes.grow}>
               {this.props.project ? (
-                <Button onClick={this.onDelete} color="primary">
+                <Button onClick={this.onDelete} color="secondary">
                   Delete
                 </Button>
               ) : null}

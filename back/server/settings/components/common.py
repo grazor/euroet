@@ -163,6 +163,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DATETIME_FORMAT': '%s',
 }
 
 # Django authentication system

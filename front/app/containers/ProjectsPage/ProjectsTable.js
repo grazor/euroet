@@ -32,7 +32,7 @@ class ProjectsTable extends React.Component {
 
   sortTable = (data, colIndex, order) => {
     const getKey = item =>
-      item.type && item.type === 'div' ? item.props.sortkey : item;
+      (item.type && item.type === 'div' ? item.props.sortkey : item) || 0;
 
     return data.sort(
       (a, b) =>
@@ -72,17 +72,26 @@ class ProjectsTable extends React.Component {
           </Tooltip>
         </div>
       ) : null,
-      <div className={classes.dateColumn} sortkey={+new Date(p.last_update_at)}>
+      <div
+        className={classes.dateColumn}
+        sortkey={p.last_update_at || p.created_at}
+      >
         <Tooltip
           title={
             <Moment
-              date={p.last_update_at}
+              date={p.last_update_at || p.created_at}
               locale="ru"
               format="hh:mm DD.MM.YYYY"
+              unix
             />
           }
         >
-          <Moment date={p.last_update_at} fromNow locale="ru" />
+          <Moment
+            date={p.last_update_at || p.created_at}
+            fromNow
+            locale="ru"
+            unix
+          />
         </Tooltip>
       </div>,
       <div className={classes.actionsColumn}>

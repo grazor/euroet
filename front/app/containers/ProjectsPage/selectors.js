@@ -14,4 +14,14 @@ const makeSelectIsLoading = () =>
     projectsState.get('isLoading'),
   );
 
-export { selectProjectsPageDomain, makeSelectProjects, makeSelectIsLoading };
+const makeSelectIsUpdating = () =>
+  createSelector(selectProjectsPageDomain, projectsState =>
+    projectsState.get('isUpdating'),
+  );
+
+export {
+  selectProjectsPageDomain,
+  makeSelectProjects,
+  makeSelectIsLoading,
+  makeSelectIsUpdating,
+};

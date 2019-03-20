@@ -28,7 +28,11 @@ import {
   toggleProjectStar,
   updateProject,
 } from './actions';
-import { makeSelectIsLoading, makeSelectProjects } from './selectors';
+import {
+  makeSelectIsLoading,
+  makeSelectIsUpdating,
+  makeSelectProjects,
+} from './selectors';
 
 const styles = theme => ({
   root: {
@@ -109,9 +113,9 @@ class ProjectsPage extends React.Component {
   };
 
   render() {
-    const { classes, projects, isLoading } = this.props;
+    const { classes, projects, isLoading, isUpdating } = this.props;
 
-    if (isLoading && projects.length === 0) {
+    if ((isLoading && projects.length === 0) || isUpdating) {
       return <LoadingBar />;
     }
 
@@ -151,6 +155,7 @@ ProjectsPage.propTypes = {
   toggleProjectStar: PropTypes.func.isRequired,
   projects: PropTypes.array.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  isUpdating: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
 };
@@ -158,6 +163,7 @@ ProjectsPage.propTypes = {
 const mapStateToProps = createStructuredSelector({
   projects: makeSelectProjects(),
   isLoading: makeSelectIsLoading(),
+  isUpdating: makeSelectIsUpdating(),
 });
 
 const mapDispatchToProps = dispatch =>
