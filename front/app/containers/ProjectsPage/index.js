@@ -80,7 +80,7 @@ class ProjectsPage extends React.Component {
     }
   };
 
-  onDeleteAction = () => slug => {
+  onDeleteAction = slug => {
     this.setState({ showProjectDialog: false, project: null });
     this.props.deleteProject(slug);
   };

@@ -14,6 +14,12 @@ import {
   PROJECT_CREATE_FAILURE,
   PROJECT_CREATE_REQUEST,
   PROJECT_CREATE_SUCCESS,
+  PROJECT_DELETE_FAILURE,
+  PROJECT_DELETE_REQUEST,
+  PROJECT_DELETE_SUCCESS,
+  PROJECT_UPDATE_FAILURE,
+  PROJECT_UPDATE_REQUEST,
+  PROJECT_UPDATE_SUCCESS,
 } from './constants';
 
 function* getProjects() {
@@ -62,9 +68,56 @@ function* addProject({ type, ...projectData }) {
   }
 }
 
+function* updateProject({ type, originalSlug, ...projectData }) {
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify(projectData),
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  try {
+    const project = yield call(
+      fetchJSON,
+      `/api/projects/${originalSlug}/`,
+      options,
+    );
+    yield put({ type: PROJECT_UPDATE_SUCCESS, project, originalSlug });
+    yield put(notifySuccess('Project has been updated'));
+  } catch (error) {
+    yield put({ type: PROJECT_UPDATE_FAILURE });
+    if (error.status >= 500) {
+      yield put(notifyError('Internal server error'));
+    } else {
+      yield put(notifyApiError(error.data));
+    }
+  }
+}
+
+function* deleteProject({ slug }) {
+  const options = {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  try {
+    yield call(fetchJSON, `/api/projects/${slug}/`, options);
+    yield put({ type: PROJECT_DELETE_SUCCESS, slug });
+    yield put(notifySuccess('Project has been deleted'));
+  } catch (error) {
+    yield put({ type: PROJECT_DELETE_FAILURE });
+    if (error.status >= 500) {
+      yield put(notifyError('Internal server error'));
+    } else {
+      yield put(notifyApiError(error.data));
+    }
+  }
+}
+
 function* Saga() {
   yield takeLatest(PROJECTS_REQUEST, getProjects);
   yield takeLatest(PROJECT_CREATE_REQUEST, addProject);
+  yield takeLatest(PROJECT_UPDATE_REQUEST, updateProject);
+  yield takeLatest(PROJECT_DELETE_REQUEST, deleteProject);
 }
 
 export default Saga;
