@@ -18,7 +18,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             'slug',
             'name',
             'description',
-            'is_frozen',
+            'frozen_at',
             'created_by',
             'created_at',
             'owner',

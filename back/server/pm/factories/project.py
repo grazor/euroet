@@ -1,6 +1,8 @@
 import factory
 from faker import Faker
 
+from django.utils import timezone
+
 from server.pm.models import Project
 from server.users.factories import UserFactory
 
@@ -17,13 +19,13 @@ class ProjectFactory(factory.DjangoModelFactory):
 
     created_by = factory.SubFactory(UserFactory)
 
-    is_frozen = False
-    is_removed = False
+    frozen_at = None
+    deleted_at = None
 
 
 class FrozenProjectFactory(ProjectFactory):
-    is_frozen = True
+    frozen_at = factory.LazyAttribute(lambda _: timezone.now())
 
 
 class RemovedProjectFactory(ProjectFactory):
-    is_removed = True
+    deleted_at = factory.LazyAttribute(lambda _: timezone.now())

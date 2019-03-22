@@ -9,11 +9,12 @@ from server.pm.serializers import ProjectSerializer
 class ProjectViewset(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     permission_classes = (permissions.IsAuthenticated, CanUpdateProject)
+    lookup_field = 'slug'
     pagination_class = None
 
     def get_queryset(self):
         user = self.request.user
-        qs = Project.objects.all().prefetch_related('access', 'access__user')
+        qs = Project.objects.active().prefetch_related('access', 'access__user')
         if not user.is_superuser:
             qs = qs.filter(access__user=user)
 

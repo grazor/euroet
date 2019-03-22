@@ -6,17 +6,17 @@ from django.db.models.signals import post_save
 
 from server.users.models import User
 from server.pm.models.project_access import ProjectAccess
+from server.lib.deactivate_model_mixin import DeactivateMixin
 
 
-class Project(models.Model):
-    slug = models.SlugField(primary_key=True)
+class Project(DeactivateMixin, models.Model):
+    slug = models.SlugField(db_index=True, unique=True)
     name = models.CharField(max_length=128)
     description = models.TextField(max_length=2048, null=True, blank=True)
 
     users = models.ManyToManyField(User, through='ProjectAccess', through_fields=('project', 'user'))
 
-    is_frozen = models.BooleanField(default=False)
-    is_removed = models.BooleanField(default=False, db_index=True)
+    frozen_at = models.DateTimeField(default=None, null=True, blank=True)
 
     created_by = models.ForeignKey(
         User, related_name='created_projects', blank=True, null=True, on_delete=models.SET_NULL

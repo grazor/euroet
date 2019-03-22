@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from server.pm.models import Product, Project, ProjectAccess
+from server.lib.deactivate_model_mixin import ActiveListFilter
 
 
 class AccessInline(admin.TabularInline):
@@ -21,6 +22,6 @@ class ProductInline(admin.TabularInline):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('slug', 'name', 'created_at', 'is_frozen', 'is_removed')
-    list_filter = ('is_frozen', 'is_removed')
+    list_display = ('slug', 'name', 'created_at', 'frozen_at', 'deleted_at')
+    list_filter = (ActiveListFilter,)
     inlines = (AccessInline, ProductInline)

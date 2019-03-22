@@ -51,7 +51,7 @@ def test_detail_access_own(db, api_client):
     project = ProjectFactory(created_by=ManagerFactory())
 
     api_client.force_authenticate(user=project.created_by)
-    url = reverse('project-detail', kwargs={'pk': project.slug})
+    url = reverse('project-detail', kwargs={'slug': project.slug})
     response = api_client.get(url)
     assert response.status_code == 200, 'Can not acces own project'
 
@@ -61,7 +61,7 @@ def test_detail_no_access_fails(db, api_client):
     project = ProjectFactory(created_by=ManagerFactory())
 
     api_client.force_authenticate(user=user)
-    url = reverse('project-detail', kwargs={'pk': project.slug})
+    url = reverse('project-detail', kwargs={'slug': project.slug})
     response = api_client.get(url)
     assert response.status_code == 404, 'Can access soneone else\'s project'
 
@@ -71,6 +71,6 @@ def test_detail_read_access(db, api_client):
     access = ReadProjectAccessFactory(user=user, project=ProjectFactory(created_by=ManagerFactory()))
 
     api_client.force_authenticate(user=user)
-    url = reverse('project-detail', kwargs={'pk': access.project.slug})
+    url = reverse('project-detail', kwargs={'slug': access.project.slug})
     response = api_client.get(url)
     assert response.status_code == 200, 'Can not access shared to read project'

@@ -23,7 +23,7 @@ class ProductComponentViewset(viewsets.ModelViewSet):
         project_slug = self.kwargs.get('project_slug')
         product_slug = self.kwargs.get('product_slug')
         self.request.product = get_object_or_404(
-            Product.objects.filter(slug=product_slug, project_id=project_slug).select_related('project')
+            Product.objects.filter(slug=product_slug, project__slug=project_slug).select_related('project')
         )
         self.request.project = self.request.product.project
         return request

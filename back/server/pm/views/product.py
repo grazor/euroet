@@ -20,5 +20,5 @@ class ProductViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         project = self.request.project
-        qs = Product.objects.filter(project_id=project.slug)
+        qs = Product.objects.filter(project_id=project.id)
         return qs
