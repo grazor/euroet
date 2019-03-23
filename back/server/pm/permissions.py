@@ -20,7 +20,7 @@ def can_access_product(user: User, product: Product, read_only: bool) -> bool:
     )
 
 
-class CanUpdateProject(BasePermission):
+class CanAccessProject(BasePermission):
     def has_object_permission(self, request, view, obj):
         read_only = request.method in SAFE_METHODS
         return can_access_product(request.user, obj, read_only)
