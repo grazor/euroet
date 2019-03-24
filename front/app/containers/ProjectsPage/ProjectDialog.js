@@ -19,16 +19,17 @@ const styles = () => ({
   },
 });
 
-class ProjectDialog extends React.Component {
-  state = {
+const getInitialState = () => ({
     name: '',
     slug: '',
     description: '',
 
     autoSlug: true,
     originalSlug: undefined,
-  };
+});
 
+class ProjectDialog extends React.Component {
+  state = getInitialState();
   onChange = name => event => {
     this.setState({ [name]: event.target.value });
   };
@@ -62,13 +63,7 @@ class ProjectDialog extends React.Component {
       return;
     }
     if (project == null) {
-      this.setState({
-        name: '',
-        slug: '',
-        description: '',
-        originalSlug: undefined,
-        autoSlug: true,
-      });
+      this.setState(getInitialState());
     } else {
       this.setState({
         name: project.name,
@@ -81,38 +76,20 @@ class ProjectDialog extends React.Component {
   }
 
   onCancel = () => {
-    this.setState({
-      name: '',
-      description: '',
-      slug: '',
-      originalSlug: undefined,
-      autoSlug: true,
-    });
+    this.setState(getInitialState());
     this.props.onCancel();
   };
 
   onSubmit = () => {
     this.props.onSubmit(this.state);
-    this.setState({
-      name: '',
-      description: '',
-      slug: '',
-      originalSlug: undefined,
-      autoSlug: true,
-    });
+    this.setState(getInitialState());
   };
 
   onDelete = () => {
     const confirmDelete = window.confirm('Confirm project deletion'); // eslint-disable-line no-alert
     if (!confirmDelete) return;
     this.props.onDelete(this.state.originalSlug);
-    this.setState({
-      name: '',
-      description: '',
-      slug: '',
-      originalSlug: undefined,
-      autoSlug: true,
-    });
+    this.setState(getInitialState());
   };
 
   getEtSlug = (name, maxLength = 50) =>
