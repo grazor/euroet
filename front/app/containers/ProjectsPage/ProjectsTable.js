@@ -1,28 +1,29 @@
-import Avatar from '@material-ui/core/Avatar';
-import EditIcon from '@material-ui/icons/Edit';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ForwardIcon from '@material-ui/icons/Forward';
-import IconButton from '@material-ui/core/IconButton';
 import MUIDataTable from 'mui-datatables';
-import Moment from 'react-moment';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
 import { compose } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 
+import ActionsCell from './ProjectsTableActionsCell';
+import DateCell from './ProjectsTableDateCell';
+import OwnerCell from './ProjectsTableOwnerCell';
+import StarCell from './ProjectsTableStarCell';
+
 const styles = () => ({
+  starColumn: {
+    maxWidth: 20,
+  },
   dateColumn: {
     minWidth: 80,
   },
   actionsColumn: {
-    minWidth: 160,
+    minWidth: 130,
   },
 });
 
 class ProjectsTable extends React.Component {
   columns = [
+    { name: '', options: { filter: false, sort: true } },
     { name: 'Name', options: { filter: false, sort: true } },
     { name: 'Description', options: { filter: false, sort: true } },
     { name: 'Owner', options: { filter: true, sort: true } },
@@ -60,55 +61,23 @@ class ProjectsTable extends React.Component {
       editProject,
       classes,
     } = this.props;
+
     return projects.map(p => [
+      <StarCell
+        project={p}
+        toggleStar={toggleStar}
+        className={classes.starColumn}
+      />,
       p.name,
       p.description,
-      p.owner ? (
-        <div sortkey={`${p.owner.last_name} ${p.owner.first_name}`}>
-          <Tooltip title={`${p.owner.last_name} ${p.owner.first_name}`}>
-            <Avatar style={{ backgroundColor: p.owner.color }}>
-              {p.owner.initials}
-            </Avatar>
-          </Tooltip>
-        </div>
-      ) : null,
-      <div
-        className={classes.dateColumn}
-        sortkey={p.last_update_at || p.created_at}
-      >
-        <Tooltip
-          title={
-            <Moment
-              date={p.last_update_at || p.created_at}
-              locale="ru"
-              format="hh:mm DD.MM.YYYY"
-              unix
-            />
-          }
-        >
-          <Moment
-            date={p.last_update_at || p.created_at}
-            fromNow
-            locale="ru"
-            unix
-          />
-        </Tooltip>
-      </div>,
-      <div className={classes.actionsColumn}>
-        <IconButton aria-label="Favorite" onClick={toggleStar(p.slug)}>
-          {p.is_starred ? (
-            <FavoriteIcon color="primary" />
-          ) : (
-            <FavoriteBorderIcon />
-          )}
-        </IconButton>
-        <IconButton aria-label="Edit" onClick={editProject(p.slug)}>
-          <EditIcon color="inherit" />
-        </IconButton>
-        <IconButton aria-label="Open" onClick={openProjectPage(p.slug)}>
-          <ForwardIcon color="inherit" />
-        </IconButton>
-      </div>,
+      <OwnerCell project={p} />,
+      <DateCell project={p} className={classes.dateColumn} />,
+      <ActionsCell
+        project={p}
+        editProject={editProject}
+        openProject={openProjectPage}
+        className={classes.actionsColumn}
+      />,
     ]);
   }
 
