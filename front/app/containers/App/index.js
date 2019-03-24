@@ -12,6 +12,7 @@ import ProjectsPage from 'containers/ProjectsPage/Loadable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import injectSaga from 'utils/injectSaga';
+import { DAEMON } from 'utils/constants';
 import { Helmet } from 'react-helmet';
 import { Route, Switch } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
@@ -87,7 +88,7 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withSaga = injectSaga({ key: 'global', saga: authSaga });
+const withSaga = injectSaga({ key: 'global', saga: authSaga, mode: DAEMON });
 
 export default compose(
   withConnect,

@@ -103,6 +103,8 @@ class ProjectDialog extends React.Component {
   };
 
   onDelete = () => {
+    const confirmDelete = window.confirm('Confirm project deletion'); // eslint-disable-line no-alert
+    if (!confirmDelete) return;
     this.props.onDelete(this.state.originalSlug);
     this.setState({
       name: '',

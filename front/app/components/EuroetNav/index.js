@@ -178,12 +178,25 @@ class PersistentDrawerLeft extends React.Component {
                 <ListItemText primary="Home" />
               </ListItem>
               {isAuthenticated ? (
-                <ListItem button key="Projects" component={Link} to="/projects">
-                  <ListItemIcon>
-                    <GearIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Projects" />
-                </ListItem>
+                <React.Fragment>
+                  <ListItem
+                    button
+                    key="Projects"
+                    component={Link}
+                    to="/projects"
+                  >
+                    <ListItemIcon>
+                      <GearIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Projects" />
+                  </ListItem>
+                  <ListItem button disabled key="Drafts">
+                    <ListItemIcon>
+                      <GearIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Drafts" />
+                  </ListItem>
+                </React.Fragment>
               ) : (
                 <div />
               )}
