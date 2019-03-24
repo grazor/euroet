@@ -1,8 +1,10 @@
-from rest_framework import viewsets, exceptions, permissions
+from rest_framework import status, viewsets, exceptions, permissions
 from django.db.models import Max
+from rest_framework.response import Response
 from django.utils.translation import gettext as _
+from rest_framework.decorators import action
 
-from server.pm.models import Product, Project
+from server.pm.models import Product, Project, ProjectAccess
 from server.users.models import User
 from server.pm.permissions import CanAccessProject
 from server.pm.serializers import ProjectSerializer
@@ -32,3 +34,26 @@ class ProjectViewset(viewsets.ModelViewSet):
             raise exceptions.NotAcceptable(_('Can not delete project with products'))
 
         instance.delete()
+
+    @action(detail=True, methods=['get'], name='Star project')
+    def star(self, request, slug=None):
+        user = request.user
+        if user.role == User.Roles.admin.name:
+            project = self.get_object()
+            access, created = ProjectAccess.objects.get_or_create(
+                project=project,
+                user=user,
+                defaults={'access_type': ProjectAccess.AccessType.write.name, 'is_starred': True},
+            )
+            if not created:
+                access.is_starred = True
+                access.save(update_fields=['is_starred'])
+        else:
+            ProjectAccess.objects.filter(project__slug=slug, user=user).update(is_starred=True)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['get'], name='Unstar project')
+    def unstar(self, request, slug=None):
+        user = request.user
+        ProjectAccess.objects.filter(project__slug=slug, user=user).update(is_starred=False)
+        return Response(status=status.HTTP_204_NO_CONTENT)

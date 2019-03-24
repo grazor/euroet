@@ -11,6 +11,13 @@ class ProjectSerializer(serializers.ModelSerializer):
     created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
     last_update_at = serializers.DateTimeField(read_only=True, required=False)
 
+    is_starred = serializers.SerializerMethodField()
+
+    def get_is_starred(self, obj):
+        user = self.context['request'].user
+        user_access = obj.get_user_access(user)
+        return user_access.is_starred if user_access else False
+
     class Meta:
         model = Project
 
@@ -23,6 +30,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             'created_at',
             'owner',
             'access',
+            'is_starred',
             'last_update_at',
             'modified_at',
         )

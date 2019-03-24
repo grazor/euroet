@@ -30,6 +30,11 @@ class Project(DeactivateMixin, models.Model):
         owner = next(filter(lambda x: x.access_type == ProjectAccess.AccessType.own.name, self.access.all()), None)
         return owner and owner.user
 
+    def get_user_access(self, user: User) -> Optional[ProjectAccess]:
+        """Returns user's project access."""
+        access = next(filter(lambda x: x.user == user, self.access.all()), None)
+        return access
+
     def __str__(self) -> str:
         return f'{self.slug} ({self.name})'
 
