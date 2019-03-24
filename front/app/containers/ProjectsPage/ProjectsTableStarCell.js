@@ -4,21 +4,21 @@ import IconButton from '@material-ui/core/IconButton';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const StarCell = ({ project, toggleStar, ...rest }) => (
-  <div sortkey={project.is_starred ? 1 : 0} {...rest}>
-    <IconButton aria-label="Favorite" onClick={toggleStar(project.slug)}>
-      {project.is_starred ? (
-        <FavoriteIcon color="primary" />
-      ) : (
-        <FavoriteBorderIcon />
-      )}
+const StarCell = ({
+  project: { slug, is_starred: isStarred },
+  setStar,
+  ...rest
+}) => (
+  <div sortkey={isStarred ? 1 : 0} {...rest}>
+    <IconButton aria-label="Favorite" onClick={setStar(slug, !isStarred)}>
+      {isStarred ? <FavoriteIcon color="primary" /> : <FavoriteBorderIcon />}
     </IconButton>
   </div>
 );
 
 StarCell.propTypes = {
   project: PropTypes.object.isRequired,
-  toggleStar: PropTypes.func.isRequired,
+  setStar: PropTypes.func.isRequired,
 };
 
 export default StarCell;

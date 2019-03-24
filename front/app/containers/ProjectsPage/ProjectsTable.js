@@ -10,9 +10,6 @@ import OwnerCell from './ProjectsTableOwnerCell';
 import StarCell from './ProjectsTableStarCell';
 
 const styles = () => ({
-  starColumn: {
-    maxWidth: 20,
-  },
   dateColumn: {
     minWidth: 80,
   },
@@ -23,10 +20,10 @@ const styles = () => ({
 
 class ProjectsTable extends React.Component {
   columns = [
-    { name: '', options: { filter: false, sort: true } },
+    { name: 'Starred', options: { filter: false, sort: true } },
     { name: 'Name', options: { filter: false, sort: true } },
     { name: 'Description', options: { filter: false, sort: true } },
-    { name: 'Owner', options: { filter: true, sort: true } },
+    { name: 'Owner', options: { filter: false, sort: true } },
     { name: 'Last update', options: { filter: false, sort: true } },
     { name: '', options: { filter: false, sort: false } },
   ];
@@ -48,6 +45,7 @@ class ProjectsTable extends React.Component {
     rowsPerPageOptions: [10, 30, 50],
     print: false,
     download: false,
+    filter: false,
     responsive: 'scroll',
     fixedHeader: false,
     customSort: this.sortTable,
@@ -56,18 +54,14 @@ class ProjectsTable extends React.Component {
   mapProjectsToTableData() {
     const {
       projects,
-      toggleStar,
+      setStar,
       openProjectPage,
       editProject,
       classes,
     } = this.props;
 
     return projects.map(p => [
-      <StarCell
-        project={p}
-        toggleStar={toggleStar}
-        className={classes.starColumn}
-      />,
+      <StarCell project={p} setStar={setStar} />,
       p.name,
       p.description,
       <OwnerCell project={p} />,
@@ -98,7 +92,7 @@ class ProjectsTable extends React.Component {
 ProjectsTable.propTypes = {
   classes: PropTypes.object.isRequired,
   projects: PropTypes.array.isRequired,
-  toggleStar: PropTypes.func.isRequired,
+  setStar: PropTypes.func.isRequired,
   editProject: PropTypes.func.isRequired,
   openProjectPage: PropTypes.func.isRequired,
 };

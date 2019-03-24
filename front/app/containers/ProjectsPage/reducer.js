@@ -16,6 +16,9 @@ import {
   PROJECT_DELETE_FAILURE,
   PROJECT_DELETE_REQUEST,
   PROJECT_DELETE_SUCCESS,
+  PROJECT_TOGGLE_STAR_FAILURE,
+  PROJECT_TOGGLE_STAR_REQUEST,
+  PROJECT_TOGGLE_STAR_SUCCESS,
   PROJECT_UPDATE_FAILURE,
   PROJECT_UPDATE_REQUEST,
   PROJECT_UPDATE_SUCCESS,
@@ -72,6 +75,20 @@ function projectsPageReducer(state = initialState, action) {
         .update('projects', projects =>
           projects.filter(project => project.get('slug') !== action.slug),
         );
+
+    case PROJECT_TOGGLE_STAR_REQUEST:
+    case PROJECT_TOGGLE_STAR_FAILURE:
+      return state;
+
+    case PROJECT_TOGGLE_STAR_SUCCESS:
+      return state.update('projects', projects =>
+        projects.map(
+          project =>
+            project.get('slug') === action.slug
+              ? project.set('is_starred', action.isSet)
+              : project,
+        ),
+      );
 
     default:
       return state;

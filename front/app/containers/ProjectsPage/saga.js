@@ -17,6 +17,9 @@ import {
   PROJECT_DELETE_FAILURE,
   PROJECT_DELETE_REQUEST,
   PROJECT_DELETE_SUCCESS,
+  PROJECT_TOGGLE_STAR_FAILURE,
+  PROJECT_TOGGLE_STAR_REQUEST,
+  PROJECT_TOGGLE_STAR_SUCCESS,
   PROJECT_UPDATE_FAILURE,
   PROJECT_UPDATE_REQUEST,
   PROJECT_UPDATE_SUCCESS,
@@ -113,11 +116,37 @@ function* deleteProject({ slug }) {
   }
 }
 
+function* toggleStar({ slug, isSet }) {
+  const options = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  try {
+    if (isSet) {
+      yield call(fetchJSON, `/api/projects/${slug}/star`, options);
+      yield put(notifySuccess('Project has been starred'));
+    } else {
+      yield call(fetchJSON, `/api/projects/${slug}/unstar`, options);
+      yield put(notifySuccess('Project has been unstarred'));
+    }
+    yield put({ type: PROJECT_TOGGLE_STAR_SUCCESS, slug, isSet });
+  } catch (error) {
+    yield put({ type: PROJECT_TOGGLE_STAR_FAILURE });
+    if (error.status >= 500) {
+      yield put(notifyError('Internal server error'));
+    } else {
+      yield put(notifyApiError(error.data));
+    }
+  }
+}
+
 function* Saga() {
   yield takeLatest(PROJECTS_REQUEST, getProjects);
   yield takeLatest(PROJECT_CREATE_REQUEST, addProject);
   yield takeLatest(PROJECT_UPDATE_REQUEST, updateProject);
   yield takeLatest(PROJECT_DELETE_REQUEST, deleteProject);
+  yield takeLatest(PROJECT_TOGGLE_STAR_REQUEST, toggleStar);
 }
 
 export default Saga;

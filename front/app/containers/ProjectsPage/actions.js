@@ -44,9 +44,10 @@ export function deleteProject(slug) {
   };
 }
 
-export function toggleProjectStar(slug) {
+export function setProjectStar(slug, isSet) {
   return {
     type: PROJECT_TOGGLE_STAR_REQUEST,
     slug,
+    isSet,
   };
 }

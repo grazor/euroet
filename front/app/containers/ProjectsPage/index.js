@@ -25,7 +25,7 @@ import {
   addProject,
   deleteProject,
   fetchProjects,
-  toggleProjectStar,
+  setProjectStar,
   updateProject,
 } from './actions';
 import {
@@ -85,8 +85,8 @@ class ProjectsPage extends React.Component {
     this.props.deleteProject(slug);
   };
 
-  toggleStar = slug => () => {
-    this.props.toggleProjectStar(slug);
+  setStar = (slug, isSet) => () => {
+    this.props.setProjectStar(slug, isSet);
   };
 
   editProject = slug => () => {
@@ -130,7 +130,7 @@ class ProjectsPage extends React.Component {
         />
         <ProjectsTable
           projects={projects}
-          toggleStar={this.toggleStar}
+          setStar={this.setStar}
           openProjectPage={this.openProjectPage}
           editProject={this.editProject}
         />
@@ -152,7 +152,7 @@ ProjectsPage.propTypes = {
   addProject: PropTypes.func.isRequired,
   updateProject: PropTypes.func.isRequired,
   deleteProject: PropTypes.func.isRequired,
-  toggleProjectStar: PropTypes.func.isRequired,
+  setProjectStar: PropTypes.func.isRequired,
   projects: PropTypes.array.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isUpdating: PropTypes.bool.isRequired,
@@ -173,7 +173,7 @@ const mapDispatchToProps = dispatch =>
       addProject,
       updateProject,
       deleteProject,
-      toggleProjectStar,
+      setProjectStar,
     },
     dispatch,
   );
