@@ -27,6 +27,15 @@ class ProjectViewset(viewsets.ModelViewSet):
 
         return qs
 
+    def update(self, request, *args, **kwargs):
+        """DRF update method without related cache invalidation."""
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
     def perform_destroy(self, instance):
         user = self.request.user
         has_products = Product.objects.filter(project=instance).exists()

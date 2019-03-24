@@ -52,6 +52,9 @@ MIDDLEWARE += (
     # https://github.com/bradmontgomery/django-querycount
     # Prints how many queries were executed, useful for the APIs.
     'querycount.middleware.QueryCountMiddleware',
+
+    # Prints queries
+    'server.lib.sql_debug_middleware.SqlDebugMiddleware',
 )
 
 
