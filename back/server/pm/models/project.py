@@ -21,6 +21,7 @@ class Project(DeactivateMixin, models.Model):
     created_by = models.ForeignKey(
         User, related_name='created_projects', blank=True, null=True, on_delete=models.SET_NULL
     )
+    modified_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     @property

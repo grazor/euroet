@@ -24,4 +24,5 @@ class ProjectSerializer(serializers.ModelSerializer):
             'owner',
             'access',
             'last_update_at',
+            'modified_at',
         )
