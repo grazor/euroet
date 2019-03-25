@@ -1,4 +1,4 @@
-import MUIDataTable from 'mui-datatables';
+import EuroetTable from 'components/EuroetTable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { compose } from 'redux';
@@ -28,29 +28,6 @@ class ProjectsTable extends React.Component {
     { name: '', options: { filter: false, sort: false } },
   ];
 
-  sortTable = (data, colIndex, order) => {
-    const getKey = item =>
-      (item.type && item.type === 'div' ? item.props.sortkey : item) || 0;
-
-    return data.sort(
-      (a, b) =>
-        (getKey(a.data[colIndex]) < getKey(b.data[colIndex]) ? -1 : 1) *
-        (order === 'desc' ? 1 : -1),
-    );
-  };
-
-  options = {
-    selectableRows: false,
-    rowsPerPage: 30,
-    rowsPerPageOptions: [10, 30, 50],
-    print: false,
-    download: false,
-    filter: false,
-    responsive: 'scroll',
-    fixedHeader: false,
-    customSort: this.sortTable,
-  };
-
   mapProjectsToTableData() {
     const {
       projects,
@@ -78,14 +55,7 @@ class ProjectsTable extends React.Component {
   render() {
     const data = this.mapProjectsToTableData();
 
-    return (
-      <MUIDataTable
-        title="Projects"
-        columns={this.columns}
-        options={this.options}
-        data={data}
-      />
-    );
+    return <EuroetTable title="Projects" columns={this.columns} data={data} />;
   }
 }
 

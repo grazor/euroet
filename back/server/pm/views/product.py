@@ -20,5 +20,5 @@ class ProductViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         project = self.request.project
-        qs = Product.objects.filter(project_id=project.id)
+        qs = Product.objects.filter(project_id=project.id).select_related('updated_by', 'created_by')
         return qs

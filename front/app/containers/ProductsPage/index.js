@@ -1,6 +1,6 @@
 /**
  *
- * ProjectsPage
+ * ProductsPage
  *
  */
 
@@ -17,21 +17,22 @@ import { createStructuredSelector } from 'reselect';
 import { find } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 
-import ProjectDialog from './ProjectDialog';
-import ProjectsTable from './ProjectsTable';
+import ProductDialog from './ProductDialog';
+import ProductsTable from './ProductsTable';
+import ProjectDetail from './ProjectDetail';
 import reducer from './reducer';
 import saga from './saga';
 import {
-  addProject,
-  deleteProject,
-  fetchProjects,
-  setProjectStar,
-  updateProject,
+  addProduct,
+  deleteProduct,
+  fetchProject,
+  updateProduct,
 } from './actions';
 import {
   makeSelectIsLoading,
   makeSelectIsUpdating,
-  makeSelectProjects,
+  makeSelectProducts,
+  makeSelectProject,
 } from './selectors';
 
 const styles = theme => ({
@@ -53,68 +54,81 @@ const styles = theme => ({
   },
 });
 
-class ProjectsPage extends React.Component {
+class ProductsPage extends React.Component {
   state = {
-    showProjectDialog: false,
-    project: null,
+    showProductDialog: false,
+    product: null,
   };
 
   componentDidMount() {
-    this.props.fetchProjects();
+    const {
+      match: {
+        params: { slug },
+      },
+    } = this.props;
+    this.props.fetchProject(slug);
   }
 
-  openProjectPage = slug => () => {
-    this.props.history.push(`/project/${slug}`);
+  openProductPage = slug => () => {
+    this.props.history.push(`/product/${slug}`);
   };
 
   onToggleDialog = isOn => () => {
-    this.setState({ showProjectDialog: isOn, project: null });
+    this.setState({ showProductDialog: isOn, product: null });
   };
 
   onSubmitAction = ({ originalSlug, ...rest }) => {
-    this.setState({ showProjectDialog: false, project: null });
+    this.setState({ showProductDialog: false, product: null });
     if (originalSlug == null) {
-      this.props.addProject(rest);
+      this.props.addProduct(rest);
     } else {
-      this.props.updateProject({ originalSlug, ...rest });
+      this.props.updateProduct({ originalSlug, ...rest });
     }
   };
 
   onDeleteAction = slug => {
-    this.setState({ showProjectDialog: false, project: null });
-    this.props.deleteProject(slug);
+    this.setState({ showProductDialog: false, product: null });
+    this.props.deleteProduct(slug);
   };
 
-  setStar = (slug, isSet) => () => {
-    this.props.setProjectStar(slug, isSet);
-  };
-
-  editProject = slug => () => {
-    const project = find(this.props.projects, ['slug', slug]);
-    this.setState({ showProjectDialog: true, project });
+  editProduct = slug => () => {
+    const product = find(this.props.products, ['slug', slug]);
+    this.setState({ showProductDialog: true, product });
   };
 
   render() {
-    const { classes, projects, isLoading, isUpdating } = this.props;
+    const {
+      classes,
+      products,
+      project,
+      isLoading,
+      isUpdating,
+      match: {
+        params: { slug },
+      },
+    } = this.props;
 
-    if ((isLoading && projects.length === 0) || isUpdating) {
+    if (
+      (isLoading && (!project || (project && project.slug !== slug))) ||
+      isUpdating
+    ) {
       return <LoadingBar />;
     }
 
     return (
       <React.Fragment>
-        <ProjectDialog
-          project={this.state.project}
-          open={this.state.showProjectDialog}
+        <ProductDialog
+          product={this.state.product}
+          open={this.state.showProductDialog}
           onCancel={this.onToggleDialog(false)}
           onSubmit={this.onSubmitAction}
           onDelete={this.onDeleteAction}
         />
-        <ProjectsTable
-          projects={projects}
-          setStar={this.setStar}
-          openProjectPage={this.openProjectPage}
-          editProject={this.editProject}
+        <ProjectDetail project={project} />
+        <ProductsTable
+          products={products}
+          openProductPage={this.openProductPage}
+          editProduct={this.editProduct}
         />
         <Fab
           color="primary"
@@ -129,13 +143,13 @@ class ProjectsPage extends React.Component {
   }
 }
 
-ProjectsPage.propTypes = {
-  fetchProjects: PropTypes.func.isRequired,
-  addProject: PropTypes.func.isRequired,
-  updateProject: PropTypes.func.isRequired,
-  deleteProject: PropTypes.func.isRequired,
-  setProjectStar: PropTypes.func.isRequired,
-  projects: PropTypes.array.isRequired,
+ProductsPage.propTypes = {
+  fetchProject: PropTypes.func.isRequired,
+  addProduct: PropTypes.func.isRequired,
+  updateProduct: PropTypes.func.isRequired,
+  deleteProduct: PropTypes.func.isRequired,
+  project: PropTypes.object.isRequired,
+  products: PropTypes.array.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isUpdating: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
@@ -143,7 +157,8 @@ ProjectsPage.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-  projects: makeSelectProjects(),
+  project: makeSelectProject(),
+  products: makeSelectProducts(),
   isLoading: makeSelectIsLoading(),
   isUpdating: makeSelectIsUpdating(),
 });
@@ -151,11 +166,10 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      fetchProjects,
-      addProject,
-      updateProject,
-      deleteProject,
-      setProjectStar,
+      fetchProject,
+      addProduct,
+      updateProduct,
+      deleteProduct,
     },
     dispatch,
   );
@@ -165,8 +179,8 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-const withReducer = injectReducer({ key: 'projects', reducer });
-const withSaga = injectSaga({ key: 'projects', saga });
+const withReducer = injectReducer({ key: 'products', reducer });
+const withSaga = injectSaga({ key: 'products', saga });
 const withStyle = withStyles(styles);
 
 export default compose(
@@ -174,4 +188,4 @@ export default compose(
   withSaga,
   withConnect,
   withStyle,
-)(ProjectsPage);
+)(ProductsPage);

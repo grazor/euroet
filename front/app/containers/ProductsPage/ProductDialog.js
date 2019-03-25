@@ -28,7 +28,7 @@ const getInitialState = () => ({
   originalSlug: undefined,
 });
 
-class ProjectDialog extends React.Component {
+class ProductDialog extends React.Component {
   state = getInitialState();
   onChange = name => event => {
     this.setState({ [name]: event.target.value });
@@ -57,19 +57,18 @@ class ProjectDialog extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    // You don't have to do this check first, but it can help prevent an unneeded render
-    const { project } = nextProps;
-    if ((project || {}).slug === this.state.originalSlug) {
+    const { product } = nextProps;
+    if ((product || {}).slug === this.state.originalSlug) {
       return;
     }
-    if (project == null) {
+    if (product == null) {
       this.setState(getInitialState());
     } else {
       this.setState({
-        name: project.name,
-        slug: project.slug,
-        description: project.description,
-        originalSlug: project.slug,
+        name: product.name,
+        slug: product.slug,
+        description: product.description,
+        originalSlug: product.slug,
         autoSlug: false,
       });
     }
@@ -86,7 +85,7 @@ class ProjectDialog extends React.Component {
   };
 
   onDelete = () => {
-    const confirmDelete = window.confirm('Confirm project deletion'); // eslint-disable-line no-alert
+    const confirmDelete = window.confirm('Confirm product deletion'); // eslint-disable-line no-alert
     if (!confirmDelete) return;
     this.props.onDelete(this.state.originalSlug);
     this.setState(getInitialState());
@@ -109,14 +108,14 @@ class ProjectDialog extends React.Component {
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="form-dialog-title">
-            {this.props.project ? 'Update' : 'Create'} project
+            {this.props.product ? 'Update' : 'Create'} product
           </DialogTitle>
           <DialogContent>
             <TextField
               autoFocus
               margin="dense"
               id="name"
-              label="Project name"
+              label="Product name"
               onChange={this.onNameChange}
               value={this.state.name}
               fullWidth
@@ -124,7 +123,7 @@ class ProjectDialog extends React.Component {
             <TextField
               margin="dense"
               id="slug"
-              label="Project code"
+              label="Product code"
               onChange={this.onSlugChange}
               value={this.state.slug}
               fullWidth
@@ -132,7 +131,7 @@ class ProjectDialog extends React.Component {
             <TextField
               margin="dense"
               id="description"
-              label="Project description"
+              label="Product description"
               onChange={this.onChange('description')}
               value={this.state.description}
               multiline
@@ -141,7 +140,7 @@ class ProjectDialog extends React.Component {
           </DialogContent>
           <DialogActions className={classes.buttonsRoot}>
             <div className={classes.grow}>
-              {this.props.project ? (
+              {this.props.product ? (
                 <Button onClick={this.onDelete} color="secondary">
                   Delete
                 </Button>
@@ -152,7 +151,7 @@ class ProjectDialog extends React.Component {
               Cancel
             </Button>
             <Button onClick={this.onSubmit} color="primary">
-              {this.props.project ? 'Update' : 'Create'}
+              {this.props.product ? 'Update' : 'Create'}
             </Button>
           </DialogActions>
         </Dialog>
@@ -161,15 +160,15 @@ class ProjectDialog extends React.Component {
   }
 }
 
-ProjectDialog.propTypes = {
+ProductDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  project: PropTypes.object,
+  product: PropTypes.object,
   classes: PropTypes.object.isRequired,
 };
 
 const withStyle = withStyles(styles);
 
-export default compose(withStyle)(ProjectDialog);
+export default compose(withStyle)(ProductDialog);

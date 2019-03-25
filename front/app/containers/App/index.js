@@ -8,6 +8,7 @@ import IndexPage from 'containers/IndexPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
 import LoginRoute from 'components/LoginRoute';
 import PrivateRoute from 'components/PrivateRoute';
+import ProductsPage from 'containers/ProductsPage/Loadable';
 import ProjectsPage from 'containers/ProjectsPage/Loadable';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -58,6 +59,12 @@ export class App extends React.Component {
               exact
               path="/projects"
               component={ProjectsPage}
+              isAuthenticated={auth}
+            />
+            <PrivateRoute
+              exact
+              path="/project/:slug"
+              component={ProductsPage}
               isAuthenticated={auth}
             />
           </Switch>
