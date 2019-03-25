@@ -107,6 +107,8 @@ class ProjectDialog extends React.Component {
           open={this.props.open}
           onClose={this.onCancel}
           aria-labelledby="form-dialog-title"
+          maxWidth="lg"
+          fullWidth
         >
           <DialogTitle id="form-dialog-title">
             {this.props.project ? 'Update' : 'Create'} project
