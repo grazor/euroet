@@ -78,11 +78,14 @@ class ProductsPage extends React.Component {
   };
 
   onSubmitAction = ({ originalSlug, ...rest }) => {
+    const {
+      project: { slug: projectSlug },
+    } = this.props;
     this.setState({ showProductDialog: false, product: null });
     if (originalSlug == null) {
-      this.props.addProduct(rest);
+      this.props.addProduct({ projectSlug, ...rest });
     } else {
-      this.props.updateProduct({ originalSlug, ...rest });
+      this.props.updateProduct({ projectSlug, originalSlug, ...rest });
     }
   };
 

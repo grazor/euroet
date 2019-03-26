@@ -55,7 +55,7 @@ function* getProjectInfo({ slug }) {
   }
 }
 
-function* addProduct({ type, ...productData }) {
+function* addProduct({ type, projectSlug, ...productData }) {
   const options = {
     method: 'POST',
     body: JSON.stringify(productData),
@@ -63,11 +63,15 @@ function* addProduct({ type, ...productData }) {
   };
 
   try {
-    const product = yield call(fetchJSON, '/api/products/', options);
-    yield put({ type: PROJECT_CREATE_SUCCESS, product });
+    const product = yield call(
+      fetchJSON,
+      `/api/projects/${projectSlug}/products/`,
+      options,
+    );
+    yield put({ type: PRODUCT_CREATE_SUCCESS, product });
     yield put(notifySuccess('Product has been created'));
   } catch (error) {
-    yield put({ type: PROJECT_CREATE_FAILURE });
+    yield put({ type: PRODUCT_CREATE_FAILURE });
     if (error.status >= 500) {
       yield put(notifyError('Internal server error'));
     } else {
