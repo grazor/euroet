@@ -5,7 +5,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 const OwnerCell = ({ project: { owner }, ...rest }) => {
   if (!owner) return null;
-  const fullName = `${owner.first_name} ${owner.last_name}`;
+  const fullName = `${owner.last_name} ${owner.first_name}`;
 
   return (
     <div sortkey={fullName} {...rest}>
