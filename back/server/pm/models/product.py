@@ -1,10 +1,15 @@
+from uuid import uuid4
+
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth import get_user_model
+
+from server.lib.deactivate_model_mixin import DeactivateMixin
 
 User = get_user_model()
 
 
-class Product(models.Model):
+class Product(DeactivateMixin, models.Model):
     slug = models.SlugField(db_index=True)
     name = models.CharField(max_length=128)
     description = models.TextField(max_length=2048, null=True, blank=True)
@@ -22,6 +27,12 @@ class Product(models.Model):
         # Making possible to use same slug within multiple projects
         # Therefore keeping auto id field as primary key
         unique_together = ('project', 'slug')
+
+    def delete(self, *args, **kwargs):
+        self.deleted_at = timezone.now()
+        self.slug = str(uuid4())
+        self.project = None
+        self.save(update_fields=['deleted_at', 'slug', 'project'])
 
     def __str__(self) -> str:
         return f'{self.project_id}/{self.slug} ({self.name})'

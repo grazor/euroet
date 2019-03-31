@@ -1,6 +1,8 @@
+from uuid import uuid4
 from typing import Optional
 
 from django.db import models
+from django.utils import timezone
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
@@ -23,6 +25,11 @@ class Project(DeactivateMixin, models.Model):
     )
     modified_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def delete(self, *args, **kwargs):
+        self.deleted_at = timezone.now()
+        self.slug = str(uuid4())
+        self.save(update_fields=['deleted_at', 'slug'])
 
     @property
     def owner(self) -> Optional[User]:

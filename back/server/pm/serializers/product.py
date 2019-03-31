@@ -13,10 +13,24 @@ class CurrentProjectDefault:
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    updated_by = UserSerializer(read_only=True)
     project = serializers.HiddenField(default=CurrentProjectDefault())
+    author = UserSerializer(read_only=True, source='created_by')
+    editor = UserSerializer(read_only=True, source='updated_by')
+
+    created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    updated_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Product
-        fields = ('slug', 'name', 'description', 'project', 'created_by', 'created_at', 'updated_at', 'updated_by')
+        fields = (
+            'slug',
+            'name',
+            'description',
+            'project',
+            'created_by',
+            'author',
+            'updated_at',
+            'editor',
+            'created_by',
+            'updated_by',
+        )
