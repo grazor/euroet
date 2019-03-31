@@ -24,7 +24,7 @@ class ProjectsTable extends React.Component {
     { name: 'Name', options: { filter: false, sort: true } },
     { name: 'Description', options: { filter: false, sort: true } },
     { name: 'Owner', options: { filter: false, sort: true } },
-    { name: 'Last update', options: { filter: false, sort: true } },
+    { name: 'Last update', options: { filter: false, sort: true, sortDirection: 'desc' } },
     { name: '', options: { filter: false, sort: false } },
   ];
 
