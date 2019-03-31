@@ -14,7 +14,7 @@ export default (url, options = {}) => {
       .then(response => (response.status === 204 ? resolve({}) : response))
       .then(
         response =>
-          response.status >= 500
+          response.status > 400
             ? reject({ status: response.status })
             : response,
       )
@@ -23,7 +23,7 @@ export default (url, options = {}) => {
       )
       .then(
         ({ status, data }) =>
-          status >= 400 ? reject({ status, data }) : resolve(data),
+          status === 400 ? reject({ status, data }) : resolve(data),
       )
       .catch(error => reject({ status: null, error })),
   );

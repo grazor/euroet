@@ -57,22 +57,36 @@ export function notifyError(message) {
   };
 }
 
-export function notifyApiError(message) {
-  if (typeof message === 'string') {
-    return notifyError(message);
+export function notifyApiError(status, message) {
+  if (!status) {
+    return notifyError('Unknown error');
   }
-  if (message.non_field_errors != null) {
-    return notifyError(message.non_field_errors);
+
+  switch (status) {
+    case 400:
+      if (!message) {
+        return notifyError('Unknown error');
+      }
+      if (typeof message === 'string') {
+        return notifyError(message);
+      }
+      if (message.non_field_errors != null) {
+        return notifyError(message.non_field_errors);
+      }
+      return notifyError(
+        transform(
+          message,
+          (result, value, key) => {
+            result.push(`${key}: ${value}`);
+          },
+          [],
+        ),
+      );
+    case 404:
+      return notifyError('Not found');
+    default:
+      return notifyError(`Error ${status}`);
   }
-  return notifyError(
-    transform(
-      message,
-      (result, value, key) => {
-        result.push(`${key}: ${value}`);
-      },
-      [],
-    ),
-  );
 }
 
 export function notifyRemove(key) {

@@ -30,6 +30,7 @@ const getInitialState = () => ({
 
 class ProductDialog extends React.Component {
   state = getInitialState();
+
   onChange = name => event => {
     this.setState({ [name]: event.target.value });
   };

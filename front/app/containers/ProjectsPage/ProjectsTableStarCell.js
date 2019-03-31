@@ -9,7 +9,7 @@ const StarCell = ({
   setStar,
   ...rest
 }) => (
-  <div sortkey={isStarred ? 1 : 0} {...rest}>
+  <div {...rest}>
     <IconButton aria-label="Favorite" onClick={setStar(slug, !isStarred)}>
       {isStarred ? <FavoriteIcon color="primary" /> : <FavoriteBorderIcon />}
     </IconButton>

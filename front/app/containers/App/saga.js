@@ -35,14 +35,14 @@ function* authorize({ email: username, password }) {
     localStorage.setItem('token', token);
     yield put({ type: AUTH_SUCCESS, user });
     yield put(notifySuccess('Authenticated'));
-  } catch ({ status, data = {}, error = null }) {
+  } catch ({ status, data = {} }) {
     localStorage.removeItem('token');
     yield put({ type: AUTH_FAILURE });
 
     if (status != null && status >= 500) {
       yield put(notifyError('Internal server error'));
     } else {
-      yield put(notifyApiError(data));
+      yield put(notifyApiError(status, data));
     }
   }
 }

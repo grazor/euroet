@@ -11,7 +11,7 @@ import React from 'react';
 class EuroetTable extends React.Component {
   sortTable = (data, colIndex, order) => {
     const getKey = item =>
-      (item.type && item.type === 'div' ? item.props.sortkey : item) || 0;
+      item && item.props && 'sortkey' in item.props ? item.props.sortkey : item;
 
     return data.sort(
       (a, b) =>

@@ -1,19 +1,19 @@
-import Avatar from '@material-ui/core/Avatar';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
+import UserAvatar from 'components/UserAvatar';
 
-const OwnerCell = ({ project: { owner }, ...rest }) => {
+export const getOwnerSortKey = project => {
+  const { owner } = project;
   if (!owner) return null;
-  const fullName = `${owner.last_name} ${owner.first_name}`;
+  return `${owner.last_name} ${owner.first_name}`;
+};
 
+const OwnerCell = ({ project, ...rest }) => {
+  const fullName = getOwnerSortKey(project);
+  if (!fullName) return null;
   return (
-    <div sortkey={fullName} {...rest}>
-      <Tooltip title={fullName}>
-        <Avatar style={{ backgroundColor: owner.color }}>
-          {owner.initials}
-        </Avatar>
-      </Tooltip>
+    <div {...rest}>
+      <UserAvatar user={project.owner} />
     </div>
   );
 };

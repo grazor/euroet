@@ -5,13 +5,13 @@ import { compose } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 
 import ActionsCell from './ProjectsTableActionsCell';
-import DateCell from './ProjectsTableDateCell';
-import OwnerCell from './ProjectsTableOwnerCell';
 import StarCell from './ProjectsTableStarCell';
+import DateCell, { getDateSortKey } from './ProjectsTableDateCell';
+import OwnerCell, { getOwnerSortKey } from './ProjectsTableOwnerCell';
 
 const styles = () => ({
   dateColumn: {
-    minWidth: 80,
+    minWidth: 100,
   },
   actionsColumn: {
     minWidth: 130,
@@ -38,11 +38,15 @@ class ProjectsTable extends React.Component {
     } = this.props;
 
     return projects.map(p => [
-      <StarCell project={p} setStar={setStar} />,
+      <StarCell project={p} sortkey={p.is_starred ? 1 : 0} setStar={setStar} />,
       p.name,
       p.description,
-      <OwnerCell project={p} />,
-      <DateCell project={p} className={classes.dateColumn} />,
+      <OwnerCell project={p} sortkey={getOwnerSortKey(p)} />,
+      <DateCell
+        project={p}
+        sortkey={getDateSortKey(p)}
+        className={classes.dateColumn}
+      />,
       <ActionsCell
         project={p}
         editProject={editProject}

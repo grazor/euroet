@@ -75,12 +75,12 @@ function* addProduct({ type, projectSlug, ...productData }) {
     if (error.status >= 500) {
       yield put(notifyError('Internal server error'));
     } else {
-      yield put(notifyApiError(error.data));
+      yield put(notifyApiError(error.status, error.data));
     }
   }
 }
 
-function* updateProduct({ type, originalSlug, ...productData }) {
+function* updateProduct({ type, projectSlug, originalSlug, ...productData }) {
   const options = {
     method: 'PUT',
     body: JSON.stringify(productData),
@@ -90,37 +90,41 @@ function* updateProduct({ type, originalSlug, ...productData }) {
   try {
     const product = yield call(
       fetchJSON,
-      `/api/products/${originalSlug}/`,
+      `/api/projects/${projectSlug}/products/${originalSlug}/`,
       options,
     );
-    yield put({ type: PROJECT_UPDATE_SUCCESS, product, originalSlug });
+    yield put({ type: PRODUCT_UPDATE_SUCCESS, product, originalSlug });
     yield put(notifySuccess('Product has been updated'));
   } catch (error) {
-    yield put({ type: PROJECT_UPDATE_FAILURE });
+    yield put({ type: PRODUCT_UPDATE_FAILURE });
     if (error.status >= 500) {
       yield put(notifyError('Internal server error'));
     } else {
-      yield put(notifyApiError(error.data));
+      yield put(notifyApiError(error.status, error.data));
     }
   }
 }
 
-function* deleteProduct({ slug }) {
+function* deleteProduct({ projectSlug, slug }) {
   const options = {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
   };
 
   try {
-    yield call(fetchJSON, `/api/products/${slug}/`, options);
-    yield put({ type: PROJECT_DELETE_SUCCESS, slug });
+    yield call(
+      fetchJSON,
+      `/api/projects/${projectSlug}/products/${slug}/`,
+      options,
+    );
+    yield put({ type: PRODUCT_DELETE_SUCCESS, slug });
     yield put(notifySuccess('Product has been deleted'));
   } catch (error) {
-    yield put({ type: PROJECT_DELETE_FAILURE });
+    yield put({ type: PRODUCT_DELETE_FAILURE });
     if (error.status >= 500) {
       yield put(notifyError('Internal server error'));
     } else {
-      yield put(notifyApiError(error.data));
+      yield put(notifyApiError(error.status, error.data));
     }
   }
 }

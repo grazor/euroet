@@ -3,13 +3,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 
-export const getDateSortKey = project => {
-  const {
-    last_update_at: update,
-    modified_at: modification,
-    created_at: creation,
-  } = project;
-  const dates = [update, modification, creation]
+export const getDateSortKey = product => {
+  const { updated_at: update, created_at: creation } = product;
+  const dates = [update, creation]
     .map(datestr => parseInt(datestr, 10))
     .filter(timestamp => timestamp);
   const lastUpdate = Math.max(...dates);
@@ -17,8 +13,10 @@ export const getDateSortKey = project => {
   return lastUpdate;
 };
 
-const DateCell = ({ project, ...rest }) => {
-  const lastUpdate = getDateSortKey(project);
+const DateCell = props => {
+  const { product, ...rest } = props;
+  const lastUpdate = getDateSortKey(product);
+
   return (
     <div {...rest}>
       <Tooltip
@@ -38,7 +36,7 @@ const DateCell = ({ project, ...rest }) => {
 };
 
 DateCell.propTypes = {
-  project: PropTypes.object.isRequired,
+  product: PropTypes.object.isRequired,
 };
 
 export default DateCell;

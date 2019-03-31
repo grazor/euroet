@@ -66,7 +66,7 @@ function* addProject({ type, ...projectData }) {
     if (error.status >= 500) {
       yield put(notifyError('Internal server error'));
     } else {
-      yield put(notifyApiError(error.data));
+      yield put(notifyApiError(error.status, error.data));
     }
   }
 }
@@ -91,7 +91,7 @@ function* updateProject({ type, originalSlug, ...projectData }) {
     if (error.status >= 500) {
       yield put(notifyError('Internal server error'));
     } else {
-      yield put(notifyApiError(error.data));
+      yield put(notifyApiError(error.status, error.data));
     }
   }
 }
@@ -111,7 +111,7 @@ function* deleteProject({ slug }) {
     if (error.status >= 500) {
       yield put(notifyError('Internal server error'));
     } else {
-      yield put(notifyApiError(error.data));
+      yield put(notifyApiError(error.status, error.data));
     }
   }
 }
@@ -136,7 +136,7 @@ function* toggleStar({ slug, isSet }) {
     if (error.status >= 500) {
       yield put(notifyError('Internal server error'));
     } else {
-      yield put(notifyApiError(error.data));
+      yield put(notifyApiError(error.status, error.data));
     }
   }
 }

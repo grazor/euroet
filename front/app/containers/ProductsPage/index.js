@@ -70,7 +70,12 @@ class ProductsPage extends React.Component {
   }
 
   openProductPage = slug => () => {
-    this.props.history.push(`/product/${slug}`);
+    const {
+      match: {
+        params: { slug: projectSlug },
+      },
+    } = this.props;
+    this.props.history.push(`/project/${projectSlug}/${slug}`);
   };
 
   onToggleDialog = isOn => () => {
@@ -90,8 +95,11 @@ class ProductsPage extends React.Component {
   };
 
   onDeleteAction = slug => {
+    const {
+      project: { slug: projectSlug },
+    } = this.props;
     this.setState({ showProductDialog: false, product: null });
-    this.props.deleteProduct(slug);
+    this.props.deleteProduct(projectSlug, slug);
   };
 
   editProduct = slug => () => {
@@ -157,6 +165,7 @@ ProductsPage.propTypes = {
   isUpdating: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
