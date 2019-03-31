@@ -20,7 +20,10 @@ class ProductsTable extends React.Component {
     { name: 'Name', options: { filter: false, sort: true } },
     { name: 'Description', options: { filter: false, sort: true } },
     { name: 'Updated by', options: { filter: false, sort: true } },
-    { name: 'Last update', options: { filter: false, sort: true, sortDirection: 'desc' } },
+    {
+      name: 'Last update',
+      options: { filter: false, sort: true, sortDirection: 'desc' },
+    },
     { name: '', options: { filter: false, sort: false } },
   ];
 

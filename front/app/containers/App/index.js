@@ -3,6 +3,7 @@
  * App
  */
 
+import ComponentsPage from 'containers/ComponentsPage/Loadable';
 import EuroetNav from 'components/EuroetNav';
 import IndexPage from 'containers/IndexPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
@@ -65,6 +66,12 @@ export class App extends React.Component {
               exact
               path="/project/:slug"
               component={ProductsPage}
+              isAuthenticated={auth}
+            />
+            <PrivateRoute
+              exact
+              path="/project/:projectSlug/:productSlug"
+              component={ComponentsPage}
               isAuthenticated={auth}
             />
           </Switch>
