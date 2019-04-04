@@ -1,5 +1,5 @@
 import fetchJSON from 'utils/fetchjson';
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { all, call, put, takeLatest } from 'redux-saga/effects';
 import { notifyWarning } from 'containers/App/actions';
 
 import {
@@ -14,16 +14,18 @@ function* getProductInfo({ projectSlug, productSlug }) {
   };
 
   try {
-    const product = yield call(
-      fetchJSON,
-      `/api/projects/${projectSlug}/products/${productSlug}`,
-      options,
-    );
-    const components = yield call(
-      fetchJSON,
-      `/api/projects/${projectSlug}/products/${productSlug}/components/`,
-      options,
-    );
+    const [product, components] = yield all([
+      call(
+        fetchJSON,
+        `/api/projects/${projectSlug}/products/${productSlug}`,
+        options,
+      ),
+      call(
+        fetchJSON,
+        `/api/projects/${projectSlug}/products/${productSlug}/components/`,
+        options,
+      ),
+    ]);
     yield put({ type: PRODUCT_INFO_SUCCESS, product, components });
   } catch (error) {
     let message;

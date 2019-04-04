@@ -1,5 +1,5 @@
 import fetchJSON from 'utils/fetchjson';
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { all, call, put, takeLatest } from 'redux-saga/effects';
 import {
   notifyApiError,
   notifyError,
@@ -28,12 +28,10 @@ function* getProjectInfo({ slug }) {
   };
 
   try {
-    const project = yield call(fetchJSON, `/api/projects/${slug}/`, options);
-    const products = yield call(
-      fetchJSON,
-      `/api/projects/${slug}/products/`,
-      options,
-    );
+    const [project, products] = yield all([
+      call(fetchJSON, `/api/projects/${slug}/`, options),
+      call(fetchJSON, `/api/projects/${slug}/products/`, options),
+    ]);
     yield put({ type: PROJECT_INFO_SUCCESS, products, project });
   } catch (error) {
     let message;
