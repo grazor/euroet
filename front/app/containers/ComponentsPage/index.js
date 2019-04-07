@@ -9,13 +9,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
-import { FormattedMessage } from 'react-intl';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { withStyles } from '@material-ui/core/styles';
 
-import messages from './messages';
+import ComponentsGrid from './ComponentsGrid';
+import ProductDetail from './ProductDetail';
 import reducer from './reducer';
 import saga from './saga';
 import { fetchProduct } from './actions';
@@ -42,6 +42,7 @@ export class ComponentsPage extends React.Component {
   render() {
     const {
       product,
+      components,
       isLoading,
       isUpdating,
       match: {
@@ -57,9 +58,10 @@ export class ComponentsPage extends React.Component {
     }
 
     return (
-      <div>
-        <FormattedMessage {...messages.header} />
-      </div>
+      <React.Fragment>
+        <ProductDetail product={product} />
+        <ComponentsGrid components={components} />
+      </React.Fragment>
     );
   }
 }
@@ -70,7 +72,6 @@ ComponentsPage.propTypes = {
   components: PropTypes.array.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isUpdating: PropTypes.bool.isRequired,
-  classes: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
 };
 
