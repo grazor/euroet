@@ -19,7 +19,10 @@ class ProductComponent(models.Model):
 
     @property
     def aggregated_price(self) -> Decimal:
-        return self.component.total_price * Decimal(self.qty)
+        discount = 0.0
+        if self.component.collection:
+            discount = self.component.collection.discount / Decimal(100.0)
+        return self.component.total_price * (Decimal(1) - discount) * Decimal(self.qty)
 
     class Meta:
         unique_together = ('product', 'component')
