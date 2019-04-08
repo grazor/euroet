@@ -5,6 +5,7 @@ import ReactDataGrid from 'react-data-grid';
 import { compose } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 
+import GridToolbar from './ComponentsGridToolbar';
 import QtyEditor from './ComponentsGridQtyEditor';
 
 const styles = theme => ({
@@ -16,14 +17,33 @@ const styles = theme => ({
 
 class ComponentsGrid extends React.Component {
   columns = [
-    { key: 'code', name: 'Code', editable: true, width: 300 },
-    { key: 'description', name: 'Description', editable: true },
+    { key: 'code', name: 'Code', editable: false, width: 300 },
+    { key: 'description', name: 'Description', editable: false },
     { key: 'price', name: 'Price', editable: false, width: 100 },
     { key: 'collectionName', name: 'Collection', editable: false, width: 300 },
     { key: 'discount', name: 'Discount, %', editable: false, width: 100 },
     { key: 'qty', name: 'Qty', editable: true, width: 100, editor: QtyEditor },
     { key: 'total', name: 'Total price', editable: false, width: 120 },
   ];
+
+  onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
+    const { components } = this.props;
+    if ('qty' in updated) {
+      const codes = components
+        .slice(fromRow, toRow + 1)
+        .filter(c => c.qty !== updated.qty)
+        .map(c => c.component.code);
+      if (codes.length > 0) {
+        if (updated.qty > 0) {
+          this.props.bulkUpdateQty(codes, updated.qty);
+        } else {
+          for (let i = 0; i < codes.length; i += 1) {
+            this.props.deleteComponent(codes[i]);
+          }
+        }
+      }
+    }
+  };
 
   mapComponentsToGridData() {
     const { components } = this.props;
@@ -41,16 +61,23 @@ class ComponentsGrid extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, suggestions, getSuggestions, addComponent } = this.props;
     const components = this.mapComponentsToGridData();
     return (
       <Paper className={classes.root} elevation={3}>
+        <GridToolbar
+          suggestions={suggestions}
+          getSuggestions={getSuggestions}
+          addComponent={addComponent}
+        />
         <ReactDataGrid
           columns={this.columns}
           rowGetter={i => components[i]}
           rowsCount={components.length}
-          onGridRowsUpdated={() => {}}
-          minHeight={800}
+          minHeight={(components.length + 1) * 35}
+          enableCellAutoFocus={false}
+          onGridRowsUpdated={this.onGridRowsUpdated}
+          enableCellSelect
         />
       </Paper>
     );
@@ -60,6 +87,11 @@ class ComponentsGrid extends React.Component {
 ComponentsGrid.propTypes = {
   classes: PropTypes.object.isRequired,
   components: PropTypes.array.isRequired,
+  bulkUpdateQty: PropTypes.func.isRequired,
+  suggestions: PropTypes.array.isRequired,
+  getSuggestions: PropTypes.func.isRequired,
+  addComponent: PropTypes.func.isRequired,
+  deleteComponent: PropTypes.func.isRequired,
 };
 
 const withStyle = withStyles(styles);

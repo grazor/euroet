@@ -18,12 +18,19 @@ import ComponentsGrid from './ComponentsGrid';
 import ProductDetail from './ProductDetail';
 import reducer from './reducer';
 import saga from './saga';
-import { fetchProduct } from './actions';
+import {
+  addComponent,
+  bulkUpdateQty,
+  deleteComponent,
+  fetchProduct,
+  getSuggestions,
+} from './actions';
 import {
   makeSelectComponents,
   makeSelectIsLoading,
   makeSelectIsUpdating,
   makeSelectProduct,
+  makeSelectSuggestions,
 } from './selectors';
 
 const styles = () => ({});
@@ -43,11 +50,16 @@ export class ComponentsPage extends React.Component {
     const {
       product,
       components,
+      suggestions,
       isLoading,
       isUpdating,
       match: {
-        params: { productSlug },
+        params: { projectSlug, productSlug },
       },
+      bulkUpdateQty: actionUpdateQty,
+      getSuggestions: actionGetSuggestions,
+      addComponent: actionAddComponent,
+      deleteComponent: actionDeleteComponent,
     } = this.props;
 
     if (
@@ -57,10 +69,26 @@ export class ComponentsPage extends React.Component {
       return <LoadingBar />;
     }
 
+    const boundedUpdateQty = (codes, qty) =>
+      actionUpdateQty(projectSlug, productSlug, codes, qty);
+    const boundedGetSuggestions = query =>
+      actionGetSuggestions(projectSlug, productSlug, query);
+    const boundedAddComponent = (component, qty) =>
+      actionAddComponent(projectSlug, productSlug, component, qty);
+    const boundedDeleteComponent = code =>
+      actionDeleteComponent(projectSlug, productSlug, code);
+
     return (
       <React.Fragment>
         <ProductDetail product={product} />
-        <ComponentsGrid components={components} />
+        <ComponentsGrid
+          components={components}
+          bulkUpdateQty={boundedUpdateQty}
+          suggestions={suggestions}
+          getSuggestions={boundedGetSuggestions}
+          addComponent={boundedAddComponent}
+          deleteComponent={boundedDeleteComponent}
+        />
       </React.Fragment>
     );
   }
@@ -68,8 +96,13 @@ export class ComponentsPage extends React.Component {
 
 ComponentsPage.propTypes = {
   fetchProduct: PropTypes.func.isRequired,
+  bulkUpdateQty: PropTypes.func.isRequired,
+  getSuggestions: PropTypes.func.isRequired,
+  addComponent: PropTypes.func.isRequired,
+  deleteComponent: PropTypes.func.isRequired,
   product: PropTypes.object.isRequired,
   components: PropTypes.array.isRequired,
+  suggestions: PropTypes.array.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isUpdating: PropTypes.bool.isRequired,
   match: PropTypes.object.isRequired,
@@ -78,12 +111,22 @@ ComponentsPage.propTypes = {
 const mapStateToProps = createStructuredSelector({
   product: makeSelectProduct(),
   components: makeSelectComponents(),
+  suggestions: makeSelectSuggestions(),
   isLoading: makeSelectIsLoading(),
   isUpdating: makeSelectIsUpdating(),
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ fetchProduct }, dispatch);
+  bindActionCreators(
+    {
+      fetchProduct,
+      bulkUpdateQty,
+      getSuggestions,
+      addComponent,
+      deleteComponent,
+    },
+    dispatch,
+  );
 
 const withConnect = connect(
   mapStateToProps,

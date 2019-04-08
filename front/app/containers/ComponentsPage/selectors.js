@@ -24,3 +24,8 @@ export const makeSelectIsUpdating = () =>
   createSelector(selectComponentsPageDomain, components =>
     components.get('isLoading'),
   );
+
+export const makeSelectSuggestions = () =>
+  createSelector(selectComponentsPageDomain, components =>
+    components.get('suggestions').toJS(),
+  );

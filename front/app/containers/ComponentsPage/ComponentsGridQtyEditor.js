@@ -26,12 +26,11 @@ let QtyField = props => {
         value={value}
         onChange={handleChange}
         type="number"
-        variant="filled"
-        margin="none"
         classes={{
           input: classes.root,
         }}
         style={{ height }}
+        inputProps={{ min: 0 }}
       />
     </div>
   );
@@ -52,7 +51,7 @@ class QtyEditor extends React.Component {
     this.state = { value: props.value };
   }
 
-  getValue = () => this.state.value;
+  getValue = () => ({ qty: this.state.value });
 
   getInputNode = () =>
     ReactDOM.findDOMNode(this).getElementsByTagName('input')[0]; // eslint-disable-line react/no-find-dom-node
@@ -60,7 +59,7 @@ class QtyEditor extends React.Component {
   disableContainerStyles = () => false;
 
   handleChange = event => {
-    this.setState({ value: event.target.value });
+    this.setState({ value: parseInt(event.target.value, 10) || 0 });
   };
 
   render() {
