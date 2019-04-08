@@ -17,6 +17,7 @@ class ProductComponentViewset(viewsets.ModelViewSet):
     lookup_field = 'component__code'
     lookup_url_kwarg = 'code'
     pagination_class = None
+    lookup_value_regex = '[^/]+'
 
     def initialize_request(self, request, *args, **kwargs):
         request = super().initialize_request(request, *args, **kwargs)
