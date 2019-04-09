@@ -25,12 +25,6 @@ ALLOWED_HOSTS = [
 # Adding STATIC_ROOT to collect static files via 'collectstatic'
 STATIC_ROOT = '/var/www/django/static'
 
-STATICFILES_STORAGE = (
-    # This is a string, not a tuple,
-    # but it does not fit into 80 characters rule.
-    'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-)
-
 
 # Mediafiles
 MEDIA_ROOT = '/var/www/django/media'
@@ -64,7 +58,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True

@@ -16,20 +16,19 @@ ENV DJANGO_ENV=${DJANGO_ENV} \
 
 
 # System deps:
-RUN apk --no-cache add \
-     bash \
+RUN apk --no-cache add bash postgresql-dev curl tini
+RUN apk --no-cache add --virtual .build-deps \
+     autoconf \
+     automake \
      build-base \
-     curl \
      gcc \
      gettext \
      git \
      libffi-dev \
      linux-headers \
      musl-dev \
-     postgresql-dev \
-     tini \
-     nodejs \
-  && pip install "poetry==$POETRY_VERSION"
+     nodejs 
+RUN pip install "poetry==$POETRY_VERSION"
 
 # Build front
 WORKDIR /front
@@ -57,6 +56,7 @@ RUN mv /front/build/index.html /code/server/templates/singlepage.html \
   && mv /front/build/* /code/server/static/
 
 # Cleanup
-# RUN rm -rf /front && apk del gcc git libffi-dev linux-headers musl-dev postgresql-dev nodejs
+RUN rm -rf /front \
+  && apk --purge del .build-deps
 
 ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
