@@ -19,7 +19,7 @@ class ProductComponent(models.Model):
 
     @property
     def aggregated_price(self) -> Decimal:
-        discount = 0.0
+        discount = Decimal(0.0)
         if self.component.collection:
             discount = self.component.collection.discount / Decimal(100.0)
         return self.component.total_price * (Decimal(1) - discount) * Decimal(self.qty)

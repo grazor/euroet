@@ -8,6 +8,15 @@
 
 version: "3.6"
 services:
+  db:
+    image: "postgres:11.2-alpine"
+    restart: unless-stopped
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - webnet
+    env_file: ./config/.env
+
   caddy:
     image: "wemakeservices/caddy-docker:0.10.11-1"
     restart: unless-stopped
@@ -27,8 +36,6 @@ services:
 
   web:
     <<: &web
-      image:
-        "registry.gitlab.com/porivaev/euroet:latest"
       build:
         context: .
         dockerfile: ./docker/django/Dockerfile
@@ -37,7 +44,13 @@ services:
       restart: unless-stopped
       volumes:
         - django-media:/var/www/django/media  # since in dev it is app's folder
+      environment:
+        DJANGO_DATABASE_HOST: db
     command: sh ./docker/django/gunicorn.sh
+    depends_on:
+      - db
+    networks:
+      - webnet
     expose:
       - 8000
 
@@ -47,3 +60,11 @@ services:
 #   command: python manage.py worker_process
 #   deploy:
 #     replicas: 2
+
+networks:
+  webnet:
+
+volumes:
+  pgdata:
+  django-static:
+  django-media:

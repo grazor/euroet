@@ -2,25 +2,19 @@
 
 """
 Main URL mapping configuration file.
-
-Include other URLConfs from external apps using method `include()`.
-
-It is also a good practice to keep a single URL to the root index page.
-
-This examples uses Django's default media
-files serving technique in development.
 """
 
 from health_check import urls as health_urls
 
 from django.conf import settings
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.contrib.admindocs import urls as admindocs_urls
 
 from server.pm import urls as pm_urls
 from server.users import urls as users_urls
+from server.views import singlepage
 
 admin.autodiscover()
 
@@ -67,3 +61,6 @@ if settings.DEBUG:  # pragma: no cover
                 permission_classes=[],
         ))
 ] + urlpatterns
+
+
+urlpatterns.append(re_path(r'^(?!admin|api|docs).*$', singlepage, name='index'))

@@ -1,7 +1,7 @@
 FROM python:3.6.6-alpine3.7
 
-LABEL maintainer="sobolevn@wemake.services"
-LABEL vendor="wemake.services"
+LABEL maintainer="porivaevs@gmail.com"
+LABEL vendor="porivaev"
 
 ARG DJANGO_ENV
 
@@ -28,11 +28,17 @@ RUN apk --no-cache add \
      musl-dev \
      postgresql-dev \
      tini \
+     nodejs \
   && pip install "poetry==$POETRY_VERSION"
+
+# Build front
+WORKDIR /front
+COPY front /front/
+RUN npm install && npm run build
 
 # Copy only requirements to cache them in docker layer
 WORKDIR /code
-COPY poetry.lock pyproject.toml /code/
+COPY back/poetry.lock back/pyproject.toml /code/
 
 # This is a special case. We need to run this script as an entry point:
 COPY ./docker/django/entrypoint.sh /docker-entrypoint.sh
@@ -43,6 +49,14 @@ RUN chmod +x "/docker-entrypoint.sh" \
   && poetry install $(test "$DJANGO_ENV" == production && echo "--no-dev") --no-interaction --no-ansi
 
 # Creating folders, and files for a project:
-COPY . /code
+COPY back /code
+COPY docker /code/docker
+
+# Copy front
+RUN mv /front/build/index.html /code/server/templates/singlepage.html \
+  && mv /front/build/* /code/server/static/
+
+# Cleanup
+# RUN rm -rf /front && apk del gcc git libffi-dev linux-headers musl-dev postgresql-dev nodejs
 
 ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]

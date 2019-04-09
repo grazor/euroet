@@ -22,7 +22,7 @@ export DJANGO_ENV
 # docs/pages/template/production-checklist.rst
 python /code/manage.py migrate --noinput
 python /code/manage.py collectstatic --noinput
-python /code/manage.py compilemessages
+#python /code/manage.py compilemessages
 
 # Start gunicorn with 4 workers:
 /usr/local/bin/gunicorn server.wsgi -w 4 -b 0.0.0.0:8000 --chdir=/code

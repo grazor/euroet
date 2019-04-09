@@ -122,6 +122,9 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
+STATICFILES_DIRS = (
+    BASE_DIR.joinpath('server', 'static'),
+)
 
 # Templates
 # https://docs.djangoproject.com/en/1.11/ref/templates/api

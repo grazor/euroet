@@ -1,10 +1,5 @@
 # See https://caddyserver.com/docs
 
-# "www" redirect to "non-www" version
-www.{$DOMAIN_NAME} {
-  redir https://{$DOMAIN_NAME}
-}
-
 {$DOMAIN_NAME} {
   # HTTPS options:
   tls {$TLS_EMAIL}
