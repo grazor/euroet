@@ -27,6 +27,7 @@ RUN apk --no-cache add --virtual .build-deps \
      libffi-dev \
      linux-headers \
      musl-dev \
+     zlib \
      nodejs 
 RUN pip install "poetry==$POETRY_VERSION" pyparsing attrs
 
