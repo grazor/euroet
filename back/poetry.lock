@@ -407,11 +407,6 @@ version = "0.1.9"
 Faker = ">=0.7.7"
 django = ">=1.11"
 
-[package.source]
-reference = "656391d7670baa41ecca6be765617833027da6ea"
-type = "git"
-url = "https://github.com/grazor/django-seed.git"
-
 [[package]]
 category = "main"
 description = "Organize Django settings into multiple files and directories. Easily override and modify settings. Use wildcards and optional settings files."
@@ -1723,7 +1718,7 @@ python-versions = ">=2.7"
 version = "0.3.3"
 
 [metadata]
-content-hash = "a37de3b0ac83c0b81d53937105fc3a396dff0174de425b7d252464d04eb8adea"
+content-hash = "0080ac9def5187264bca710dddcb257428d5b804d66b72068c8aa312ddbef578"
 python-versions = "3.6.6"
 
 [metadata.hashes]
@@ -1767,7 +1762,7 @@ django-modeladmin-reorder = ["bf42d0dcd184b796b4d6d988c4b4cea7914adfc4430dd9978a
 django-querycount = ["8f5123d78716ff0704f2373e746a7200b8d8417798ce4a99bf2de87e3768f9ce"]
 django-referrer-policy = ["09e134324fa08c10efc12244a4bae7aee5defa7d332b92c603b09258c854615a"]
 django-rest-knox = ["63c36a5aa3d273d821739c4716aacfadf00c51a50d7b68aed54a67a1209004dc", "6f4126df24b6f142c1fde1c9207f6e0f4cd604cc4dc7a7fb66fab9361c4ccc77", "a4ce42ba19fe6c39f72342290d2ac27721c075deefe99cb3b71e9265cdfa21ee"]
-django-seed = []
+django-seed = ["da5dc54494c2d4274a6b9f9a2aea69cb15c3cce80777e2d30b3a5a082c0a7ee8"]
 django-split-settings = ["04f6b551111fdbcb4f669ac9004ac2d4a27197a36ca88444cb896378807ed777", "14b164dbd724e52aa9a0b0338eefa988a8a0f17f7cba34e0f983e5348682aeb7"]
 django-webpack-loader = ["60bab6b9a037a5346fad12d2a70a6bc046afb33154cf75ed640b93d3ebd5f520", "970b968c2a8975fb7eff56a3bab5d0d90d396740852d1e0c50c5cfe2b824199a"]
 djangorestframework = ["79c6efbb2514bc50cf25906d7c0a5cfead714c7af667ff4bd110312cd380ae66", "a4138613b67e3a223be6c97f53b13d759c5b90d2b433bad670b8ebf95402075f"]

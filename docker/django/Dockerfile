@@ -28,7 +28,7 @@ RUN apk --no-cache add --virtual .build-deps \
      linux-headers \
      musl-dev \
      nodejs 
-RUN pip install "poetry==$POETRY_VERSION"
+RUN pip install "poetry==$POETRY_VERSION" pyparsing attrs
 
 # Build front
 WORKDIR /front

@@ -43,7 +43,8 @@ services:
           DJANGO_ENV: production
       restart: unless-stopped
       volumes:
-        - django-media:/var/www/django/media  # since in dev it is app's folder
+        - django-media:/var/www/django/media
+        - django-static:/var/www/django/static
       environment:
         DJANGO_DATABASE_HOST: db
     command: sh ./docker/django/gunicorn.sh

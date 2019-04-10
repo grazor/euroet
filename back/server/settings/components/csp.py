@@ -10,8 +10,8 @@ We are using `django-csp` to provide these headers.
 Docs: https://github.com/mozilla/django-csp
 """
 
-CSP_SCRIPT_SRC = ("'self'",)
-CSP_IMG_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'", 'ajax.googleapis.com')
+CSP_IMG_SRC = ("'self'", "'data:'")
 CSP_FONT_SRC = ("'self'",)
-CSP_STYLE_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "'style-src-elem'")
 CS_DEFAULT_SRC = ("'none'",)
