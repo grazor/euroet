@@ -115,7 +115,7 @@ function* addComponent({ projectSlug, productSlug, component, qty }) {
     body: JSON.stringify({ component: component.id, qty }),
   };
 
-  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/components`;
+  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/components/`;
 
   try {
     const added = yield call(fetchJSON, baseUrl, options);
@@ -130,7 +130,7 @@ function* deleteComponent({ projectSlug, productSlug, code }) {
     method: 'DELETE',
   };
 
-  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/components/`;
+  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/components`;
 
   try {
     const component = yield call(fetchJSON, `${baseUrl}/${code}/`, options);
