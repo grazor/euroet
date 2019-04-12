@@ -31,10 +31,18 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
+        'error-file': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes' : 1024*1024*100, # 10MB
+            'backupCount' : 10,
+            'filename': '/var/log/share/django.error',
+            'formatter' : 'standard',
+        },
     },
     'loggers': {
         'django': {
-            'handlers': ['console'],
+            'handlers': ['console', 'error-file'],
             'propagate': True,
             'level': 'INFO',
         },

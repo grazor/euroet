@@ -21,6 +21,16 @@
   gzip
 
   # Logs:
-  log stdout
-  errors stdout
+  log /var/log/share/caddy.log {
+	rotate_size     64
+	rotate_age      7
+	rotate_keep     12
+	rotate_compress 
+  }
+  errors /var/log/share/caddy.errors {
+	rotate_size     64
+	rotate_age      7
+	rotate_keep     12
+	rotate_compress 
+  }
 }
