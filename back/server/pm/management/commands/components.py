@@ -1,3 +1,5 @@
+# flake8: noqa
+
 import csv
 from decimal import Decimal
 
@@ -9,7 +11,7 @@ from server.users.models import User
 
 ACTIONS = ['retreived', 'created']
 
-collections = {}
+collections = {}  # type: ignore
 
 
 class Command(BaseCommand):

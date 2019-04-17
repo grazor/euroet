@@ -34,10 +34,10 @@ LOGGING = {
         'error-file': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
-            'maxBytes' : 1024*1024*100, # 10MB
+            'maxBytes' : 1024 * 1024 * 100,  # 10MB
             'backupCount' : 10,
             'filename': '/var/log/share/django.error',
-            'formatter' : 'standard',
+            'formatter' : 'simple',
         },
     },
     'loggers': {

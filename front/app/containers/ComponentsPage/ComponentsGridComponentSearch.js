@@ -5,11 +5,10 @@ import Popper from '@material-ui/core/Popper';
 import PropTypes from 'prop-types';
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
-import match from 'autosuggest-highlight/match';
-import parse from 'autosuggest-highlight/parse';
 import { compose } from 'redux';
 import { debounce } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
+import Chip from '@material-ui/core/Chip';
 
 const styles = () => ({
   root: {
@@ -47,30 +46,25 @@ renderInputComponent.propTypes = {
   ref: PropTypes.object.isRequired,
 };
 
-function renderSuggestion(suggestion, { query, isHighlighted }) {
+function renderSuggestion(suggestion, { isHighlighted }) {
   const code = suggestion.code != null ? suggestion.code : '';
-  const desc =
-    suggestion.description != null ? `: ${suggestion.description}` : '';
-  const value = `${code} ${desc}`;
-  const matches = match(value, query);
-  const parts = parse(value, matches);
+  const desc = suggestion.description || '';
+  const matchCode = suggestion.match_code || false;
+
+  const style = {
+    minWidth: 160,
+    marginRight: 24,
+    fontSize: 16,
+  };
 
   return (
     <MenuItem selected={isHighlighted} component="div">
-      <div>
-        {parts.map(
-          (part, index) =>
-            part.highlight ? (
-              <span key={String(index)} style={{ fontWeight: 500 }}>
-                {part.text}
-              </span>
-            ) : (
-              <strong key={String(index)} style={{ fontWeight: 300 }}>
-                {part.text}
-              </strong>
-            ),
-        )}
-      </div>
+      <Chip
+        label={code}
+        color={matchCode ? 'primary' : 'default'}
+        style={style}
+      />
+      <div>{desc}</div>
     </MenuItem>
   );
 }
