@@ -8,7 +8,8 @@ MAX_COMPONENTS_TO_FIND = 7
 def _get_by_code(
     query: str, exclude: Optional[Iterable[int]] = None, max_count: int = MAX_COMPONENTS_TO_FIND
 ) -> List[Component]:
-    pattern = query.replace('*', '%').replace('?', '_') + '%'
+    pattern = query.replace('*', '%').replace('?', '_')
+    pattern += '' if '%' in pattern else '%'
     queryset = Component.objects.filter(merged_to__isnull=True)
     if exclude:
         queryset = queryset.exclude(id__in=exclude)
