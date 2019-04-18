@@ -411,6 +411,7 @@ django = ">=1.11"
 reference = "656391d7670baa41ecca6be765617833027da6ea"
 type = "git"
 url = "https://github.com/grazor/django-seed.git"
+
 [[package]]
 category = "main"
 description = "Organize Django settings into multiple files and directories. Easily override and modify settings. Use wildcards and optional settings files."
@@ -1702,6 +1703,14 @@ radon = ">=2,<3"
 requests = ">=2.0,<3.0"
 
 [[package]]
+category = "main"
+description = "A Python module for creating Excel XLSX files."
+name = "xlsxwriter"
+optional = false
+python-versions = "*"
+version = "1.1.6"
+
+[[package]]
 category = "dev"
 description = "A linter for YAML files."
 name = "yamllint"
@@ -1722,7 +1731,7 @@ python-versions = ">=2.7"
 version = "0.3.3"
 
 [metadata]
-content-hash = "b0add062dcfa199b009f5926e9685fc4538ab74c753bf3dad1c66a76bf34407a"
+content-hash = "39349dc3ace4caecd5870ae8ba26d1bbff4d98eaa402daf569b4ac245fc2213f"
 python-versions = "3.6.6"
 
 [metadata.hashes]
@@ -1887,5 +1896,6 @@ virtualenv = ["6aebaf4dd2568a0094225ebbca987859e369e3e5c22dc7d52e5406d504890417"
 wcwidth = ["3df37372226d6e63e1b1e1eda15c594bca98a22d33a23832a90998faa96bc65e", "f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c"]
 wemake-python-styleguide = ["43d0bcbfa7349c80000d7a22e319aff9de6eeabd8b6ff1e3aeb0a4c07453fd04", "b68c5b856b7dcc08e881b656a47544e6659643594bece1f945de543d30d31d5a"]
 xenon = ["03c6fa6820ca260a85931cec44bd60ae60194eec7eb22f53ba160b3c9578cdf1", "ac86e17741c6b6c0cc7e38e48b2d9f1cb9918e78f7a12f892d798ba73d5c2c09"]
+xlsxwriter = ["3a4e4a24a6753f046dc5a5e5bc5f443fce6a18988486885a258db6963eb54163", "92a2ba339ca939815f0e125fcde728e94ccdb3e97e1acd3275ecf25a3cacfdc6"]
 yamllint = ["5a53b6ebea563f944420d2964233173532af00a9579ab2c48c4cf8c56b704050", "8f25759997acb42e52b96bf3af0b4b942e6516b51198bebd3402640102006af7"]
 zipp = ["55ca87266c38af6658b84db8cfb7343cdb0bf275f93c7afaea0d8e7a209c7478", "682b3e1c62b7026afe24eadf6be579fb45fec54c07ea218bded8092af07a68c4"]

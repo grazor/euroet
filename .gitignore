@@ -220,7 +220,7 @@ fabric.properties
 
 #####=== Custom ===#####
 # Directories:
-media/
+media
 
 # File types:
 *.sqlite3

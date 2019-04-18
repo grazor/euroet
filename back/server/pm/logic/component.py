@@ -51,7 +51,6 @@ def find_components(query: Optional[str], exclude: Optional[Iterable[int]] = Non
         setattr(component, 'match_code', True)
 
     if count_left > 0:
-        by_description = _get_by_description(clean, exclude, count_left)
-        components.extend(by_description)
+        components.extend(_get_by_description(clean, exclude, count_left))
 
     return components
