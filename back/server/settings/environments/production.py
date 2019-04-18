@@ -7,6 +7,8 @@ This file is required and if development.py is present these
 values are overridden.
 """
 
+from pathlib import PurePath
+
 from server.settings.components.common import config
 
 # Production flags:
@@ -23,11 +25,11 @@ ALLOWED_HOSTS = [
 # https://docs.djangoproject.com/en/1.11/ref/contrib/staticfiles/
 
 # Adding STATIC_ROOT to collect static files via 'collectstatic'
-STATIC_ROOT = '/var/www/django/static'
+STATIC_ROOT = PurePath('/var/www/django/static')
 
 
 # Mediafiles
-MEDIA_ROOT = '/var/www/django/media'
+MEDIA_ROOT = PurePath('/var/www/django/media')
 
 
 # Password validation
