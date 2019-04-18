@@ -20,8 +20,9 @@ REPORT_HEAD = [
 
 
 def report_product(product: Product) -> str:
-    filename = f'{uuid4()}.xlsx'
-    filepath = settings.MEDIA_ROOT.joinpath('reports', filename)
+    report = Report.objects.create(report_type=Report.ReportType.product.name, product=product)
+    filename = f'reports/{report.uuid}.xlsx'
+    filepath = settings.MEDIA_ROOT.joinpath(filename)
     workbook = xlsxwriter.Workbook(filepath)
     ws = workbook.add_worksheet(product.name)
 
@@ -66,4 +67,8 @@ def report_product(product: Product) -> str:
         row += 1
 
     workbook.close()
+
+    report.filename = filename
+    report.save(update_fields=['filename'])
+
     return filename

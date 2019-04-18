@@ -1,4 +1,5 @@
 from enum import Enum
+from uuid import uuid4
 
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -14,7 +15,7 @@ class Report(models.Model):
         project_full = _('Project full report')
         product = _('Product report')
 
-    uuid = models.UUIDField(primary_key=True)
+    uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     report_type = models.CharField(max_length=16, choices=as_choices(ReportType))
     filename = models.CharField(max_length=512, null=True, blank=True)
 
@@ -22,7 +23,10 @@ class Report(models.Model):
     product = models.ForeignKey('Product', null=True, blank=True, on_delete=models.SET_NULL)
 
     created_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ('-created_at',)
 
     def __str__(self) -> str:
         return f'{self.uuid}'
