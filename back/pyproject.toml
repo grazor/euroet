@@ -32,6 +32,7 @@ coreapi = "^2.3"
 pyparsing = "^2.4"
 django-seed = {git = "https://github.com/grazor/django-seed.git"}
 XlsxWriter = "^1.1"
+django-constance = {version = "^2.4",extras = ["database"]}
 
 
 [tool.poetry.dev-dependencies]

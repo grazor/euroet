@@ -28,6 +28,7 @@ INSTALLED_APPS: Tuple[str, ...] = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'admin_reorder',
+    'constance',
 
     # rest:
     'rest_framework',
@@ -62,7 +63,7 @@ MIDDLEWARE: Tuple[str, ...] = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     # Admin:
-    'admin_reorder.middleware.ModelAdminReorder',
+    #'admin_reorder.middleware.ModelAdminReorder',
 )
 
 ROOT_URLCONF = 'server.urls'

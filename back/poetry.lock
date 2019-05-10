@@ -304,6 +304,17 @@ pytz = "*"
 
 [[package]]
 category = "main"
+description = "Django live settings with pluggable backends, including Redis."
+name = "django-constance"
+optional = false
+python-versions = "*"
+version = "2.4.0"
+
+[package.dependencies]
+django-picklefield = "*"
+
+[[package]]
+category = "main"
 description = "Django Content Security Policy support."
 name = "django-csp"
 optional = false
@@ -362,6 +373,18 @@ version = "0.3.1"
 
 [package.dependencies]
 django = "*"
+
+[[package]]
+category = "main"
+description = "Pickled object field for Django"
+marker = "extra == \"database\""
+name = "django-picklefield"
+optional = false
+python-versions = "*"
+version = "2.0"
+
+[package.dependencies]
+Django = ">=1.11"
 
 [[package]]
 category = "dev"
@@ -1731,7 +1754,7 @@ python-versions = ">=2.7"
 version = "0.3.3"
 
 [metadata]
-content-hash = "39349dc3ace4caecd5870ae8ba26d1bbff4d98eaa402daf569b4ac245fc2213f"
+content-hash = "0bb21f4384c17b321cdbbc25a0386c37096f6bca48157829e957ba9ea73953d2"
 python-versions = "3.6.6"
 
 [metadata.hashes]
@@ -1766,12 +1789,14 @@ decorator = ["33cd704aea07b4c28b3eb2c97d288a06918275dac0ecebdaf1bc8a48d98adb9e",
 django = ["7f246078d5a546f63c28fc03ce71f4d7a23677ce42109219c24c9ffb28416137", "ea50d85709708621d956187c6b61d9f9ce155007b496dd914fdb35db8d790aec"]
 django-appconf = ["6a4d9aea683b4c224d97ab8ee11ad2d29a37072c0c6c509896dd9857466fb261", "ddab987d14b26731352c01ee69c090a4ebfc9141ed223bef039d79587f22acd9"]
 django-axes = ["6f2719c9040e5120ece56232b6ab499b9cc3f02aa58d9fdee04210f480c7c30c", "7c539b1bbcac6752319783a5bd41c20c7b765cded31da9568a86e4521524a91e"]
+django-constance = ["19ff1ae8295aeffc2917ab67da4b310bfaf8c42f34d570f89e289fd54c4217b0", "417f9866a4fcd93c198acd16d5bc22b68e491eaabb18efea4c70d183d42daa45"]
 django-csp = ["04600237701e6d6ff78ed7d41209ff923988148bf292c128f6b474b9befe444f", "8b9997df89a7a936d7c397e051367f974aa1d1a97d0b32acb4300087b3bed071"]
 django-debug-toolbar = ["89d75b60c65db363fb24688d977e5fbf0e73386c67acf562d278402a10fc3736", "c2b0134119a624f4ac9398b44f8e28a01c7686ac350a12a74793f3dd57a9eea0"]
 django-extensions = ["109004f80b6f45ad1f56addaa59debca91d94aa0dc1cb19678b9364b4fe9b6f4", "307766e5e6c1caffe76c5d99239d8115d14ae3f7cab2cd991fcffd763dad904b"]
 django-health-check = ["99df177d266faf2a64d775c6e4c098c16f5408586ecc259717d8cb601c8753ea"]
 django-ipware = ["a7c7a8fd019dbdc9c357e6e582f65034e897572fc79a7e467674efa8aef9d00b"]
 django-modeladmin-reorder = ["bf42d0dcd184b796b4d6d988c4b4cea7914adfc4430dd9978a8a0199051f189f"]
+django-picklefield = ["9052f2dcf4882c683ce87b4356f29b4d014c0dad645b6906baf9f09571f52bc8", "f1733a8db1b6046c0d7d738e785f9875aa3c198215de11993463a9339aa4ea24"]
 django-querycount = ["8f5123d78716ff0704f2373e746a7200b8d8417798ce4a99bf2de87e3768f9ce"]
 django-referrer-policy = ["09e134324fa08c10efc12244a4bae7aee5defa7d332b92c603b09258c854615a"]
 django-rest-knox = ["63c36a5aa3d273d821739c4716aacfadf00c51a50d7b68aed54a67a1209004dc", "6f4126df24b6f142c1fde1c9207f6e0f4cd604cc4dc7a7fb66fab9361c4ccc77", "a4ce42ba19fe6c39f72342290d2ac27721c075deefe99cb3b71e9265cdfa21ee"]
