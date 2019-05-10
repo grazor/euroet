@@ -63,7 +63,7 @@ MIDDLEWARE: Tuple[str, ...] = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     # Admin:
-    #'admin_reorder.middleware.ModelAdminReorder',
+    'admin_reorder.middleware.ModelAdminReorder',
 )
 
 ROOT_URLCONF = 'server.urls'
@@ -208,6 +208,11 @@ REFERRER_POLICY = 'no-referrer'
 
 # Admin reorder
 ADMIN_REORDER = (
+    {
+        'app': 'constance',
+        'models': ('constance.Config',),
+        'label': 'Euroet',
+    },
     {
         'app': 'users',
         'models': ('users.User', 'auth.Group', 'knox.AuthToken', 'axes.AccessAttempt', 'axes.AccessLog'),
