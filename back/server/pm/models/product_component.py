@@ -7,12 +7,15 @@ from django.utils.translation import gettext as _
 
 User = get_user_model()
 
+INCREMENT = 2_097_152
+
 
 class ProductComponent(models.Model):
-    product = models.ForeignKey('Product', related_name='elements', on_delete=models.CASCADE)
+    group = models.ForeignKey('Group', on_delete=models.CASCADE)
     component = models.ForeignKey('Component', on_delete=models.PROTECT)
 
     qty = models.IntegerField(_('Quantity'), validators=(MinValueValidator(1),), default=1)
+    order = models.FloatField()
 
     updated_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     updated_at = models.DateTimeField(auto_now=True)
@@ -24,8 +27,15 @@ class ProductComponent(models.Model):
             discount = self.component.collection.discount / Decimal(100.0)
         return self.component.total_price * (Decimal(1) - discount) * Decimal(self.qty)
 
-    class Meta:
-        unique_together = ('product', 'component')
+    @property
+    def next_order_value(self):
+        max_value = (
+            ProductComponent.objects.filter(group=self.group).aggregate(models.Max('order')).get('order__max', 0)
+        )
+        return (max_value // INCREMENT + 1) * INCREMENT
 
     def __str__(self) -> str:
-        return f'{self.product_id} <- {self.component_id} (#{self.qty})'
+        return f'{self.group_id} <- {self.component_id} (#{self.qty})'
+
+    class Meta:
+        ordering = ('-order',)

@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from server.pm.models import Component, ProductComponent
 from server.pm.serializers.component import ComponentSerializer
+from server.pm.serializers.group import GroupSerializer
 
 
 class CurrentProductDefault:
@@ -13,7 +14,7 @@ class CurrentProductDefault:
 
 
 class ProductComponentSerializer(serializers.ModelSerializer):
-    product = serializers.HiddenField(default=CurrentProductDefault())
+    group = GroupSerializer(read_only=True)
     component = ComponentSerializer(read_only=True)
     aggregated_price = serializers.DecimalField(read_only=True, max_digits=12, decimal_places=3)
 

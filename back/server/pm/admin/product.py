@@ -29,5 +29,3 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = (ActiveProjectProductListFilter, 'project')
     readonly_fields = ('created_at', 'created_by', 'updated_at', 'updated_by')
     list_select_related = ('project', 'created_by')
-
-    inlines = (ComponentInline,)

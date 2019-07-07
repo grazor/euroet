@@ -15,7 +15,6 @@ class Product(DeactivateMixin, models.Model):
     description = models.TextField(max_length=2048, null=True, blank=True)
 
     project = models.ForeignKey('Project', null=True, blank=True, related_name='products', on_delete=models.CASCADE)
-    components = models.ManyToManyField('Component', through='ProductComponent')
 
     updated_by = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='updated')
     updated_at = models.DateTimeField(auto_now=True)

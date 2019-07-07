@@ -6,14 +6,10 @@ from django.contrib.postgres.operations import TrigramExtension
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('pm', '0002_auto_20190322_2319'),
-    ]
+    dependencies = [('pm', '0001_initial')]
 
     operations = [
         TrigramExtension(),
         migrations.RunSQL('set pg_trgm.word_similarity_threshold=0.3'),
-        migrations.RunSQL(
-            'CREATE INDEX pm_component_code_tgrm ON pm_component USING GIST (code gist_trgm_ops)'
-        ),
+        migrations.RunSQL('CREATE INDEX pm_component_code_tgrm ON pm_component USING GIST (code gist_trgm_ops)'),
     ]

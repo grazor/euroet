@@ -24,4 +24,5 @@ class ProductInline(admin.TabularInline):
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('slug', 'name', 'created_at', 'frozen_at', 'deleted_at')
     list_filter = (ActiveListFilter,)
+    readonly_fields = ('deleted_at',)
     inlines = (AccessInline, ProductInline)

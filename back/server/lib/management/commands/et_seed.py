@@ -5,13 +5,13 @@ from django_seed import Seed
 
 from django.core.management.base import BaseCommand
 
-from server.pm.models import Report, Product, Project, Component, Collection, ProjectAccess, ProductComponent
+from server.pm.models import Group, Report, Product, Project, Component, Collection, ProjectAccess, ProductComponent
 from server.users.models import User
 
 populator = Seed.seeder()
 faker = Seed.faker()
 
-entries = ((User, 10), (Collection, 7), (Component, 150), (Project, 5), (Product, 15), (Report, 20))
+entries = ((User, 10), (Collection, 7), (Component, 150), (Project, 5), (Product, 15), (Group, 10))
 
 
 def slug():
@@ -46,14 +46,14 @@ def populate_access(populated: Dict[Any, List[Union[str, int]]]) -> None:
 
 
 def populate_components(populated: Dict[Any, List[Union[str, int]]]) -> None:
-    for product in populated[Product]:
+    for group in populated[Group]:
         components = list(populated[Component])
         random.shuffle(components)  # noqa: S311
         for _ in range(random.randrange(min(len(components), 15))):  # noqa: S311
             component = components.pop()
             populated.setdefault(ProductComponent, []).append(
                 ProductComponent.objects.create(
-                    product_id=product, component_id=component, qty=random.randrange(1, 100)  # noqa: S311
+                    group_id=group, component_id=component, qty=random.randrange(1, 100)  # noqa: S311
                 )
             )
 
