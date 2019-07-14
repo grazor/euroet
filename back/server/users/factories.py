@@ -23,16 +23,15 @@ class UserFactory(factory.DjangoModelFactory):
 class AdminFactory(UserFactory):
     is_staff = True
     is_superuser = True
-    role = User.Roles.admin.name
 
 
 class EngineerFactory(UserFactory):
-    role = User.Roles.engineer.name
+    pass
 
 
 class ManagerFactory(UserFactory):
-    role = User.Roles.manager.name
+    pass
 
 
 class GuestFactory(UserFactory):
-    role = User.Roles.guest.name
+    pass

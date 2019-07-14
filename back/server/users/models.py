@@ -13,18 +13,8 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
-    class Roles(Enum):
-        guest = _('Guest')
-        engineer = _('Engineer')
-        manager = _('Manager')
-        admin = _('Admin')
-
     # Fields
     email = models.EmailField(_('Email address'), unique=True)  # unique not blank
-
-    role = models.CharField(
-        max_length=16, choices=as_choices(Roles), default=Roles.guest.name, db_index=True, help_text=_('Euroet role')
-    )
     photo = models.FilePathField(max_length=255, null=True, blank=True)
 
     @property

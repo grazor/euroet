@@ -16,27 +16,22 @@ INSTALLED_APPS: Tuple[str, ...] = (
     'server.users',
     'server.pm',
     'server.lib',
-
     # Default django apps:
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     # django-admin:
     'django.contrib.admin',
     'django.contrib.admindocs',
     'admin_reorder',
     'constance',
-
     # rest:
     'rest_framework',
     'knox',
-
     # Security:
     'axes',
-
     # Health checks:
     # see: https://github.com/KristianOellegaard/django-health-check
     'health_check',
@@ -48,10 +43,8 @@ INSTALLED_APPS: Tuple[str, ...] = (
 MIDDLEWARE: Tuple[str, ...] = (
     # Content Security Policy:
     'csp.middleware.CSPMiddleware',
-
     # Referrer Policy:
     'django_referrer_policy.middleware.ReferrerPolicyMiddleware',
-
     # Django:
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -61,7 +54,6 @@ MIDDLEWARE: Tuple[str, ...] = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
     # Admin:
     'admin_reorder.middleware.ModelAdminReorder',
 )
@@ -78,17 +70,15 @@ DATABASES = {
     'default': {
         # Choices are: postgresql_psycopg2, mysql, sqlite3, oracle
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-
         # Database name or filepath if using 'sqlite3':
         'NAME': config('POSTGRES_DB'),
-
         # You don't need these settings if using 'sqlite3':
         'USER': config('POSTGRES_USER'),
         'PASSWORD': config('POSTGRES_PASSWORD'),
         'HOST': config('DJANGO_DATABASE_HOST'),
         'PORT': config('DJANGO_DATABASE_PORT', cast=int),
         'CONN_MAX_AGE': config('CONN_MAX_AGE', cast=int, default=60),
-    },
+    }
 }
 
 
@@ -100,14 +90,9 @@ LANGUAGE_CODE = 'en-us'
 USE_I18N = True
 USE_L10N = True
 
-LANGUAGES = (
-    ('en', 'English'),
-    ('ru', 'Russian'),
-)
+LANGUAGES = (('en', 'English'), ('ru', 'Russian'))
 
-LOCALE_PATHS = (
-    'locale/',
-)
+LOCALE_PATHS = ('locale/',)
 
 USE_TZ = True
 TIME_ZONE = 'UTC'
@@ -123,31 +108,28 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-STATICFILES_DIRS = (
-    BASE_DIR.joinpath('server', 'static'),
-)
+STATICFILES_DIRS = (BASE_DIR.joinpath('server', 'static'),)
 
 # Templates
 # https://docs.djangoproject.com/en/1.11/ref/templates/api
 
-TEMPLATES = [{
-    'APP_DIRS': True,
-    'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': [
-        BASE_DIR.joinpath('server', 'templates'),
-    ],
-    'OPTIONS': {
-        'context_processors': [
-            'django.contrib.auth.context_processors.auth',
-            'django.template.context_processors.debug',
-            'django.template.context_processors.i18n',
-            'django.template.context_processors.media',
-            'django.contrib.messages.context_processors.messages',
-            'django.template.context_processors.request',
-        ],
-    },
-
-}]
+TEMPLATES = [
+    {
+        'APP_DIRS': True,
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR.joinpath('server', 'templates')],
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+            ]
+        },
+    }
+]
 
 # Media files
 # Media-root is commonly changed in production
@@ -161,12 +143,8 @@ MEDIA_ROOT = BASE_DIR.joinpath('media')
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'knox.auth.TokenAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'DATETIME_FORMAT': '%s',
 }
 
@@ -175,9 +153,7 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'users.User'
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-)
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
@@ -191,10 +167,7 @@ PASSWORD_HASHERS = [
 # Security
 # https://docs.djangoproject.com/en/1.11/topics/security/
 
-REST_KNOX = {
-    'TOKEN_TTL': dt.timedelta(days=14),
-    'AUTO_REFRESH': True,
-}
+REST_KNOX = {'TOKEN_TTL': dt.timedelta(days=14), 'AUTO_REFRESH': True}
 
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
@@ -208,14 +181,7 @@ REFERRER_POLICY = 'no-referrer'
 
 # Admin reorder
 ADMIN_REORDER = (
-    {
-        'app': 'constance',
-        'models': ('constance.Config',),
-        'label': 'Euroet',
-    },
-    {
-        'app': 'users',
-        'models': ('users.User', 'auth.Group', 'knox.AuthToken', 'axes.AccessAttempt', 'axes.AccessLog'),
-    },
+    {'app': 'constance', 'models': ('constance.Config',), 'label': 'Euroet'},
+    {'app': 'users', 'models': ('users.User', 'auth.Group', 'knox.AuthToken', 'axes.AccessAttempt', 'axes.AccessLog')},
     {'app': 'pm', 'label': 'Project Management'},
 )
