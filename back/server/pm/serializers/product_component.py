@@ -20,7 +20,7 @@ class ProductComponentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductComponent
-        fields = ('product', 'component', 'qty', 'aggregated_price')
+        fields = ('group', 'component', 'qty', 'aggregated_price')
 
 
 class ProductComponentAddSerializer(serializers.ModelSerializer):
