@@ -1,9 +1,25 @@
 import factory
 from faker import Faker
 
-from server.users.models import User
+from django.contrib.auth.models import Group, Permission
 
-faker = Faker()
+from server.pm.models import ProjectPermission
+from server.users.models import User
+from server.lib.factory_seed import faker
+
+
+def get_engineer_group():
+    group, created = Group.objects.get_or_create(name='Engineer')
+    if created:
+        group.permissions.add(Permission.objects.get(codename=ProjectPermission.can_create_projects.name))
+    return group
+
+
+def get_manager_group():
+    group, created = Group.objects.get_or_create(name='Manager')
+    if created:
+        group.permissions.add(Permission.objects.get(codename=ProjectPermission.can_manage_projects.name))
+    return group
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -30,7 +46,19 @@ class AdminFactory(UserFactory):
 class EngineerFactory(UserFactory):
     email = factory.Sequence(lambda n: f'engineer{n}@test.test')
 
+    @factory.post_generation
+    def group(self, create, extracted, **kwargs):
+        if not create:
+            return
+        self.groups.add(get_engineer_group())
+
 
 class ManagerFactory(UserFactory):
     email = factory.Sequence(lambda n: f'manager{n}@test.test')
+
+    @factory.post_generation
+    def group(self, create, extracted, **kwargs):
+        if not create:
+            return
+        self.groups.add(get_manager_group())
 

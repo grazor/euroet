@@ -2,8 +2,7 @@ import factory
 from faker import Faker
 
 from server.pm.models import Collection
-
-faker = Faker()
+from server.lib.factory_seed import faker
 
 
 class CollectionFactory(factory.DjangoModelFactory):

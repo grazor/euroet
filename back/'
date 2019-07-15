@@ -1,0 +1,19 @@
+import factory
+from faker import Faker
+
+from server.pm.models import Product
+from server.lib.factory_seed import faker
+from server.pm.factories.project import ProjectFactory
+
+
+class ProductFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Product
+
+    slug = factory.Sequence(lambda n: '{}_{}'.format(n, faker.slug()))
+    name = factory.LazyAttribute(lambda _: faker.sentence(nb_words=5))
+    description = factory.LazyAttribute(lambda _: faker.text(max_nb_chars=400))
+
+    project = factory.SubFactory()
+    deleted_at = None
+

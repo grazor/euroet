@@ -31,5 +31,5 @@ class Product(DeactivateMixin, models.Model):
         self.save(update_fields=['deleted_at', 'slug', 'project'])
 
     def __str__(self) -> str:
-        return f'{self.project_id}/{self.slug} ({self.name})'
+        return f'{self.slug} ({self.name})'
 

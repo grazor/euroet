@@ -20,7 +20,7 @@ DEBUG = True
 
 # Register dev apps
 
-INSTALLED_APPS += ('debug_toolbar', 'nplusone.ext.django', 'webpack_loader')
+INSTALLED_APPS += ('debug_toolbar', 'nplusone.ext.django', 'webpack_loader', 'django_extensions')
 
 # Static files:
 # https://docs.djangoproject.com/en/1.11/ref/settings/#std:setting-STATICFILES_DIRS

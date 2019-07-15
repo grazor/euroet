@@ -48,7 +48,7 @@ class Entry(ComponentBase, OrderedModel):
     @classmethod
     def add_component_from_prototype(cls: T, group: Group, component: Component, qty: int = 1) -> T:
         return cls.objects.create(
-            group=self,
+            group=group,
             prototype=component,
             qty=qty,
             code=component.code,
@@ -57,7 +57,7 @@ class Entry(ComponentBase, OrderedModel):
             price=component.price,
             manufacturer_name=component.manufacturer and component.manufacturer.name,
             collection_name=component.collection and component.collection.name,
-            collection_discount=component.collection and component.collection.discount,
+            collection_discount=component.collection and component.collection.discount or Decimal(0),
         )
 
     @property
@@ -66,8 +66,8 @@ class Entry(ComponentBase, OrderedModel):
         return self.price * (Decimal(1) - discount) * Decimal(self.qty)
 
     @property
-    def is_inconsistent(self) -> bool:
-        return self.prototype and self.synced_at < self.prototype.modified_at or False
+    def is_consistent(self) -> bool:
+        return self.prototype and self.synced_at >= self.prototype.modified_at or True
 
     def make_consistent(self) -> None:
         if not self.prototype:
@@ -79,7 +79,7 @@ class Entry(ComponentBase, OrderedModel):
         self.price = self.prototype.price
         self.manufacturer_name = self.prototype.manufacturer and self.prototype.manufacturer.name
         self.collection_name = self.prototype.collection and self.prototype.collection.name
-        self.collection_discount = self.prototype.collection and self.prototype.collection.discount
+        self.collection_discount = self.prototype.collection and self.prototype.collection.discount or Decimal(0)
         self.synced_at = timezone.now()
         self.save(
             update_fields=[
@@ -93,3 +93,6 @@ class Entry(ComponentBase, OrderedModel):
                 'synced_at',
             ]
         )
+
+    def extract_component(self) -> None:
+        raise NotImplementedError()

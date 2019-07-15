@@ -1,3 +1,4 @@
+from enum import Enum
 from uuid import uuid4
 from typing import Optional
 
@@ -8,10 +9,18 @@ from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.utils.translation import gettext as _
 
+from server.lib.enum import as_choices
 from server.pm.models.project_access import ProjectAccess
 from server.lib.deactivate_model_mixin import DeactivateMixin
 
 User = get_user_model()
+
+
+class ProjectPermission(Enum):
+    can_create_projects = _('Can create projects')
+    can_manage_projects = _('Can manage projects')
+    can_view_all_projects = _('Can view all projects')
+    can_edit_all_projects = _('Can edit all projects')
 
 
 class Project(DeactivateMixin, models.Model):
@@ -25,12 +34,8 @@ class Project(DeactivateMixin, models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
-    permissions = (
-        ('can_create_projects', _('Can create projects')),
-        ('can_manage_projects', _('Can manage projects')),
-        ('can_view_all_projects', _('Can view all projects')),
-        ('can_edit_all_projects', _('Can edit all projects')),
-    )
+    class Meta:
+        permissions = as_choices(ProjectPermission)
 
     def delete(self, *args, **kwargs):
         self.deleted_at = timezone.now()

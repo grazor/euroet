@@ -14,10 +14,13 @@ class AccessInline(admin.TabularInline):
 
 class ProductInline(admin.TabularInline):
     model = Product
-    fields = ('slug', 'name')
+    fields = readonly_fields = ('slug', 'name')
     classes = ('collapse',)
     show_change_link = True
     extra = 0
+
+    def has_add_permission(self, request):
+        return False
 
 
 @admin.register(Project)

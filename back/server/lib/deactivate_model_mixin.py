@@ -62,6 +62,6 @@ class ActiveListFilter(admin.SimpleListFilter):
 
 class DeactivateAdminMixin(admin.ModelAdmin):
     def is_active(self, instance):
-        return isinstance.deleted_at is None
+        return instance.deleted_at is None
 
     is_active.boolean = True

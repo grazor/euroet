@@ -1,12 +1,9 @@
 import factory
-from faker import Faker
 
 from server.pm.models import Component
-from server.lib.factory_seed import get_seed_model
+from server.lib.factory_seed import faker, get_seed_model
 from server.pm.factories.collection import CollectionFactory
 from server.pm.factories.manufacturer import ManufacturerFactory
-
-faker = Faker()
 
 
 class ComponentFactory(factory.DjangoModelFactory):

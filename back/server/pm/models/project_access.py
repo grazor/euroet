@@ -27,5 +27,5 @@ class ProjectAccess(models.Model):
         unique_together = ('user', 'project')
 
     def __str__(self) -> str:
-        return f'{self.user_id} {self.access_type.name} {self.project_id}'
+        return f'{self.user_id} {self.access_type} {self.project_id}'
 
