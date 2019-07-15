@@ -3,6 +3,7 @@ from enum import Enum
 from colorhash import ColorHash
 
 from django.db import models
+from django.conf import settings
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import AbstractUser
 
@@ -15,7 +16,7 @@ class User(AbstractUser):
 
     # Fields
     email = models.EmailField(_('Email address'), unique=True)  # unique not blank
-    photo = models.FilePathField(max_length=255, null=True, blank=True)
+    photo = models.FilePathField(max_length=255, null=True, blank=True, path=settings.MEDIA_ROOT.joinpath('photo'))
 
     @property
     def initials(self) -> str:

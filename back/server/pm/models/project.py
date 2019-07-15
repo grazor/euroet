@@ -21,6 +21,7 @@ class ProjectPermission(Enum):
     can_manage_projects = _('Can manage projects')
     can_view_all_projects = _('Can view all projects')
     can_edit_all_projects = _('Can edit all projects')
+    can_remove_non_empty = _('Can remove non empty projects')
 
 
 class Project(DeactivateMixin, models.Model):
@@ -50,14 +51,15 @@ class Project(DeactivateMixin, models.Model):
 
     def is_starred_by_user(self, user: User) -> bool:
         """Checks if user added project to favorites."""
-        access = get_user_access(user)
+        access = self.get_user_access(user)
         return access.is_starred if access else False
 
-    def toggle_user_star(self, user: User) -> bool:
-        """Toggles user's star. Assumes user has permission to access this project."""
-        access = get_user_access(user, create=True)
-        access.is_starred ^= True
-        access.save(update_fields=['is_starred'])
+    def set_user_star(self, user: User, value: bool) -> bool:
+        """Sets user's star. Assumes user has permission to access this project."""
+        access = self.get_user_access(user, create=True)
+        if access.is_starred != value:
+            access.is_starred = value
+            access.save(update_fields=['is_starred'])
         return access.is_starred
 
     def get_user_access(self, user: User, create=False) -> Optional[ProjectAccess]:

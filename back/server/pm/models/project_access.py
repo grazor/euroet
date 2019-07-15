@@ -29,3 +29,6 @@ class ProjectAccess(models.Model):
     def __str__(self) -> str:
         return f'{self.user_id} {self.access_type} {self.project_id}'
 
+    @property
+    def allows_write(self):
+        return self.access_type in {self.AccessType.own.name, self.AccessType.write.name}
