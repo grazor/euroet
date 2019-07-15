@@ -1,7 +1,8 @@
 import factory
 
 from server.pm.models import Product
-from server.lib.factory_seed import faker
+from server.users.factories import UserFactory
+from server.lib.factory_seed import faker, get_seed_model
 from server.pm.factories.project import ProjectFactory
 
 
@@ -23,6 +24,6 @@ class ProductFactory(factory.DjangoModelFactory):
                 size=lambda: faker.randint(1, 5),
                 factory_related_name='product',
                 seed=True,
-            )
+            ),
+            created_by=factory.LazyAttribute(lambda _: get_seed_model(UserFactory, nullable=True, generate=False)),
         )
-

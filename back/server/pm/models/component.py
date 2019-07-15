@@ -17,5 +17,5 @@ class Component(ComponentBase):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
-    def str(self) -> str:
-        return f'{self.code}'
+    def __str__(self) -> str:
+        return f'{self.code}: {self.name}'

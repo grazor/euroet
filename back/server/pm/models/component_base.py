@@ -14,6 +14,3 @@ class ComponentBase(models.Model):
 
     class Meta:
         abstract = True
-
-    def str(self) -> str:
-        return f'{self.code}'

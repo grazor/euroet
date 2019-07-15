@@ -12,4 +12,5 @@ class Migration(migrations.Migration):
         TrigramExtension(),
         migrations.RunSQL('set pg_trgm.word_similarity_threshold=0.3'),
         migrations.RunSQL('CREATE INDEX pm_component_code_tgrm ON pm_component USING GIST (code gist_trgm_ops)'),
+        migrations.RunSQL('CREATE INDEX pm_component_name_tgrm ON pm_component USING GIST (name gist_trgm_ops)'),
     ]

@@ -38,3 +38,10 @@ class HasProjectDetailAccess(BasePermission):
     def has_permission(self, request, view):
         read_only = request.method in SAFE_METHODS
         return can_access_project(request.user, request.project, read_only)
+
+
+class HasComponentsAccess(BasePermission):
+    def has_permission(self, request, view):
+        read_only = request.method in SAFE_METHODS
+        return read_only
+

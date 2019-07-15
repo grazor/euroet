@@ -27,6 +27,7 @@ INSTALLED_APPS: Tuple[str, ...] = (
     'django.contrib.admindocs',
     'admin_reorder',
     'constance',
+    'constance.backends.database',
     # rest:
     'rest_framework',
     'knox',

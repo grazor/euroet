@@ -25,9 +25,14 @@ class ProductInline(admin.TabularInline):
 
 @admin.register(Project)
 class ProjectAdmin(DeactivateAdminMixin, admin.ModelAdmin):
+    search_fields = ('slug', 'name')
     list_display = ('slug', 'name', 'created_by', 'created_at', 'modified_at', 'is_active')
     list_select_related = ('created_by',)
     list_filter = (ActiveListFilter, 'created_by')
+    date_hierarchy = 'created_at'
 
     inlines = (AccessInline, ProductInline)
+
+    def view_on_site(self, obj):
+        return f'/projects/{obj.slug}/'
 

@@ -8,10 +8,11 @@ from server.pm.models.component import Component
 
 class Group(OrderedModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    name = models.CharField(max_length=1023, null=True, blank=True)
+    name = models.CharField(max_length=1023, null=True, blank=True, db_index=True)
 
     order_with_respect_to = ('product',)
 
     class Meta:
-        ordering = ('product',)
+        ordering = ('product', 'order')
+        unique_together = ('product', 'name')
 

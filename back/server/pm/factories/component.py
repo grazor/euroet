@@ -10,7 +10,7 @@ class ComponentFactory(factory.DjangoModelFactory):
     class Meta:
         model = Component
 
-    code = factory.Sequence(lambda n: f'component_{n}')
+    code = factory.Sequence(lambda n: f'{faker.slug()}_{n}')
     name = factory.LazyAttribute(lambda _: faker.sentence(nb_words=5))
     price = factory.LazyAttribute(lambda _: abs(faker.pydecimal(left_digits=3, right_digits=2)))
     collection = factory.SubFactory(CollectionFactory)

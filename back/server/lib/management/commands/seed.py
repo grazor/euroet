@@ -17,7 +17,7 @@ rules = (
     Rule(AdminFactory, 3, False, False),
     Rule(ManagerFactory, 3, False, False),
     Rule(EngineerFactory, 10, False, False),
-    Rule(ComponentFactory, 100, True, True),
+    Rule(ComponentFactory, 1000, True, True),
     Rule(ProjectSeedFactory, 10, False, True),
 )
 
@@ -35,7 +35,6 @@ class Command(BaseCommand):
                 rule.Factory.create_batch(rule.amount, **kwargs)
                 logger.info(f'Created {rule.amount:03d} of {rule.Factory}')
             except IntegrityError:
-                raise
                 logger.info(f'Failed to create {rule.amount:03d} of {rule.Factory}')
             except:
                 logger.exception(f'Unknown error while creating {rule.amount:03d} of {rule.Factory}')

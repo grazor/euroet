@@ -17,7 +17,7 @@ T = TypeVar('T', bound='Entry')
 
 
 class Entry(ComponentBase, OrderedModel):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='entries')
     prototype = models.ForeignKey(Component, null=True, blank=True, on_delete=models.SET_NULL)
 
     qty = models.IntegerField(_('Quantity'), validators=(MinValueValidator(1),), default=1)
@@ -40,7 +40,7 @@ class Entry(ComponentBase, OrderedModel):
     order_with_respect_to = ('group',)
 
     class Meta:
-        ordering = ('group',)
+        ordering = ('group', 'order')
 
     def __str__(self) -> str:
         return f'{self.group_id} <- {self.code} (#{self.qty})'
