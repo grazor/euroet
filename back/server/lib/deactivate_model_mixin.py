@@ -58,3 +58,10 @@ class ActiveListFilter(admin.SimpleListFilter):
         if self.value() == ActiveListFilter.ActiveStatus.deleted.name:
             return queryset.filter(deleted_at__isnull=False)
         return queryset
+
+
+class DeactivateAdminMixin(admin.ModelAdmin):
+    def is_active(self, instance):
+        return isinstance.deleted_at is None
+
+    is_active.boolean = True

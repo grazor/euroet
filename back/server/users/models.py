@@ -38,4 +38,4 @@ class User(AbstractUser):
             name = f'{self.last_name} {self.first_name}'
         else:
             name = f'{self.username}'
-        return f'User({name})'
+        return f'{name}'

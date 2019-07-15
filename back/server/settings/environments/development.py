@@ -20,26 +20,18 @@ DEBUG = True
 
 # Register dev apps
 
-INSTALLED_APPS += (
-    'debug_toolbar',
-    'nplusone.ext.django',
-
-    'webpack_loader',
-    'django_seed',
-)
+INSTALLED_APPS += ('debug_toolbar', 'nplusone.ext.django', 'webpack_loader')
 
 # Static files:
 # https://docs.djangoproject.com/en/1.11/ref/settings/#std:setting-STATICFILES_DIRS
 
-STATICFILES_DIRS: Tuple[str, ...] = (
-    os.path.join(BASE_DIR, '../front/build'),
-)
+STATICFILES_DIRS: Tuple[str, ...] = (os.path.join(BASE_DIR, '../front/build'),)
 
 WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'front/build',
         'STATS_FILE': os.path.join(BASE_DIR, '../front/stats.json'),
-        'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
+        'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
     }
 }
 
@@ -48,11 +40,9 @@ WEBPACK_LOADER = {
 
 MIDDLEWARE += (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-
     # https://github.com/bradmontgomery/django-querycount
     # Prints how many queries were executed, useful for the APIs.
     'querycount.middleware.QueryCountMiddleware',
-
     # Prints queries
     'server.lib.sql_debug_middleware.SqlDebugMiddleware',
 )
@@ -63,10 +53,7 @@ def custom_show_toolbar(request):
     return request.user.is_superuser
 
 
-DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_TOOLBAR_CALLBACK':
-        'server.settings.environments.development.custom_show_toolbar',
-}
+DEBUG_TOOLBAR_CONFIG = {'SHOW_TOOLBAR_CALLBACK': 'server.settings.environments.development.custom_show_toolbar'}
 
 # This will make debug toolbar to work with django-csp,
 # since `ddt` loads some scripts from `ajax.googleapis.com`:
