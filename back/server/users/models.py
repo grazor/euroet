@@ -16,7 +16,9 @@ class User(AbstractUser):
 
     # Fields
     email = models.EmailField(_('Email address'), unique=True)  # unique not blank
-    photo = models.FilePathField(max_length=255, null=True, blank=True, path=settings.MEDIA_ROOT.joinpath('photo'))
+    photo = models.FilePathField(
+        max_length=255, null=True, blank=True, path=settings.MEDIA_ROOT.joinpath('photo').as_posix()
+    )
 
     @property
     def initials(self) -> str:
