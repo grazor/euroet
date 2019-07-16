@@ -44,13 +44,13 @@ class ProjectViewset(viewsets.ModelViewSet):
 
         instance.delete()
 
-    @action(detail=True, methods=['update'], name='Star project')
+    @action(detail=True, methods=['post'], name='Star project')
     def star(self, request, slug=None):
         user = request.user
         project = self.get_object()
         serializer = StarSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        project.set_user_star(user, serializer.data.is_starred)
+        project.set_user_star(user, serializer.data['is_starred'])
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
