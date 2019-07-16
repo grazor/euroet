@@ -27,11 +27,7 @@ function* authorize({ email: username, password }) {
   };
 
   try {
-    const { user, token } = yield call(
-      fetchJSON,
-      '/api/users/auth/login/',
-      options,
-    );
+    const { user, token } = yield call(fetchJSON, '/api/users/login/', options);
     localStorage.setItem('token', token);
     yield put({ type: AUTH_SUCCESS, user });
     yield put(notifySuccess('Authenticated'));
@@ -60,7 +56,7 @@ function* getUser() {
 
 function* logout() {
   try {
-    yield call(fetchJSON, '/api/users/auth/logout/', { method: 'POST' });
+    yield call(fetchJSON, '/api/users/logout/', { method: 'POST' });
   } finally {
     localStorage.removeItem('token');
     yield put({ type: LOGOUT_SUCCESS });

@@ -118,18 +118,14 @@ function* deleteProject({ slug }) {
 
 function* toggleStar({ slug, isSet }) {
   const options = {
-    method: 'GET',
+    method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ is_starred: isSet }),
   };
 
   try {
-    if (isSet) {
-      yield call(fetchJSON, `/api/projects/${slug}/star`, options);
-      yield put(notifySuccess('Project has been starred'));
-    } else {
-      yield call(fetchJSON, `/api/projects/${slug}/unstar`, options);
-      yield put(notifySuccess('Project has been unstarred'));
-    }
+    yield call(fetchJSON, `/api/projects/${slug}/star/`, options);
+    yield put(notifySuccess('Project has been starred'));
     yield put({ type: PROJECT_TOGGLE_STAR_SUCCESS, slug, isSet });
   } catch (error) {
     yield put({ type: PROJECT_TOGGLE_STAR_FAILURE });

@@ -21,7 +21,7 @@ class EuroetTable extends React.Component {
   };
 
   options = {
-    selectableRows: false,
+    selectableRows: 'none',
     rowsPerPage: 30,
     rowsPerPageOptions: [10, 30, 50],
     print: false,

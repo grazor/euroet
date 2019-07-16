@@ -30,7 +30,7 @@ function* handleApiError(error, action) {
       message = 'Invalid credentials';
       break;
     case 404:
-      message = 'Project not fount';
+      message = 'Project not found';
       break;
     default:
       message = 'Something went wrong';

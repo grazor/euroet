@@ -1,4 +1,5 @@
 import Autosuggest from 'react-autosuggest';
+import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
@@ -8,7 +9,6 @@ import TextField from '@material-ui/core/TextField';
 import { compose } from 'redux';
 import { debounce } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
-import Chip from '@material-ui/core/Chip';
 
 const styles = () => ({
   root: {
