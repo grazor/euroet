@@ -16,6 +16,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { find } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
+import EtBreadcumbs from 'components/Breadcumbs';
 
 import ProductDialog from './ProductDialog';
 import ProductsTable from './ProductsTable';
@@ -41,8 +42,8 @@ const styles = theme => ({
   },
   fab: {
     position: 'fixed',
-    bottom: 2 * theme.spacing.unit,
-    right: 2 * theme.spacing.unit,
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
   },
   loadingRoot: {
     flexGrow: 1,
@@ -135,6 +136,7 @@ class ProductsPage extends React.Component {
           onSubmit={this.onSubmitAction}
           onDelete={this.onDeleteAction}
         />
+        <EtBreadcumbs projectName={project.name} />
         <ProjectDetail project={project} />
         <ProductsTable
           products={products}

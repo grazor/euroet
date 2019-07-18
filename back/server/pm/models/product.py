@@ -33,3 +33,6 @@ class Product(DeactivateMixin, models.Model):
     def __str__(self) -> str:
         return f'{self.slug} ({self.name})'
 
+    @property
+    def project_name(self):
+        return self.project and self.project.name or 'Draft'

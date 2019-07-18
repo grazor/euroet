@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { withStyles } from '@material-ui/core/styles';
 
+import EtBreadcumbs from 'components/Breadcumbs';
 import ComponentsGrid from './ComponentsGrid';
 import ProductDetail from './ProductDetail';
 import reducer from './reducer';
@@ -80,6 +81,10 @@ export class ComponentsPage extends React.Component {
 
     return (
       <React.Fragment>
+        <EtBreadcumbs
+          projectName={product.project_name}
+          productName={product.name}
+        />
         <ProductDetail product={product} />
         <ComponentsGrid
           components={components}

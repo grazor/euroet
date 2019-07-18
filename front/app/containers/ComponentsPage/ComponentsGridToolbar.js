@@ -8,7 +8,7 @@ import ComponentSearch from './ComponentsGridComponentSearch';
 const styles = theme => ({
   root: {
     ...theme.mixins.gutters(),
-    padding: 2 * theme.spacing.unit,
+    padding: theme.spacing(2),
     flexGrow: 1,
   },
 });

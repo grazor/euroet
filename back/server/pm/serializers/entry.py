@@ -30,7 +30,7 @@ class GroupEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ('name', 'order', 'entries')
+        fields = ('id', 'name', 'order', 'entries')
 
 
 class ComponentCopySerializer(serializers.Serializer):

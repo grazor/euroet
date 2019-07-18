@@ -16,6 +16,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { find } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
+import EtBreadcumbs from 'components/Breadcumbs';
 
 import ProjectDialog from './ProjectDialog';
 import ProjectsTable from './ProjectsTable';
@@ -40,8 +41,8 @@ const styles = theme => ({
   },
   fab: {
     position: 'fixed',
-    bottom: 2 * theme.spacing.unit,
-    right: 2 * theme.spacing.unit,
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
   },
   loadingRoot: {
     flexGrow: 1,
@@ -110,6 +111,7 @@ class ProjectsPage extends React.Component {
           onSubmit={this.onSubmitAction}
           onDelete={this.onDeleteAction}
         />
+        <EtBreadcumbs />
         <ProjectsTable
           projects={projects}
           setStar={this.setStar}

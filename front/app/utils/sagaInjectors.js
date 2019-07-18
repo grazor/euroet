@@ -1,5 +1,5 @@
 import invariant from 'invariant';
-import { conformsTo, isEmpty, isFunction, isString } from 'lodash';
+import { isEmpty, isFunction, isString, conformsTo } from 'lodash';
 
 import checkStore from './checkStore';
 import { DAEMON, ONCE_TILL_UNMOUNT, RESTART_ON_REMOUNT } from './constants';
@@ -29,7 +29,7 @@ export function injectSagaFactory(store, isValid) {
 
     const newDescriptor = {
       ...descriptor,
-      mode: descriptor.mode || RESTART_ON_REMOUNT,
+      mode: descriptor.mode || DAEMON,
     };
     const { saga, mode } = newDescriptor;
 

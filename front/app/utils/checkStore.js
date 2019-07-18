@@ -1,5 +1,5 @@
-import invariant from 'invariant';
 import { conformsTo, isFunction, isObject } from 'lodash';
+import invariant from 'invariant';
 
 /**
  * Validate the shape of redux store
