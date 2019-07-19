@@ -10,6 +10,7 @@ class EntrySerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'prototype_id',
+            'group_id',
             'code',
             'name',
             'description',
@@ -42,3 +43,7 @@ class ComponentCopySerializer(serializers.Serializer):
 class MoveEntrySerializer(serializers.Serializer):
     entry = serializers.IntegerField(min_value=1, read_only=False)
     order = serializers.IntegerField(min_value=0, read_only=True)
+
+
+class UpdateEntrySerializer(serializers.Serializer):
+    qty = serializers.IntegerField(min_value=1)

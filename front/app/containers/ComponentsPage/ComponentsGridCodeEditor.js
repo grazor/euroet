@@ -36,6 +36,8 @@ class CodeEditor extends React.Component {
       width={this.props.getPaperWidth() - 2 * this.props.column.left}
       getSuggestions={this.props.getSuggestions}
       addComponent={this.props.addComponent}
+      groupId={this.props.rowData.groupId}
+      onCommit={this.props.onCommit}
     />
   );
 
@@ -56,6 +58,7 @@ CodeEditor.propTypes = {
   getSuggestions: PropTypes.func.isRequired,
   addComponent: PropTypes.func.isRequired,
   column: PropTypes.object,
+  onCommit: PropTypes.func,
 };
 
 export default CodeEditor;

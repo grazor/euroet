@@ -6,26 +6,42 @@ const selectComponentsPageDomain = state =>
   state.get('components', initialState);
 
 export const makeSelectProduct = () =>
-  createSelector(selectComponentsPageDomain, components =>
-    components.get('product').toJS(),
+  createSelector(
+    selectComponentsPageDomain,
+    components => components.get('product').toJS(),
   );
 
 export const makeSelectComponents = () =>
-  createSelector(selectComponentsPageDomain, components =>
-    components.get('components').toJS(),
+  createSelector(
+    selectComponentsPageDomain,
+    components => components.get('components').toJS(),
   );
 
 export const makeSelectIsLoading = () =>
-  createSelector(selectComponentsPageDomain, components =>
-    components.get('isUpdating'),
+  createSelector(
+    selectComponentsPageDomain,
+    components => components.get('isUpdating'),
   );
 
 export const makeSelectIsUpdating = () =>
-  createSelector(selectComponentsPageDomain, components =>
-    components.get('isLoading'),
+  createSelector(
+    selectComponentsPageDomain,
+    components => components.get('isLoading'),
   );
 
 export const makeSelectSuggestions = () =>
-  createSelector(selectComponentsPageDomain, components =>
-    components.get('suggestions').toJS(),
+  createSelector(
+    selectComponentsPageDomain,
+    components => components.get('suggestions').toJS(),
+  );
+
+export const makeSelectTotalPrice = () =>
+  createSelector(
+    selectComponentsPageDomain,
+    components =>
+      components
+        .get('components')
+        .map(group => group.get('total_price') || 0)
+        .reduce((a, b) => a + b, 0)
+        .toFixed(2),
   );

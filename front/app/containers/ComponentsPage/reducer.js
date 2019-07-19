@@ -16,6 +16,9 @@ import {
   RENAME_GROUP_FAILURE,
   RENAME_GROUP_REQUEST,
   RENAME_GROUP_SUCCESS,
+  FETCH_GROUP_FAILURE,
+  FETCH_GROUP_REQUEST,
+  FETCH_GROUP_SUCCESS,
   DELETE_GROUP_FAILURE,
   DELETE_GROUP_REQUEST,
   DELETE_GROUP_SUCCESS,
@@ -67,12 +70,15 @@ function componentsPageReducer(state = initialState, action) {
       );
 
     case UPDATE_QTY_SUCCESS:
-      return state.update('components', components =>
-        components.map(component =>
-          component.getIn(['component', 'code']) ===
-          action.component.component.code
-            ? fromJS(action.component)
-            : component,
+      return state.update('components', groups =>
+        groups.map(group =>
+          group.update('entries', entries =>
+            entries.map(entry =>
+              entry.get('id') === action.entry.id
+                ? fromJS(action.entry)
+                : entry,
+            ),
+          ),
         ),
       );
 
@@ -99,17 +105,51 @@ function componentsPageReducer(state = initialState, action) {
         ),
       );
 
+    case FETCH_GROUP_REQUEST:
+      return state.update('components', groups =>
+        groups.map(group =>
+          group.get('id') === action.group
+            ? group.set('total_price', '')
+            : group,
+        ),
+      );
+
+    case FETCH_GROUP_SUCCESS:
+      return state.update('components', groups =>
+        groups.map(group =>
+          group.get('id') === action.group.id
+            ? group.set('total_price', action.group.total_price)
+            : group,
+        ),
+      );
+
     case DELETE_GROUP_SUCCESS:
       return state.update('components', groups =>
         groups.filter(group => group.get('id') !== action.id),
       );
 
     case ADD_COMPONENT_SUCCESS:
-      return state.update('components', components =>
-        components.insert(0, fromJS(action.component)),
+      return state.update('components', groups =>
+        groups.map(group =>
+          group.get('id') === action.group
+            ? group.update('entries', entries =>
+                entries.push(fromJS(action.component)),
+              )
+            : group,
+        ),
       );
 
     case DELETE_COMPONENT_REQUEST:
+      return state.update('components', groups =>
+        groups.map(group =>
+          group.get('id') === action.group
+            ? group.update('entries', entries =>
+                entries.filter(entry => entry.get('id') !== action.id),
+              )
+            : group,
+        ),
+      );
+
       return state.update('components', components =>
         components.filter(
           component => component.getIn(['component', 'code']) !== action.code,
@@ -122,6 +162,7 @@ function componentsPageReducer(state = initialState, action) {
     case ADD_GROUP_FAILURE:
     case RENAME_GROUP_REQUEST:
     case RENAME_GROUP_FAILURE:
+    case FETCH_GROUP_FAILURE:
     case DELETE_GROUP_REQUEST:
     case DELETE_GROUP_FAILURE:
     case ADD_COMPONENT_REQUEST:

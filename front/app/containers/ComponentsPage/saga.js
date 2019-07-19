@@ -1,7 +1,8 @@
 import fetchJSON from 'utils/fetchjson';
-import { all, call, put, takeLatest } from 'redux-saga/effects';
+import { all, call, put, takeLatest, takeEvery } from 'redux-saga/effects';
 import { notifyWarning } from 'containers/App/actions';
 
+import { fetchGroup } from './actions';
 import {
   ADD_COMPONENT_FAILURE,
   ADD_COMPONENT_REQUEST,
@@ -9,6 +10,9 @@ import {
   ADD_GROUP_FAILURE,
   ADD_GROUP_REQUEST,
   ADD_GROUP_SUCCESS,
+  FETCH_GROUP_FAILURE,
+  FETCH_GROUP_REQUEST,
+  FETCH_GROUP_SUCCESS,
   RENAME_GROUP_FAILURE,
   RENAME_GROUP_REQUEST,
   RENAME_GROUP_SUCCESS,
@@ -72,7 +76,7 @@ function* getProductInfo({ projectSlug, productSlug }) {
   }
 }
 
-function* bulkUpdateQty({ projectSlug, productSlug, codes, qty }) {
+function* bulkUpdateQty({ projectSlug, productSlug, ids, qty }) {
   const options = {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -80,21 +84,30 @@ function* bulkUpdateQty({ projectSlug, productSlug, codes, qty }) {
 
   const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/components`;
   /* eslint-disable redux-saga/yield-effects */
-  const actions = codes.map(code =>
-    call(fetchJSON, `${baseUrl}/${code}/`, {
+  const actions = ids.map(id =>
+    call(fetchJSON, `${baseUrl}/${id}/`, {
       ...options,
       body: JSON.stringify({ qty }),
     }),
   );
   /* eslint-enable redux-saga/yield-effects */
 
+  const groupsToUpdate = new Set();
   try {
     const result = yield all(actions);
     for (let i = 0; i < result.length; i += 1) {
-      yield put({ type: UPDATE_QTY_SUCCESS, component: result[i] });
+      yield put({ type: UPDATE_QTY_SUCCESS, entry: result[i] });
+      groupsToUpdate.add(result[i].group_id);
     }
   } catch (error) {
     yield handleApiError(error, UPDATE_QTY_FAILURE);
+  }
+
+  const it = groupsToUpdate.values();
+  let group = it.next();
+  while (!group.done) {
+    yield put(fetchGroup(projectSlug, productSlug, group.value));
+    group = it.next();
   }
 }
 
@@ -133,6 +146,20 @@ function* addGroup({ projectSlug, productSlug, name }) {
   }
 }
 
+function* fetchGroupSaga({ projectSlug, productSlug, group }) {
+  const options = {
+    method: 'GET',
+  };
+  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/groups/${group}/`;
+
+  try {
+    const fetched = yield call(fetchJSON, baseUrl, options);
+    yield put({ type: FETCH_GROUP_SUCCESS, group: fetched });
+  } catch (error) {
+    yield handleApiError(error, FETCH_GROUP_FAILURE);
+  }
+}
+
 function* renameGroup({ projectSlug, productSlug, id, name }) {
   const options = {
     method: 'PUT',
@@ -164,24 +191,25 @@ function* deleteGroup({ projectSlug, productSlug, id }) {
   }
 }
 
-function* addComponent({ projectSlug, productSlug, component, qty }) {
+function* addComponent({ projectSlug, productSlug, group, component, qty }) {
   const options = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ component: component.id, qty }),
+    body: JSON.stringify({ group, component: component.id, qty }),
   };
 
-  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/components/`;
+  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/components/copy/`;
 
   try {
     const added = yield call(fetchJSON, baseUrl, options);
-    yield put({ type: ADD_COMPONENT_SUCCESS, component: added });
+    yield put({ type: ADD_COMPONENT_SUCCESS, component: added, group });
+    yield put(fetchGroup(projectSlug, productSlug, group));
   } catch (error) {
     yield handleApiError(error, ADD_COMPONENT_FAILURE);
   }
 }
 
-function* deleteComponent({ projectSlug, productSlug, code }) {
+function* deleteComponent({ projectSlug, productSlug, group, id }) {
   const options = {
     method: 'DELETE',
   };
@@ -189,8 +217,9 @@ function* deleteComponent({ projectSlug, productSlug, code }) {
   const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/components`;
 
   try {
-    const component = yield call(fetchJSON, `${baseUrl}/${code}/`, options);
-    yield put({ type: DELETE_COMPONENT_SUCCESS, component });
+    yield call(fetchJSON, `${baseUrl}/${id}/`, options);
+    yield put({ type: DELETE_COMPONENT_SUCCESS, id });
+    yield put(fetchGroup(projectSlug, productSlug, group));
   } catch (error) {
     yield handleApiError(error, DELETE_COMPONENT_FAILURE);
   }
@@ -201,6 +230,7 @@ export default function* componentsPageSaga() {
   yield takeLatest(BULK_UPDATE_QTY_REQUEST, bulkUpdateQty);
   yield takeLatest(GET_SUGGESTIONS_REQUEST, getSuggestions);
   yield takeLatest(ADD_GROUP_REQUEST, addGroup);
+  yield takeEvery(FETCH_GROUP_REQUEST, fetchGroupSaga);
   yield takeLatest(RENAME_GROUP_REQUEST, renameGroup);
   yield takeLatest(DELETE_GROUP_REQUEST, deleteGroup);
   yield takeLatest(ADD_COMPONENT_REQUEST, addComponent);

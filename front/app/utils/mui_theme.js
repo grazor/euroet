@@ -5,6 +5,7 @@ const theme = createMuiTheme({
   palette: {
     type: 'light',
     primary: Colors.deepOrange,
+    secondary: Colors.blue,
   },
   overrides: {
     MUIDataTable: {

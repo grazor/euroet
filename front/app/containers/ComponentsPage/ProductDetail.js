@@ -15,7 +15,7 @@ const styles = theme => ({
 });
 
 const ProductDetail = props => {
-  const { classes, product } = props;
+  const { classes, product, totalPrice } = props;
 
   return (
     <div>
@@ -24,6 +24,7 @@ const ProductDetail = props => {
           {product.name}
         </Typography>
         <Typography component="p">{product.description}</Typography>
+        <Typography component="p">Total price: {totalPrice} ₽</Typography>
       </Paper>
     </div>
   );
@@ -32,6 +33,7 @@ const ProductDetail = props => {
 ProductDetail.propTypes = {
   classes: PropTypes.object.isRequired,
   product: PropTypes.object.isRequired,
+  totalPrice: PropTypes.number.isRequired,
 };
 
 const withStyle = withStyles(styles);

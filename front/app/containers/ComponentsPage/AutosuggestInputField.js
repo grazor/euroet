@@ -1,18 +1,22 @@
 import Autosuggest from 'react-autosuggest';
 import Chip from '@material-ui/core/Chip';
-import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Input from '@material-ui/core/Input';
 import { debounce } from 'lodash';
 import { connect } from 'react-redux';
-import { bindActionCreators, compose } from 'redux';
+import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { withStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+
 import { makeSelectSuggestions } from './selectors';
 
-const styles = () => ({
+const styles = theme => ({
   root: {
     flexGrow: 1,
   },
@@ -34,6 +38,12 @@ const styles = () => ({
     backgroundColor: '#fff',
     textAlign: 'left',
   },
+  list: {
+    backgroundColor: theme.palette.background.paper,
+    position: 'relative',
+    overflow: 'auto',
+    maxHeight: 400,
+  },
 });
 
 const renderInputComponent = props => (
@@ -49,22 +59,28 @@ function renderSuggestion(suggestion, { isHighlighted }) {
   const code = suggestion.code != null ? suggestion.code : '';
   const desc = suggestion.name || '';
   const matchCode = suggestion.match_code || false;
+  const manufacturer =
+    (suggestion.manufacturer && suggestion.manufacturer.name) || '';
+  const price = suggestion.price ? `${suggestion.price} ₽` : '';
+  const sideText = [manufacturer, price].filter(x => x).join(', ');
 
   const style = {
-    minWidth: 400,
+    minWidth: 300,
     marginRight: 24,
-    fontSize: 16,
+    fontSize: 14,
   };
 
   return (
-    <MenuItem selected={isHighlighted} component="div">
+    <ListItem button selected={isHighlighted}>
       <Chip
         label={code}
-        color={matchCode ? 'primary' : 'default'}
+        color={matchCode ? 'primary' : 'secondary'}
+        variant={matchCode ? 'default' : 'outlined'}
         style={style}
       />
-      <div>{desc}</div>
-    </MenuItem>
+      <ListItemText primary={desc} />
+      <div edge="end">{sideText} </div>
+    </ListItem>
   );
 }
 
@@ -89,11 +105,12 @@ class AutosuggestInputField extends React.Component {
   );
 
   handleSuggestionsClearRequested = () => {
-    //this.props.getSuggestions('');
+    this.props.getSuggestions('');
   };
 
   handleSuggestionSelected = (event, { suggestion }) => {
-    this.props.addComponent(suggestion);
+    this.props.addComponent(this.props.groupId, suggestion);
+    this.props.onCommit();
   };
 
   handleChange = () => (event, { newValue }) => {
@@ -132,8 +149,14 @@ class AutosuggestInputField extends React.Component {
             suggestion: classes.suggestion,
           }}
           renderSuggestionsContainer={options => (
-            <Paper {...options.containerProps} square style={{ width }}>
-              {options.children}
+            <Paper
+              {...options.containerProps}
+              elevation={4}
+              style={options.children ? { width } : { display: 'none' }}
+            >
+              <List className={classes.list} style={{ width }}>
+                {options.children}
+              </List>
             </Paper>
           )}
         />
@@ -149,6 +172,8 @@ AutosuggestInputField.propTypes = {
   addComponent: PropTypes.func.isRequired,
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
+  groupId: PropTypes.number.isRequired,
+  onCommit: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({

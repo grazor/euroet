@@ -57,18 +57,18 @@ class ComponentsGrid extends React.Component {
   ];
 
   onQtyUpdated = (fromRow, toRow, rows, qty) => {
-    const codes = rows
+    const ids = rows
       .slice(fromRow, toRow + 1)
       .filter(c => !c.group && !c.empty && c.qty !== qty)
-      .map(c => c.code);
-    if (codes.length === 0) {
+      .map(c => ({ id: c.id, group: c.groupId }));
+    if (ids.length === 0) {
       return;
     }
     if (qty > 0) {
-      this.props.bulkUpdateQty(codes, qty);
+      this.props.bulkUpdateQty(ids.map(c => c.id), qty);
     } else {
-      for (let i = 0; i < codes.length; i += 1) {
-        this.props.deleteComponent(codes[i]);
+      for (let i = 0; i < ids.length; i += 1) {
+        this.props.deleteComponent(ids[i].group, ids[i].id);
       }
     }
   };
@@ -138,7 +138,7 @@ class ComponentsGrid extends React.Component {
           numberSiblings: components.length,
           id: group.id,
           code: group.name,
-          total: group.total_price || 0,
+          total: group.total_price || '',
         },
         !this.state.expandedGroups.has(group.id)
           ? []
@@ -155,7 +155,7 @@ class ComponentsGrid extends React.Component {
                 qty: c.qty,
                 total: c.total_price,
               })),
-              [{ empty: true }],
+              [{ empty: true, groupId: group.id }],
             ),
       ]),
       [

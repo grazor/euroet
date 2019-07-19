@@ -16,5 +16,5 @@ class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ('id', 'name', 'order', 'product')
-        read_only_fields = ('id', 'order')
+        fields = ('id', 'name', 'order', 'product', 'total_price')
+        read_only_fields = ('id', 'order', 'total_price')

@@ -34,6 +34,7 @@ import {
   makeSelectIsLoading,
   makeSelectIsUpdating,
   makeSelectProduct,
+  makeSelectTotalPrice,
 } from './selectors';
 
 const styles = () => ({});
@@ -55,6 +56,7 @@ export class ComponentsPage extends React.Component {
       components,
       isLoading,
       isUpdating,
+      totalPrice,
       match: {
         params: { projectSlug, productSlug },
       },
@@ -80,11 +82,11 @@ export class ComponentsPage extends React.Component {
           projectName={product.project_name}
           productName={product.name}
         />
-        <ProductDetail product={product} />
+        <ProductDetail product={product} totalPrice={totalPrice} />
         <ComponentsGrid
           components={components}
           getSuggestions={actionGetSuggestions}
-          bulkUpdateQty={actionUpdateQty.bind(null, productSlug)}
+          bulkUpdateQty={actionUpdateQty.bind(null, projectSlug, productSlug)}
           addGroup={actionAddGroup.bind(null, projectSlug, productSlug)}
           renameGroup={actionRenameGroup.bind(null, projectSlug, productSlug)}
           deleteGroup={actionDeleteGroup.bind(null, projectSlug, productSlug)}
@@ -114,6 +116,7 @@ ComponentsPage.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   isUpdating: PropTypes.bool.isRequired,
   match: PropTypes.object.isRequired,
+  totalPrice: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -121,6 +124,7 @@ const mapStateToProps = createStructuredSelector({
   components: makeSelectComponents(),
   isLoading: makeSelectIsLoading(),
   isUpdating: makeSelectIsUpdating(),
+  totalPrice: makeSelectTotalPrice(),
 });
 
 const mapDispatchToProps = dispatch =>

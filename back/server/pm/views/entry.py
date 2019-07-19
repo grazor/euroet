@@ -1,15 +1,21 @@
-from rest_framework import mixins, generics, viewsets, permissions
+from rest_framework import mixins, generics, viewsets, permissions, status
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import NotAcceptable, ValidationError
 
 from server.pm.models import Entry, Group, Product, Component
 from server.pm.permissions import HasProjectDetailAccess
-from server.pm.serializers import EntrySerializer, MoveEntrySerializer, GroupEntrySerializer, ComponentCopySerializer
+from server.pm.serializers import (
+    EntrySerializer,
+    MoveEntrySerializer,
+    GroupEntrySerializer,
+    UpdateEntrySerializer,
+    ComponentCopySerializer,
+)
 
 
-class EntryViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
+class EntryViewset(mixins.ListModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     serializer_class = GroupEntrySerializer
     permission_classes = (permissions.IsAuthenticated, HasProjectDetailAccess)
     pagination_class = None
@@ -30,6 +36,25 @@ class EntryViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
         product = self.request.product
         qs = Group.objects.filter(product_id=product.id).prefetch_related('entries', 'entries__prototype')
         return qs
+
+    def update(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        serializer = UpdateEntrySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        entry = get_object_or_404(Entry.objects.filter(id=pk, group__product=request.product))
+        entry.qty = serializer.data['qty']
+        entry.save(update_fields=['qty'])
+        return Response(EntrySerializer(entry).data)
+
+    def partial_update(self, request, *args, **kwargs):
+        raise NotAcceptable()
+
+    def destroy(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        entry = get_object_or_404(Entry.objects.filter(id=pk, group__product=request.product))
+        entry.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['post'], name='Add component from prototype')
     def copy(self, request, *args, **kwargs):

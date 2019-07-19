@@ -48,7 +48,7 @@ QtyField = withStyles(styles)(QtyField);
 class QtyEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { value: props.value };
+    this.state = { value: props.value || 0 };
   }
 
   getValue = () => ({ qty: this.state.value });
@@ -76,7 +76,7 @@ class QtyEditor extends React.Component {
 }
 
 QtyEditor.propTypes = {
-  value: PropTypes.number.isRequired,
+  value: PropTypes.any,
   height: PropTypes.number.isRequired,
 };
 
