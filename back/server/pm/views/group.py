@@ -25,6 +25,6 @@ class GroupViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         product = self.request.product
-        qs = Group.objects.filter(product_id=product.id)
+        qs = Group.objects.filter(product_id=product.id).prefetch_related('entries')
         return qs
 

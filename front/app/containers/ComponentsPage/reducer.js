@@ -10,6 +10,15 @@ import {
   ADD_COMPONENT_FAILURE,
   ADD_COMPONENT_REQUEST,
   ADD_COMPONENT_SUCCESS,
+  ADD_GROUP_FAILURE,
+  ADD_GROUP_REQUEST,
+  ADD_GROUP_SUCCESS,
+  RENAME_GROUP_FAILURE,
+  RENAME_GROUP_REQUEST,
+  RENAME_GROUP_SUCCESS,
+  DELETE_GROUP_FAILURE,
+  DELETE_GROUP_REQUEST,
+  DELETE_GROUP_SUCCESS,
   BULK_UPDATE_QTY_REQUEST,
   DELETE_COMPONENT_FAILURE,
   DELETE_COMPONENT_REQUEST,
@@ -50,22 +59,20 @@ function componentsPageReducer(state = initialState, action) {
     case BULK_UPDATE_QTY_REQUEST:
       const codes = new Set(action.codes); // eslint-disable-line no-case-declarations
       return state.update('components', components =>
-        components.map(
-          component =>
-            codes.has(component.getIn(['component', 'code']))
-              ? component.set('qty', action.qty).set('aggregated_price', '')
-              : component,
+        components.map(component =>
+          codes.has(component.getIn(['component', 'code']))
+            ? component.set('qty', action.qty).set('aggregated_price', '')
+            : component,
         ),
       );
 
     case UPDATE_QTY_SUCCESS:
       return state.update('components', components =>
-        components.map(
-          component =>
-            component.getIn(['component', 'code']) ===
-            action.component.component.code
-              ? fromJS(action.component)
-              : component,
+        components.map(component =>
+          component.getIn(['component', 'code']) ===
+          action.component.component.code
+            ? fromJS(action.component)
+            : component,
         ),
       );
 
@@ -77,6 +84,25 @@ function componentsPageReducer(state = initialState, action) {
 
     case GET_SUGGESTIONS_SUCCESS:
       return state.set('suggestions', fromJS(action.suggestions));
+
+    case ADD_GROUP_SUCCESS:
+      return state.update('components', components =>
+        components.push(fromJS({ ...action.group, entries: [] })),
+      );
+
+    case RENAME_GROUP_SUCCESS:
+      return state.update('components', groups =>
+        groups.map(group =>
+          group.get('id') === action.group.id
+            ? group.set('name', action.group.name)
+            : group,
+        ),
+      );
+
+    case DELETE_GROUP_SUCCESS:
+      return state.update('components', groups =>
+        groups.filter(group => group.get('id') !== action.id),
+      );
 
     case ADD_COMPONENT_SUCCESS:
       return state.update('components', components =>
@@ -92,6 +118,12 @@ function componentsPageReducer(state = initialState, action) {
 
     case UPDATE_QTY_FAILURE:
     case GET_SUGGESTIONS_FAILURE:
+    case ADD_GROUP_REQUEST:
+    case ADD_GROUP_FAILURE:
+    case RENAME_GROUP_REQUEST:
+    case RENAME_GROUP_FAILURE:
+    case DELETE_GROUP_REQUEST:
+    case DELETE_GROUP_FAILURE:
     case ADD_COMPONENT_REQUEST:
     case ADD_COMPONENT_FAILURE:
     case DELETE_COMPONENT_FAILURE:

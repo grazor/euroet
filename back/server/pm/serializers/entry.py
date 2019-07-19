@@ -30,11 +30,11 @@ class GroupEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ('id', 'name', 'order', 'entries')
+        fields = ('id', 'name', 'order', 'entries', 'total_price')
 
 
 class ComponentCopySerializer(serializers.Serializer):
-    group = serializers.CharField(max_length=1023)
+    group = serializers.IntegerField(min_value=1)
     component = serializers.IntegerField(min_value=1, read_only=False)
     qty = serializers.IntegerField(min_value=1)
 

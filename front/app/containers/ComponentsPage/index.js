@@ -21,6 +21,9 @@ import reducer from './reducer';
 import saga from './saga';
 import {
   addComponent,
+  addGroup,
+  renameGroup,
+  deleteGroup,
   bulkUpdateQty,
   deleteComponent,
   fetchProduct,
@@ -31,7 +34,6 @@ import {
   makeSelectIsLoading,
   makeSelectIsUpdating,
   makeSelectProduct,
-  makeSelectSuggestions,
 } from './selectors';
 
 const styles = () => ({});
@@ -51,7 +53,6 @@ export class ComponentsPage extends React.Component {
     const {
       product,
       components,
-      suggestions,
       isLoading,
       isUpdating,
       match: {
@@ -60,6 +61,9 @@ export class ComponentsPage extends React.Component {
       bulkUpdateQty: actionUpdateQty,
       getSuggestions: actionGetSuggestions,
       addComponent: actionAddComponent,
+      addGroup: actionAddGroup,
+      renameGroup: actionRenameGroup,
+      deleteGroup: actionDeleteGroup,
       deleteComponent: actionDeleteComponent,
     } = this.props;
 
@@ -70,15 +74,6 @@ export class ComponentsPage extends React.Component {
       return <LoadingBar />;
     }
 
-    const boundedUpdateQty = (codes, qty) =>
-      actionUpdateQty(projectSlug, productSlug, codes, qty);
-    const boundedGetSuggestions = query =>
-      actionGetSuggestions(projectSlug, productSlug, query);
-    const boundedAddComponent = (component, qty) =>
-      actionAddComponent(projectSlug, productSlug, component, qty);
-    const boundedDeleteComponent = code =>
-      actionDeleteComponent(projectSlug, productSlug, code);
-
     return (
       <React.Fragment>
         <EtBreadcumbs
@@ -88,11 +83,17 @@ export class ComponentsPage extends React.Component {
         <ProductDetail product={product} />
         <ComponentsGrid
           components={components}
-          bulkUpdateQty={boundedUpdateQty}
-          suggestions={suggestions}
-          getSuggestions={boundedGetSuggestions}
-          addComponent={boundedAddComponent}
-          deleteComponent={boundedDeleteComponent}
+          getSuggestions={actionGetSuggestions}
+          bulkUpdateQty={actionUpdateQty.bind(null, productSlug)}
+          addGroup={actionAddGroup.bind(null, projectSlug, productSlug)}
+          renameGroup={actionRenameGroup.bind(null, projectSlug, productSlug)}
+          deleteGroup={actionDeleteGroup.bind(null, projectSlug, productSlug)}
+          addComponent={actionAddComponent.bind(null, projectSlug, productSlug)}
+          deleteComponent={actionDeleteComponent.bind(
+            null,
+            projectSlug,
+            productSlug,
+          )}
         />
       </React.Fragment>
     );
@@ -104,10 +105,12 @@ ComponentsPage.propTypes = {
   bulkUpdateQty: PropTypes.func.isRequired,
   getSuggestions: PropTypes.func.isRequired,
   addComponent: PropTypes.func.isRequired,
+  addGroup: PropTypes.func.isRequired,
+  renameGroup: PropTypes.func.isRequired,
+  deleteGroup: PropTypes.func.isRequired,
   deleteComponent: PropTypes.func.isRequired,
   product: PropTypes.object.isRequired,
   components: PropTypes.array.isRequired,
-  suggestions: PropTypes.array.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isUpdating: PropTypes.bool.isRequired,
   match: PropTypes.object.isRequired,
@@ -116,7 +119,6 @@ ComponentsPage.propTypes = {
 const mapStateToProps = createStructuredSelector({
   product: makeSelectProduct(),
   components: makeSelectComponents(),
-  suggestions: makeSelectSuggestions(),
   isLoading: makeSelectIsLoading(),
   isUpdating: makeSelectIsUpdating(),
 });
@@ -128,6 +130,9 @@ const mapDispatchToProps = dispatch =>
       bulkUpdateQty,
       getSuggestions,
       addComponent,
+      addGroup,
+      renameGroup,
+      deleteGroup,
       deleteComponent,
     },
     dispatch,

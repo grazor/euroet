@@ -6,6 +6,15 @@ import {
   ADD_COMPONENT_FAILURE,
   ADD_COMPONENT_REQUEST,
   ADD_COMPONENT_SUCCESS,
+  ADD_GROUP_FAILURE,
+  ADD_GROUP_REQUEST,
+  ADD_GROUP_SUCCESS,
+  RENAME_GROUP_FAILURE,
+  RENAME_GROUP_REQUEST,
+  RENAME_GROUP_SUCCESS,
+  DELETE_GROUP_FAILURE,
+  DELETE_GROUP_REQUEST,
+  DELETE_GROUP_SUCCESS,
   BULK_UPDATE_QTY_REQUEST,
   DELETE_COMPONENT_FAILURE,
   DELETE_COMPONENT_REQUEST,
@@ -94,7 +103,7 @@ function* getSuggestions({ projectSlug, productSlug, query }) {
     method: 'GET',
   };
 
-  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/components/find`;
+  const baseUrl = '/api/components';
 
   try {
     const suggestions = yield call(
@@ -105,6 +114,53 @@ function* getSuggestions({ projectSlug, productSlug, query }) {
     yield put({ type: GET_SUGGESTIONS_SUCCESS, suggestions });
   } catch (error) {
     yield handleApiError(error, GET_SUGGESTIONS_FAILURE);
+  }
+}
+
+function* addGroup({ projectSlug, productSlug, name }) {
+  const options = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name }),
+  };
+  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/groups/`;
+
+  try {
+    const added = yield call(fetchJSON, baseUrl, options);
+    yield put({ type: ADD_GROUP_SUCCESS, group: added });
+  } catch (error) {
+    yield handleApiError(error, ADD_GROUP_FAILURE);
+  }
+}
+
+function* renameGroup({ projectSlug, productSlug, id, name }) {
+  const options = {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name }),
+  };
+  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/groups/${id}/`;
+
+  try {
+    const updated = yield call(fetchJSON, baseUrl, options);
+    yield put({ type: RENAME_GROUP_SUCCESS, group: updated });
+  } catch (error) {
+    yield handleApiError(error, RENAME_GROUP_FAILURE);
+  }
+}
+
+function* deleteGroup({ projectSlug, productSlug, id }) {
+  const options = {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+  };
+  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/groups/${id}/`;
+
+  try {
+    yield call(fetchJSON, baseUrl, options);
+    yield put({ type: DELETE_GROUP_SUCCESS, id });
+  } catch (error) {
+    yield handleApiError(error, DELETE_GROUP_FAILURE);
   }
 }
 
@@ -144,6 +200,9 @@ export default function* componentsPageSaga() {
   yield takeLatest(PRODUCT_INFO_REQUEST, getProductInfo);
   yield takeLatest(BULK_UPDATE_QTY_REQUEST, bulkUpdateQty);
   yield takeLatest(GET_SUGGESTIONS_REQUEST, getSuggestions);
+  yield takeLatest(ADD_GROUP_REQUEST, addGroup);
+  yield takeLatest(RENAME_GROUP_REQUEST, renameGroup);
+  yield takeLatest(DELETE_GROUP_REQUEST, deleteGroup);
   yield takeLatest(ADD_COMPONENT_REQUEST, addComponent);
   yield takeLatest(DELETE_COMPONENT_REQUEST, deleteComponent);
 }

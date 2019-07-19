@@ -16,3 +16,7 @@ class Group(OrderedModel):
         ordering = ('product', 'order')
         unique_together = ('product', 'name')
 
+    @property
+    def total_price(self):
+        entries = (self._prefetched_objects_cache or {}).get('entries') or []
+        return sum(entry.total_price for entry in entries)

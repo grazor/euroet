@@ -7,6 +7,9 @@
 import {
   ADD_COMPONENT_REQUEST,
   BULK_UPDATE_QTY_REQUEST,
+  ADD_GROUP_REQUEST,
+  RENAME_GROUP_REQUEST,
+  DELETE_GROUP_REQUEST,
   DELETE_COMPONENT_REQUEST,
   GET_SUGGESTIONS_REQUEST,
   PRODUCT_INFO_REQUEST,
@@ -30,12 +33,38 @@ export function bulkUpdateQty(projectSlug, productSlug, codes, qty) {
   };
 }
 
-export function getSuggestions(projectSlug, productSlug, query) {
+export function getSuggestions(query) {
   return {
     type: GET_SUGGESTIONS_REQUEST,
+    query,
+  };
+}
+
+export function addGroup(projectSlug, productSlug, name) {
+  return {
+    type: ADD_GROUP_REQUEST,
     projectSlug,
     productSlug,
-    query,
+    name,
+  };
+}
+
+export function renameGroup(projectSlug, productSlug, id, name) {
+  return {
+    type: RENAME_GROUP_REQUEST,
+    projectSlug,
+    productSlug,
+    id,
+    name,
+  };
+}
+
+export function deleteGroup(projectSlug, productSlug, id) {
+  return {
+    type: DELETE_GROUP_REQUEST,
+    projectSlug,
+    productSlug,
+    id,
   };
 }
 

@@ -20,6 +20,18 @@ export const GET_SUGGESTIONS_SUCCESS =
 export const GET_SUGGESTIONS_FAILURE =
   'app/ComponentsPage/GET_SUGGESTIONS_FAILURE';
 
+export const ADD_GROUP_REQUEST = 'app/ComponentsPage/ADD_GROUP_REQUEST';
+export const ADD_GROUP_SUCCESS = 'app/ComponentsPage/ADD_GROUP_SUCCESS';
+export const ADD_GROUP_FAILURE = 'app/ComponentsPage/ADD_GROUP_FAILURE';
+
+export const RENAME_GROUP_REQUEST = 'app/ComponentsPage/RENAME_GROUP_REQUEST';
+export const RENAME_GROUP_SUCCESS = 'app/ComponentsPage/RENAME_GROUP_SUCCESS';
+export const RENAME_GROUP_FAILURE = 'app/ComponentsPage/RENAME_GROUP_FAILURE';
+
+export const DELETE_GROUP_REQUEST = 'app/ComponentsPage/DELETE_GROUP_REQUEST';
+export const DELETE_GROUP_SUCCESS = 'app/ComponentsPage/DELETE_GROUP_SUCCESS';
+export const DELETE_GROUP_FAILURE = 'app/ComponentsPage/DELETE_GROUP_FAILURE';
+
 export const ADD_COMPONENT_REQUEST = 'app/ComponentsPage/ADD_COMPONENT_REQUEST';
 export const ADD_COMPONENT_SUCCESS = 'app/ComponentsPage/ADD_COMPONENT_SUCCESS';
 export const ADD_COMPONENT_FAILURE = 'app/ComponentsPage/ADD_COMPONENT_FAILURE';

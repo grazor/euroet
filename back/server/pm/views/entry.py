@@ -38,7 +38,7 @@ class EntryViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
 
         component = get_object_or_404(Component, id=serializer.data['component'])
-        group, _ = Group.objects.get_or_create(product=product, name=serializer.data['group'])
+        group = get_object_or_404(Group, id=serializer.data['group'])
         entry = Entry.add_component_from_prototype(group=group, component=component, qty=serializer.data['qty'])
 
         return Response(EntrySerializer(entry).data)
