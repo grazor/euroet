@@ -19,6 +19,7 @@ class Command(BaseCommand):
         parser.add_argument('file')
 
     def handle(self, *args, **options):
+        total = 0
         components = []
         with open(options['file'], 'r') as f:
             reader = csv.reader(f)
@@ -34,9 +35,7 @@ class Command(BaseCommand):
                 else:
                     collection = collections.get(colname)
                     if not collection:
-                        collection, created = Collection.objects.get_or_create(
-                            slug=colname.replace(' ', '_').lower(), defaults={'name': colname}
-                        )
+                        collection, created = Collection.objects.get_or_create(name=colname)
                         collections[colname] = collection
                         action = ACTIONS[created]
                         print(f'Collection {action} {collection}')
@@ -49,7 +48,8 @@ class Command(BaseCommand):
                 if len(components) >= 5000:
                     try:
                         Component.objects.bulk_create(components)
-                        print(f'Created {len(components)} components, latest: {components[-1].code}')
+                        total += len(components)
+                        print(f'Created {len(components)} components, latest: {components[-1].code}, total={total}')
                     except IntegrityError:
                         print(f'Failed to create {len(components)} components, latest: {components[-1].code}')
                     finally:
@@ -59,3 +59,5 @@ class Command(BaseCommand):
                 Component.objects.bulk_create(components)
                 print(f'Created {len(components)} components, latest: {components[-1].code}')
                 components = []
+
+            print(f'Created {total} components')
