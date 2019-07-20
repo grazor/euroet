@@ -8,6 +8,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 import CodeEditor from './ComponentsGridCodeEditor';
 import QtyEditor from './ComponentsGridQtyEditor';
+import NameEditor from './ComponentsGridNameEditor';
+import PriceEditor from './ComponentsGridPriceEditor';
 
 const styles = theme => ({
   root: {
@@ -43,7 +45,13 @@ class ComponentsGrid extends React.Component {
       editable: rowData => rowData.group || rowData.empty,
       width: 340,
     },
-    { key: 'name', name: 'Name', editable: false },
+    {
+      key: 'name',
+      name: 'Name',
+      editable: rowData =>
+        !rowData.group && (rowData.empty || !rowData.hasPrototype),
+      editor: NameEditor,
+    },
     {
       key: 'qty',
       name: 'Qty',
@@ -51,7 +59,13 @@ class ComponentsGrid extends React.Component {
       width: 100,
       editor: QtyEditor,
     },
-    { key: 'price', name: 'Price', editable: false, width: 100 },
+    {
+      key: 'price',
+      name: 'Price',
+      editable: rowData => !rowData.empty && !rowData.hasPrototype,
+      editor: PriceEditor,
+      width: 100,
+    },
     { key: 'discount', name: 'Discount, %', editable: false, width: 100 },
     { key: 'total', name: 'Total price', editable: false, width: 120 },
   ];
@@ -92,22 +106,51 @@ class ComponentsGrid extends React.Component {
     }
   };
 
+  onCreateFromName = (group, name) => {
+    const trimmedName = name.trim();
+    if (trimmedName === '') {
+      return;
+    }
+    this.props.newComponent(group, trimmedName);
+  };
+
+  onUpdateCustom = (group, entry, name, price) => {
+    if (!name && !price) {
+      return;
+    }
+    this.props.updateCustomComponent(group, entry, name, price);
+  };
+
   onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
     if ('qty' in updated) {
       const rows = this.mapComponentsToGridData();
       this.onQtyUpdated(fromRow, toRow, rows, updated.qty);
     }
 
-    if (fromRow !== toRow || !('code' in updated)) {
-      // Supporting groups or codes only
+    if (
+      fromRow !== toRow ||
+      !('code' in updated || 'name' in updated || 'price' in updated)
+    ) {
+      // Supporting groups or codes or names or prices
       // Not supporting bulk updates for groups and components
       return;
     }
 
     const rows = this.mapComponentsToGridData();
     const row = rows[fromRow];
-    if (row.group) {
+    if (row.group && 'code' in updated) {
+      // Update or create group
       this.onGroupUdated(row, updated.code);
+    } else if (!row.group && 'name' in updated && row.empty) {
+      // Create component from name
+      this.onCreateFromName(row.groupId, updated.name);
+    } else if (
+      !row.group &&
+      !row.empty &&
+      !row.hasPrototype &&
+      ('name' in updated || 'price' in updated)
+    ) {
+      this.onUpdateCustom(row.groupId, row.id, updated.name, updated.price);
     }
   };
 
@@ -146,10 +189,11 @@ class ComponentsGrid extends React.Component {
               group.entries.map(c => ({
                 id: c.id,
                 groupId: group.id,
+                hasPrototype: Boolean(c.prototype_id),
                 code: c.code,
                 empty: false,
                 name: c.name,
-                price: c.price,
+                price: parseFloat(c.price).toFixed(2),
                 collectionName: c.collection_name,
                 discount: c.collection_discount,
                 qty: c.qty,
@@ -224,6 +268,8 @@ ComponentsGrid.propTypes = {
   renameGroup: PropTypes.func.isRequired,
   deleteGroup: PropTypes.func.isRequired,
   addComponent: PropTypes.func.isRequired,
+  newComponent: PropTypes.func.isRequired,
+  updateCustomComponent: PropTypes.func.isRequired,
   deleteComponent: PropTypes.func.isRequired,
 };
 

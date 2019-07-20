@@ -10,6 +10,12 @@ import {
   ADD_COMPONENT_FAILURE,
   ADD_COMPONENT_REQUEST,
   ADD_COMPONENT_SUCCESS,
+  NEW_COMPONENT_FAILURE,
+  NEW_COMPONENT_REQUEST,
+  NEW_COMPONENT_SUCCESS,
+  UPDATE_CUSTOM_COMPONENT_REQUEST,
+  UPDATE_CUSTOM_COMPONENT_SUCCESS,
+  UPDATE_CUSTOM_COMPONENT_FAILURE,
   ADD_GROUP_FAILURE,
   ADD_GROUP_REQUEST,
   ADD_GROUP_SUCCESS,
@@ -70,6 +76,7 @@ function componentsPageReducer(state = initialState, action) {
       );
 
     case UPDATE_QTY_SUCCESS:
+    case UPDATE_CUSTOM_COMPONENT_SUCCESS:
       return state.update('components', groups =>
         groups.map(group =>
           group.update('entries', entries =>
@@ -129,6 +136,7 @@ function componentsPageReducer(state = initialState, action) {
       );
 
     case ADD_COMPONENT_SUCCESS:
+    case NEW_COMPONENT_SUCCESS:
       return state.update('components', groups =>
         groups.map(group =>
           group.get('id') === action.group
@@ -167,6 +175,8 @@ function componentsPageReducer(state = initialState, action) {
     case DELETE_GROUP_FAILURE:
     case ADD_COMPONENT_REQUEST:
     case ADD_COMPONENT_FAILURE:
+    case NEW_COMPONENT_REQUEST:
+    case NEW_COMPONENT_FAILURE:
     case DELETE_COMPONENT_FAILURE:
     case DELETE_COMPONENT_SUCCESS:
     default:

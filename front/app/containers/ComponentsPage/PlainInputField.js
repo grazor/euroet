@@ -4,9 +4,6 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = () => ({
-  root: {
-    width: '100%',
-  },
   input: {
     margin: 0,
     paddging: 0,
@@ -21,13 +18,14 @@ const PlainInputField = props => {
   return (
     <Input
       id="code-input-custom"
+      autoComplete="off"
       placeholder="Group name"
       value={value}
       onChange={handleChange}
-      className={classes.root}
       classes={{
         input: classes.input,
       }}
+      fullWidth
       style={{ height }}
     />
   );

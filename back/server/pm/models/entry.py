@@ -1,4 +1,4 @@
-from typing import TypeVar
+from typing import TypeVar, Optional
 from decimal import Decimal
 
 from ordered_model.models import OrderedModel
@@ -58,6 +58,20 @@ class Entry(ComponentBase, OrderedModel):
             manufacturer_name=component.manufacturer and component.manufacturer.name,
             collection_name=component.collection and component.collection.name,
             collection_discount=component.collection and component.collection.discount or Decimal(0),
+        )
+
+    @classmethod
+    def create_component(cls: T, group: Group, name: str, price: Optional[Decimal] = None, qty: int = 1) -> T:
+        return cls.objects.create(
+            group=group,
+            prototype=None,
+            qty=qty,
+            code=None,
+            name=name,
+            description=None,
+            price=price or Decimal(0),
+            manufacturer_name=None,
+            collection_name=None,
         )
 
     @property

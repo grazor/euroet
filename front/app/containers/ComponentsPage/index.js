@@ -21,6 +21,8 @@ import reducer from './reducer';
 import saga from './saga';
 import {
   addComponent,
+  newComponent,
+  updateCustomComponent,
   addGroup,
   renameGroup,
   deleteGroup,
@@ -63,6 +65,8 @@ export class ComponentsPage extends React.Component {
       bulkUpdateQty: actionUpdateQty,
       getSuggestions: actionGetSuggestions,
       addComponent: actionAddComponent,
+      newComponent: actionNewComponent,
+      updateCustomComponent: actionUpdateCustomCommponent,
       addGroup: actionAddGroup,
       renameGroup: actionRenameGroup,
       deleteGroup: actionDeleteGroup,
@@ -91,6 +95,12 @@ export class ComponentsPage extends React.Component {
           renameGroup={actionRenameGroup.bind(null, projectSlug, productSlug)}
           deleteGroup={actionDeleteGroup.bind(null, projectSlug, productSlug)}
           addComponent={actionAddComponent.bind(null, projectSlug, productSlug)}
+          newComponent={actionNewComponent.bind(null, projectSlug, productSlug)}
+          updateCustomComponent={actionUpdateCustomCommponent.bind(
+            null,
+            projectSlug,
+            productSlug,
+          )}
           deleteComponent={actionDeleteComponent.bind(
             null,
             projectSlug,
@@ -107,6 +117,8 @@ ComponentsPage.propTypes = {
   bulkUpdateQty: PropTypes.func.isRequired,
   getSuggestions: PropTypes.func.isRequired,
   addComponent: PropTypes.func.isRequired,
+  newComponent: PropTypes.func.isRequired,
+  updateCustomComponent: PropTypes.func.isRequired,
   addGroup: PropTypes.func.isRequired,
   renameGroup: PropTypes.func.isRequired,
   deleteGroup: PropTypes.func.isRequired,
@@ -134,6 +146,8 @@ const mapDispatchToProps = dispatch =>
       bulkUpdateQty,
       getSuggestions,
       addComponent,
+      newComponent,
+      updateCustomComponent,
       addGroup,
       renameGroup,
       deleteGroup,

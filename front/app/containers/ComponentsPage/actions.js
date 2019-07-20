@@ -6,6 +6,8 @@
 
 import {
   ADD_COMPONENT_REQUEST,
+  NEW_COMPONENT_REQUEST,
+  UPDATE_CUSTOM_COMPONENT_REQUEST,
   BULK_UPDATE_QTY_REQUEST,
   ADD_GROUP_REQUEST,
   RENAME_GROUP_REQUEST,
@@ -92,6 +94,35 @@ export function addComponent(
     group: groupId,
     component,
     qty,
+  };
+}
+
+export function newComponent(projectSlug, productSlug, groupId, name, qty = 1) {
+  return {
+    type: NEW_COMPONENT_REQUEST,
+    projectSlug,
+    productSlug,
+    group: groupId,
+    name,
+    qty,
+  };
+}
+
+export function updateCustomComponent(
+  projectSlug,
+  productSlug,
+  groupId,
+  entryId,
+  name = null,
+  price = null,
+) {
+  return {
+    type: UPDATE_CUSTOM_COMPONENT_REQUEST,
+    projectSlug,
+    productSlug,
+    group: groupId,
+    entry: entryId,
+    data: { name, price },
   };
 }
 

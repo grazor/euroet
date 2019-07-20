@@ -17,7 +17,7 @@ const styles = () => ({
   },
 });
 
-let QtyField = props => {
+let PriceField = props => {
   const { value, handleChange, classes, height } = props;
   return (
     <div className={classes.root}>
@@ -30,29 +30,29 @@ let QtyField = props => {
           input: classes.root,
         }}
         style={{ height }}
-        inputProps={{ min: 0 }}
+        inputProps={{ min: 0, step: 1.0 }}
         fullWidth
       />
     </div>
   );
 };
 
-QtyField.propTypes = {
-  value: PropTypes.number.isRequired,
+PriceField.propTypes = {
+  value: PropTypes.any,
   handleChange: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
   height: PropTypes.number.isRequired,
 };
 
-QtyField = withStyles(styles)(QtyField);
+PriceField = withStyles(styles)(PriceField);
 
-class QtyEditor extends React.Component {
+class PriceEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { value: props.value || 0 };
+    this.state = { value: parseFloat(props.value).toFixed(2) || 0.0 };
   }
 
-  getValue = () => ({ qty: this.state.value });
+  getValue = () => ({ price: this.state.value });
 
   getInputNode = () =>
     ReactDOM.findDOMNode(this).getElementsByTagName('input')[0]; // eslint-disable-line react/no-find-dom-node
@@ -60,14 +60,14 @@ class QtyEditor extends React.Component {
   disableContainerStyles = () => false;
 
   handleChange = event => {
-    this.setState({ value: parseInt(event.target.value, 10) || 0 });
+    this.setState({ value: event.target.value || 0.0 });
   };
 
   render() {
     const { value } = this.state;
     const { height } = this.props;
     return (
-      <QtyField
+      <PriceField
         value={value}
         height={height}
         handleChange={this.handleChange}
@@ -76,9 +76,9 @@ class QtyEditor extends React.Component {
   }
 }
 
-QtyEditor.propTypes = {
+PriceEditor.propTypes = {
   value: PropTypes.any,
   height: PropTypes.number.isRequired,
 };
 
-export default QtyEditor;
+export default PriceEditor;

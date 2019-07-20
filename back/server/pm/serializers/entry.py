@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from rest_framework import serializers
 
 from server.pm.models import Entry, Group, Component
@@ -36,7 +38,14 @@ class GroupEntrySerializer(serializers.ModelSerializer):
 
 class ComponentCopySerializer(serializers.Serializer):
     group = serializers.IntegerField(min_value=1)
-    component = serializers.IntegerField(min_value=1, read_only=False)
+    component = serializers.IntegerField(min_value=1)
+    qty = serializers.IntegerField(min_value=1)
+
+
+class ComponentCreateSerializer(serializers.Serializer):
+    group = serializers.IntegerField(min_value=1)
+    name = serializers.CharField(min_length=1)
+    price = serializers.DecimalField(max_digits=12, decimal_places=2, min_value=Decimal(0), required=False)
     qty = serializers.IntegerField(min_value=1)
 
 
