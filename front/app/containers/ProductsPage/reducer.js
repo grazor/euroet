@@ -59,11 +59,10 @@ function productsPageReducer(state = initialState, action) {
       return state
         .set('isUpdating', false)
         .update('products', products =>
-          products.map(
-            product =>
-              product.get('slug') === action.originalSlug
-                ? fromJS(action.product)
-                : product,
+          products.map(product =>
+            product.get('slug') === action.originalSlug
+              ? fromJS(action.product)
+              : product,
           ),
         );
 

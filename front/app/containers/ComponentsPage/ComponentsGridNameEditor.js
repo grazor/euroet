@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import PlainInputField from './PlainInputField';
 
 class NameEditor extends React.Component {

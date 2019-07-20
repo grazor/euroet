@@ -61,11 +61,10 @@ function projectsPageReducer(state = initialState, action) {
       return state
         .set('isUpdating', false)
         .update('projects', projects =>
-          projects.map(
-            project =>
-              project.get('slug') === action.originalSlug
-                ? fromJS(action.project)
-                : project,
+          projects.map(project =>
+            project.get('slug') === action.originalSlug
+              ? fromJS(action.project)
+              : project,
           ),
         );
 
@@ -82,11 +81,10 @@ function projectsPageReducer(state = initialState, action) {
 
     case PROJECT_TOGGLE_STAR_SUCCESS:
       return state.update('projects', projects =>
-        projects.map(
-          project =>
-            project.get('slug') === action.slug
-              ? project.set('is_starred', action.isSet)
-              : project,
+        projects.map(project =>
+          project.get('slug') === action.slug
+            ? project.set('is_starred', action.isSet)
+            : project,
         ),
       );
 

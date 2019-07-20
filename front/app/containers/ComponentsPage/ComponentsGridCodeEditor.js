@@ -2,8 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { withStyles } from '@material-ui/core/styles';
-import PlainInputField from './PlainInputField';
+
 import AutosuggestInputField from './AutosuggestInputField';
+import PlainInputField from './PlainInputField';
 
 class CodeEditor extends React.Component {
   constructor(props) {

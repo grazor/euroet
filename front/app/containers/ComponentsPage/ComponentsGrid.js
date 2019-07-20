@@ -7,9 +7,9 @@ import { flatMapDeep, union } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 
 import CodeEditor from './ComponentsGridCodeEditor';
-import QtyEditor from './ComponentsGridQtyEditor';
 import NameEditor from './ComponentsGridNameEditor';
 import PriceEditor from './ComponentsGridPriceEditor';
+import QtyEditor from './ComponentsGridQtyEditor';
 
 const styles = theme => ({
   root: {

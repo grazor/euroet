@@ -4,6 +4,7 @@
  *
  */
 
+import EtBreadcumbs from 'components/Breadcumbs';
 import LoadingBar from 'components/LoadingBar';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -14,7 +15,6 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { withStyles } from '@material-ui/core/styles';
 
-import EtBreadcumbs from 'components/Breadcumbs';
 import ComponentsGrid from './ComponentsGrid';
 import ProductDetail from './ProductDetail';
 import ProductReports from './ProductReports';
@@ -22,24 +22,24 @@ import reducer from './reducer';
 import saga from './saga';
 import {
   addComponent,
-  newComponent,
-  updateCustomComponent,
   addGroup,
-  renameGroup,
-  deleteGroup,
   bulkUpdateQty,
+  createReport,
   deleteComponent,
+  deleteGroup,
   fetchProduct,
   getSuggestions,
-  createReport,
+  newComponent,
+  renameGroup,
+  updateCustomComponent,
 } from './actions';
 import {
   makeSelectComponents,
-  makeSelectReports,
-  makeSelectReportStatus,
   makeSelectIsLoading,
   makeSelectIsUpdating,
   makeSelectProduct,
+  makeSelectReportStatus,
+  makeSelectReports,
   makeSelectTotalPrice,
 } from './selectors';
 

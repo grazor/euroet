@@ -1,5 +1,5 @@
-from decimal import Decimal
 from uuid import uuid4
+from decimal import Decimal
 
 import xlsxwriter
 
@@ -29,9 +29,9 @@ def write_group(worksheet, row: int, row_format, group: Group) -> None:
 
 
 def write_entry(worksheet, row: int, row_format, entry: Entry) -> None:
-    worksheet.write_string(row, 0, entry.code, row_format)
-    worksheet.write_string(row, 1, entry.name, row_format)
-    worksheet.write_number(row, 2, entry.qty, row_format)
+    worksheet.write_string(row, 0, entry.code or '', row_format)
+    worksheet.write_string(row, 1, entry.name or '', row_format)
+    worksheet.write_number(row, 2, entry.qty or 0, row_format)
     worksheet.write_string(row, 3, 'шт.', row_format)
     worksheet.write_number(row, 4, 1, row_format)
     worksheet.write_number(row, 5, entry.discount_price_of_one, row_format)

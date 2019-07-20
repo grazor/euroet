@@ -5,6 +5,7 @@
  */
 
 import AddIcon from '@material-ui/icons/Add';
+import EtBreadcumbs from 'components/Breadcumbs';
 import Fab from '@material-ui/core/Fab';
 import LoadingBar from 'components/LoadingBar';
 import PropTypes from 'prop-types';
@@ -16,7 +17,6 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { find } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
-import EtBreadcumbs from 'components/Breadcumbs';
 
 import ProductDialog from './ProductDialog';
 import ProductsTable from './ProductsTable';

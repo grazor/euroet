@@ -1,4 +1,5 @@
 import fetchJSON from 'utils/fetchjson';
+import history from 'utils/history';
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 import {
   notifyApiError,
@@ -6,7 +7,6 @@ import {
   notifySuccess,
   notifyWarning,
 } from 'containers/App/actions';
-import history from 'utils/history';
 
 import {
   PRODUCT_CREATE_FAILURE,
