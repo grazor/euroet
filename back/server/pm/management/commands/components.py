@@ -41,9 +41,7 @@ class Command(BaseCommand):
                         print(f'Collection {action} {collection}')
 
                 components.append(
-                    Component(
-                        code=code, description=name, price=Decimal(price.replace(',', '.')), collection=collection
-                    )
+                    Component(code=code, name=name, price=Decimal(price.replace(',', '.')), collection=collection)
                 )
                 if len(components) >= 5000:
                     try:
