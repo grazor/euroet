@@ -32,17 +32,19 @@ urlpatterns = [
 
 if settings.DEBUG:  # pragma: no cover
     import debug_toolbar  # noqa: Z435
-    from django.views.static import serve  # noqa: Z435
+    from django.conf.urls.static import static  # noqa: Z435
     from rest_framework.documentation import include_docs_urls  # noqa: Z435
 
-    urlpatterns = [
-        # URLs specific only to django-debug-toolbar:
-        path('__debug__/', include(debug_toolbar.urls)),
-        # Serving media files in development only:
-        path('media/(<path:path>)', serve, {'document_root': settings.MEDIA_ROOT}),
-        # Drf doc
-        path('docs/', include_docs_urls(title='Euroet API', authentication_classes=[], permission_classes=[])),
-    ] + urlpatterns
+    urlpatterns = (
+        static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+        + [
+            # URLs specific only to django-debug-toolbar:
+            path('__debug__/', include(debug_toolbar.urls)),
+            # Drf doc
+            path('docs/', include_docs_urls(title='Euroet API', authentication_classes=[], permission_classes=[])),
+        ]
+        + urlpatterns
+    )
 
 
-urlpatterns.append(re_path(r'^(?!admin|api|docs).*$', singlepage, name='index'))
+urlpatterns.append(re_path(r'^(?!admin|api|docs|media|static).*$', singlepage, name='index'))

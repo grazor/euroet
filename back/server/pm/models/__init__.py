@@ -2,6 +2,7 @@
 
 from server.pm.models.entry import Entry
 from server.pm.models.group import Group
+from server.pm.models.report import Report
 from server.pm.models.product import Product
 from server.pm.models.project import Project, ProjectPermission
 from server.pm.models.component import Component

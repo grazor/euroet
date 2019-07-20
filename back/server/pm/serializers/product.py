@@ -31,4 +31,3 @@ class ProductSerializer(serializers.ModelSerializer):
             'modified_at',
             'project_name',
         )
-

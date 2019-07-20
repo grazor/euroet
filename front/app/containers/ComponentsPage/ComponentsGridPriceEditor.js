@@ -52,7 +52,7 @@ class PriceEditor extends React.Component {
     this.state = { value: parseFloat(props.value).toFixed(2) || 0.0 };
   }
 
-  getValue = () => ({ price: this.state.value });
+  getValue = () => ({ price: this.state.value || 0.0 });
 
   getInputNode = () =>
     ReactDOM.findDOMNode(this).getElementsByTagName('input')[0]; // eslint-disable-line react/no-find-dom-node

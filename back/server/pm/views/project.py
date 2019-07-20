@@ -53,4 +53,3 @@ class ProjectViewset(viewsets.ModelViewSet):
         project.set_user_star(user, serializer.data['is_starred'])
 
         return Response(status=status.HTTP_204_NO_CONTENT)
-

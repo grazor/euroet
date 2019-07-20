@@ -40,15 +40,20 @@ import {
   PRODUCT_INFO_SUCCESS,
   UPDATE_QTY_FAILURE,
   UPDATE_QTY_SUCCESS,
+  CREATE_REPORT_REQUEST,
+  CREATE_REPORT_SUCCESS,
+  CREATE_REPORT_FAILURE,
 } from './constants';
 
 export const initialState = fromJS({
   product: {},
   components: [],
+  reports: [],
   query: '',
   suggestions: [],
   isLoading: false,
   isUpdating: false,
+  reportStatus: 'allowed',
 });
 
 function componentsPageReducer(state = initialState, action) {
@@ -60,6 +65,7 @@ function componentsPageReducer(state = initialState, action) {
       return state
         .set('product', fromJS(action.product))
         .set('components', fromJS(action.components))
+        .set('reports', fromJS(action.reports))
         .set('isLoading', false);
 
     case PRODUCT_INFO_FAILURE:
@@ -164,12 +170,25 @@ function componentsPageReducer(state = initialState, action) {
         ),
       );
 
+    case CREATE_REPORT_REQUEST:
+      return state.set('reportStatus', 'pending');
+
+    case CREATE_REPORT_SUCCESS:
+      return state
+        .set('reportStatus', 'denied')
+        .update('reports', reports => reports.insert(0, action.report));
+
+    case CREATE_REPORT_FAILURE:
+      return state.set('reportStatus', 'allowed');
+
     case UPDATE_QTY_FAILURE:
     case GET_SUGGESTIONS_FAILURE:
     case ADD_GROUP_REQUEST:
     case ADD_GROUP_FAILURE:
     case RENAME_GROUP_REQUEST:
     case RENAME_GROUP_FAILURE:
+    case UPDATE_CUSTOM_COMPONENT_REQUEST:
+    case UPDATE_CUSTOM_COMPONENT_FAILURE:
     case FETCH_GROUP_FAILURE:
     case DELETE_GROUP_REQUEST:
     case DELETE_GROUP_FAILURE:

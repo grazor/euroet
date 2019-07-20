@@ -17,6 +17,7 @@ import { withStyles } from '@material-ui/core/styles';
 import EtBreadcumbs from 'components/Breadcumbs';
 import ComponentsGrid from './ComponentsGrid';
 import ProductDetail from './ProductDetail';
+import ProductReports from './ProductReports';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -30,9 +31,12 @@ import {
   deleteComponent,
   fetchProduct,
   getSuggestions,
+  createReport,
 } from './actions';
 import {
   makeSelectComponents,
+  makeSelectReports,
+  makeSelectReportStatus,
   makeSelectIsLoading,
   makeSelectIsUpdating,
   makeSelectProduct,
@@ -56,6 +60,8 @@ export class ComponentsPage extends React.Component {
     const {
       product,
       components,
+      reports,
+      reportStatus,
       isLoading,
       isUpdating,
       totalPrice,
@@ -71,6 +77,7 @@ export class ComponentsPage extends React.Component {
       renameGroup: actionRenameGroup,
       deleteGroup: actionDeleteGroup,
       deleteComponent: actionDeleteComponent,
+      createReport: actionCreateReport,
     } = this.props;
 
     if (
@@ -107,6 +114,11 @@ export class ComponentsPage extends React.Component {
             productSlug,
           )}
         />
+        <ProductReports
+          createReport={actionCreateReport.bind(null, projectSlug, productSlug)}
+          reports={reports}
+          reportStatus={reportStatus}
+        />
       </React.Fragment>
     );
   }
@@ -123,8 +135,11 @@ ComponentsPage.propTypes = {
   renameGroup: PropTypes.func.isRequired,
   deleteGroup: PropTypes.func.isRequired,
   deleteComponent: PropTypes.func.isRequired,
+  createReport: PropTypes.func.isRequired,
   product: PropTypes.object.isRequired,
   components: PropTypes.array.isRequired,
+  reports: PropTypes.array.isRequired,
+  reportStatus: PropTypes.string.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isUpdating: PropTypes.bool.isRequired,
   match: PropTypes.object.isRequired,
@@ -134,6 +149,8 @@ ComponentsPage.propTypes = {
 const mapStateToProps = createStructuredSelector({
   product: makeSelectProduct(),
   components: makeSelectComponents(),
+  reports: makeSelectReports(),
+  reportStatus: makeSelectReportStatus(),
   isLoading: makeSelectIsLoading(),
   isUpdating: makeSelectIsUpdating(),
   totalPrice: makeSelectTotalPrice(),
@@ -152,6 +169,7 @@ const mapDispatchToProps = dispatch =>
       renameGroup,
       deleteGroup,
       deleteComponent,
+      createReport,
     },
     dispatch,
   );

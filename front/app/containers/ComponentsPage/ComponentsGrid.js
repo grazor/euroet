@@ -14,7 +14,7 @@ import PriceEditor from './ComponentsGridPriceEditor';
 const styles = theme => ({
   root: {
     padding: 0,
-    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(4),
   },
 });
 
@@ -150,6 +150,9 @@ class ComponentsGrid extends React.Component {
       !row.hasPrototype &&
       ('name' in updated || 'price' in updated)
     ) {
+      if ('name' in updated && updated.name === '') {
+        this.onQtyUpdated(fromRow, toRow, rows, 0);
+      }
       this.onUpdateCustom(row.groupId, row.id, updated.name, updated.price);
     }
   };
@@ -181,7 +184,7 @@ class ComponentsGrid extends React.Component {
           numberSiblings: components.length,
           id: group.id,
           code: group.name,
-          total: group.total_price || '',
+          total: group.total_price !== null ? group.total_price : '',
         },
         !this.state.expandedGroups.has(group.id)
           ? []

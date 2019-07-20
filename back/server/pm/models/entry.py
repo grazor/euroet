@@ -75,6 +75,11 @@ class Entry(ComponentBase, OrderedModel):
         )
 
     @property
+    def discount_price_of_one(self) -> Decimal:
+        discount = (self.collection_discount or Decimal(0.0)) / Decimal(100.0)
+        return self.price * (Decimal(1) - discount)
+
+    @property
     def total_price(self) -> Decimal:
         discount = (self.collection_discount or Decimal(0.0)) / Decimal(100.0)
         return self.price * (Decimal(1) - discount) * Decimal(self.qty)

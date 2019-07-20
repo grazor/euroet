@@ -35,4 +35,3 @@ class ProjectAdmin(DeactivateAdminMixin, admin.ModelAdmin):
 
     def view_on_site(self, obj):
         return f'/projects/{obj.slug}/'
-

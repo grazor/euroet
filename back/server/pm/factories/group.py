@@ -21,4 +21,3 @@ class GroupFactory(factory.DjangoModelFactory):
                 seed=True,
             )
         )
-

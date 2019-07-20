@@ -2,7 +2,7 @@ from rest_framework import mixins, status, generics, viewsets, permissions
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotAcceptable, ValidationError
+from rest_framework.exceptions import ValidationError
 
 from server.pm.models import Entry, Group, Product, Component
 from server.pm.permissions import HasProjectDetailAccess
@@ -14,24 +14,19 @@ from server.pm.serializers import (
     ComponentCopySerializer,
     ComponentCreateSerializer,
 )
+from server.pm.views.product_detail_mixin import ProductDetailMixin
 
 
-class EntryViewset(mixins.ListModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
+class EntryViewset(
+    ProductDetailMixin,
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
     serializer_class = GroupEntrySerializer
     permission_classes = (permissions.IsAuthenticated, HasProjectDetailAccess)
     pagination_class = None
-
-    def initialize_request(self, request, *args, **kwargs):
-        request = super().initialize_request(request, *args, **kwargs)
-        project_slug = self.kwargs.get('project_slug')
-        product_slug = self.kwargs.get('product_slug')
-        self.request.product = get_object_or_404(
-            Product.objects.filter(slug=product_slug, project__slug=project_slug)
-            .select_related('project')
-            .prefetch_related('project__access', 'project__access__user')
-        )
-        self.request.project = self.request.product.project
-        return request
 
     def get_queryset(self):
         product = self.request.product
@@ -60,7 +55,7 @@ class EntryViewset(mixins.ListModelMixin, mixins.UpdateModelMixin, mixins.Destro
         if serializer.validated_data.get('name'):
             entry.name = serializer.validated_data['name']
             update_fields.append('name')
-        if serializer.validated_data.get('price'):
+        if serializer.validated_data.get('price') is not None:
             entry.price = serializer.validated_data['price']
             update_fields.append('price')
         if update_fields:

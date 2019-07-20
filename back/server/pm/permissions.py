@@ -44,4 +44,3 @@ class HasComponentsAccess(BasePermission):
     def has_permission(self, request, view):
         read_only = request.method in SAFE_METHODS
         return read_only
-

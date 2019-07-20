@@ -2,6 +2,7 @@ import fetchJSON from 'utils/fetchjson';
 import { all, call, put, takeLatest, takeEvery } from 'redux-saga/effects';
 import { notifyWarning } from 'containers/App/actions';
 import { omitBy, isNull } from 'lodash';
+import history from 'utils/history';
 
 import { fetchGroup } from './actions';
 import {
@@ -11,6 +12,9 @@ import {
   NEW_COMPONENT_FAILURE,
   NEW_COMPONENT_REQUEST,
   NEW_COMPONENT_SUCCESS,
+  CREATE_REPORT_FAILURE,
+  CREATE_REPORT_REQUEST,
+  CREATE_REPORT_SUCCESS,
   UPDATE_CUSTOM_COMPONENT_FAILURE,
   UPDATE_CUSTOM_COMPONENT_REQUEST,
   UPDATE_CUSTOM_COMPONENT_SUCCESS,
@@ -65,7 +69,7 @@ function* getProductInfo({ projectSlug, productSlug }) {
   };
 
   try {
-    const [product, components] = yield all([
+    const [product, components, reports] = yield all([
       call(
         fetchJSON,
         `/api/projects/${projectSlug}/products/${productSlug}`,
@@ -76,10 +80,18 @@ function* getProductInfo({ projectSlug, productSlug }) {
         `/api/projects/${projectSlug}/products/${productSlug}/components/`,
         options,
       ),
+      call(
+        fetchJSON,
+        `/api/projects/${projectSlug}/products/${productSlug}/reports/`,
+        options,
+      ),
     ]);
-    yield put({ type: PRODUCT_INFO_SUCCESS, product, components });
+    yield put({ type: PRODUCT_INFO_SUCCESS, product, components, reports });
   } catch (error) {
     yield handleApiError(error, PRODUCT_INFO_FAILURE);
+    if (error.status == 404) {
+      history.push('/projects');
+    }
   }
 }
 
@@ -283,6 +295,21 @@ function* deleteComponent({ projectSlug, productSlug, group, id }) {
   }
 }
 
+function* createReport({ projectSlug, productSlug }) {
+  const options = {
+    method: 'POST',
+  };
+
+  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/reports/`;
+
+  try {
+    const report = yield call(fetchJSON, baseUrl, options);
+    yield put({ type: CREATE_REPORT_SUCCESS, report });
+  } catch (error) {
+    yield handleApiError(error, CREATE_REPORT_FAILURE);
+  }
+}
+
 export default function* componentsPageSaga() {
   yield takeLatest(PRODUCT_INFO_REQUEST, getProductInfo);
   yield takeLatest(GET_SUGGESTIONS_REQUEST, getSuggestions);
@@ -297,4 +324,6 @@ export default function* componentsPageSaga() {
   yield takeLatest(UPDATE_CUSTOM_COMPONENT_REQUEST, updateCustomComponent);
   yield takeLatest(BULK_UPDATE_QTY_REQUEST, bulkUpdateQty);
   yield takeLatest(DELETE_COMPONENT_REQUEST, deleteComponent);
+
+  yield takeLatest(CREATE_REPORT_REQUEST, createReport);
 }

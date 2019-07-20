@@ -13,4 +13,3 @@ class ComponentAdmin(admin.ModelAdmin):
 
     readonly_fields = ('code',)
     fields = ('code', 'name', 'description', 'price', 'manufacturer', 'collection')
-

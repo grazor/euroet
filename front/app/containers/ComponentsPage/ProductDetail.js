@@ -24,7 +24,9 @@ const ProductDetail = props => {
           {product.name}
         </Typography>
         <Typography component="p">{product.description}</Typography>
-        <Typography component="p">Total price: {totalPrice} ₽</Typography>
+        <Typography component="p">
+          Total price: {totalPrice.toFixed(2)} ₽
+        </Typography>
       </Paper>
     </div>
   );

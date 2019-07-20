@@ -17,6 +17,18 @@ export const makeSelectComponents = () =>
     components => components.get('components').toJS(),
   );
 
+export const makeSelectReports = () =>
+  createSelector(
+    selectComponentsPageDomain,
+    components => components.get('reports').toJS(),
+  );
+
+export const makeSelectReportStatus = () =>
+  createSelector(
+    selectComponentsPageDomain,
+    components => components.get('reportStatus'),
+  );
+
 export const makeSelectIsLoading = () =>
   createSelector(
     selectComponentsPageDomain,
@@ -41,7 +53,6 @@ export const makeSelectTotalPrice = () =>
     components =>
       components
         .get('components')
-        .map(group => group.get('total_price') || 0)
-        .reduce((a, b) => a + b, 0)
-        .toFixed(2),
+        .map(group => parseFloat(group.get('total_price')) || 0)
+        .reduce((a, b) => a + b, 0),
   );

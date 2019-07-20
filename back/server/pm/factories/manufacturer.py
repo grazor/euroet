@@ -11,4 +11,3 @@ class ManufacturerFactory(factory.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: '{} {}'.format(n, faker.sentence(nb_words=3)))
     description = factory.LazyAttribute(lambda _: faker.text(max_nb_chars=200))
-

@@ -57,3 +57,7 @@ export const DELETE_COMPONENT_SUCCESS =
   'app/ComponentsPage/DELETE_COMPONENT_SUCCESS';
 export const DELETE_COMPONENT_FAILURE =
   'app/ComponentsPage/DELETE_COMPONENT_FAILURE';
+
+export const CREATE_REPORT_REQUEST = 'app/ComponentsPage/CREATE_REPORT_REQUEST';
+export const CREATE_REPORT_SUCCESS = 'app/ComponentsPage/CREATE_REPORT_SUCCESS';
+export const CREATE_REPORT_FAILURE = 'app/ComponentsPage/CREATE_REPORT_FAILURE';

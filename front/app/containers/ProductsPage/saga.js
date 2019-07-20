@@ -6,6 +6,7 @@ import {
   notifySuccess,
   notifyWarning,
 } from 'containers/App/actions';
+import history from 'utils/history';
 
 import {
   PRODUCT_CREATE_FAILURE,
@@ -44,6 +45,7 @@ function* getProjectInfo({ slug }) {
         break;
       case 404:
         message = 'Project not found';
+        history.push('/projects');
         break;
       default:
         message = 'Something went wrong';

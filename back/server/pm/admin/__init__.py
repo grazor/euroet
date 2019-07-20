@@ -6,3 +6,4 @@ import server.pm.admin.project
 import server.pm.admin.component
 import server.pm.admin.collection
 import server.pm.admin.manufacturer
+import server.pm.admin.report

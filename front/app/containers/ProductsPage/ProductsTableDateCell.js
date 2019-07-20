@@ -24,7 +24,7 @@ const DateCell = props => {
           <Moment
             date={lastUpdate}
             locale="ru"
-            format="hh:mm DD.MM.YYYY"
+            format="HH:mm DD.MM.YYYY"
             unix
           />
         }

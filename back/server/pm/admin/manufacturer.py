@@ -7,4 +7,3 @@ from server.pm.models import Manufacturer
 class ManufacturerAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     list_display = ('name', 'description')
-

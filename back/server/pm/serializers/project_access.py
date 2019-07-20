@@ -11,4 +11,3 @@ class ProjectAccessSerializer(serializers.ModelSerializer):
         model = ProjectAccess
 
         fields = ('user', 'access_type', 'is_starred')
-

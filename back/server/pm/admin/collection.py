@@ -7,4 +7,3 @@ from server.pm.models import Collection
 class CollectionAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     list_display = ('name', 'description', 'discount')
-

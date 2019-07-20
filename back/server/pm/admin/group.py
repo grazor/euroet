@@ -20,4 +20,3 @@ class GrouprAdmin(admin.ModelAdmin):
     list_filter = ('product',)
 
     inlines = (EntryInline,)
-

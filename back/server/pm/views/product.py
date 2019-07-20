@@ -25,4 +25,3 @@ class ProductViewset(viewsets.ModelViewSet):
             .select_related('created_by', 'project')
             .prefetch_related('project__access', 'project__access__user')
         )
-

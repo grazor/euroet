@@ -61,4 +61,3 @@ class ManagerFactory(UserFactory):
         if not create:
             return
         self.groups.add(get_manager_group())
-

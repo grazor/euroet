@@ -16,6 +16,7 @@ import {
   DELETE_COMPONENT_REQUEST,
   GET_SUGGESTIONS_REQUEST,
   PRODUCT_INFO_REQUEST,
+  CREATE_REPORT_REQUEST,
 } from './constants';
 
 export function fetchProduct(projectSlug, productSlug) {
@@ -133,5 +134,13 @@ export function deleteComponent(projectSlug, productSlug, group, id) {
     productSlug,
     group,
     id,
+  };
+}
+
+export function createReport(projectSlug, productSlug) {
+  return {
+    type: CREATE_REPORT_REQUEST,
+    projectSlug,
+    productSlug,
   };
 }
