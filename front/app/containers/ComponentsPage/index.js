@@ -17,7 +17,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import ComponentsGrid from './ComponentsGrid';
 import ProductDetail from './ProductDetail';
-import ProductReports from './ProductReports';
+import ReportGrid from 'components/ReportGrid';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -114,7 +114,7 @@ export class ComponentsPage extends React.Component {
             productSlug,
           )}
         />
-        <ProductReports
+        <ReportGrid
           createReport={actionCreateReport.bind(null, projectSlug, productSlug)}
           reports={reports}
           reportStatus={reportStatus}

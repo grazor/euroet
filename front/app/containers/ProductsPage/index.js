@@ -18,6 +18,7 @@ import { createStructuredSelector } from 'reselect';
 import { find } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 
+import ReportGrid from 'components/ReportGrid';
 import ProductDialog from './ProductDialog';
 import ProductsTable from './ProductsTable';
 import ProjectDetail from './ProjectDetail';
@@ -28,12 +29,15 @@ import {
   deleteProduct,
   fetchProject,
   updateProduct,
+  createReport,
 } from './actions';
 import {
   makeSelectIsLoading,
   makeSelectIsUpdating,
   makeSelectProducts,
   makeSelectProject,
+  makeSelectReports,
+  makeSelectReportStatus,
 } from './selectors';
 
 const styles = theme => ({
@@ -115,9 +119,12 @@ class ProductsPage extends React.Component {
       project,
       isLoading,
       isUpdating,
+      reports,
+      reportStatus,
       match: {
         params: { slug },
       },
+      createReport: actionCreateReport,
     } = this.props;
 
     if (
@@ -143,6 +150,11 @@ class ProductsPage extends React.Component {
           openProductPage={this.openProductPage}
           editProduct={this.editProduct}
         />
+        <ReportGrid
+          createReport={actionCreateReport.bind(null, project.slug)}
+          reports={reports}
+          reportStatus={reportStatus}
+        />
         <Fab
           color="primary"
           aria-label="Add"
@@ -163,6 +175,9 @@ ProductsPage.propTypes = {
   deleteProduct: PropTypes.func.isRequired,
   project: PropTypes.object.isRequired,
   products: PropTypes.array.isRequired,
+  reports: PropTypes.array.isRequired,
+  reportStatus: PropTypes.string.isRequired,
+  createReport: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isUpdating: PropTypes.bool.isRequired,
   history: PropTypes.object.isRequired,
@@ -173,6 +188,8 @@ ProductsPage.propTypes = {
 const mapStateToProps = createStructuredSelector({
   project: makeSelectProject(),
   products: makeSelectProducts(),
+  reports: makeSelectReports(),
+  reportStatus: makeSelectReportStatus(),
   isLoading: makeSelectIsLoading(),
   isUpdating: makeSelectIsUpdating(),
 });
@@ -184,6 +201,7 @@ const mapDispatchToProps = dispatch =>
       addProduct,
       updateProduct,
       deleteProduct,
+      createReport,
     },
     dispatch,
   );

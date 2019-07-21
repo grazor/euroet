@@ -19,13 +19,18 @@ import {
   PROJECT_INFO_FAILURE,
   PROJECT_INFO_REQUEST,
   PROJECT_INFO_SUCCESS,
+  CREATE_REPORT_FAILURE,
+  CREATE_REPORT_REQUEST,
+  CREATE_REPORT_SUCCESS,
 } from './constants';
 
 export const initialState = fromJS({
   project: {},
   products: [],
+  reports: [],
   isLoading: false,
   isUpdating: false,
+  reportStatus: 'allowed',
 });
 
 function productsPageReducer(state = initialState, action) {
@@ -36,6 +41,7 @@ function productsPageReducer(state = initialState, action) {
       return state
         .set('project', fromJS(action.project))
         .set('products', fromJS(action.products))
+        .set('reports', fromJS(action.reports))
         .set('isLoading', false);
     case PROJECT_INFO_FAILURE:
       return state.set('isLoading', false);
@@ -72,6 +78,17 @@ function productsPageReducer(state = initialState, action) {
         .update('products', products =>
           products.filter(product => product.get('slug') !== action.slug),
         );
+
+    case CREATE_REPORT_REQUEST:
+      return state.set('reportStatus', 'pending');
+
+    case CREATE_REPORT_SUCCESS:
+      return state
+        .set('reportStatus', 'denied')
+        .update('reports', reports => reports.insert(0, action.report));
+
+    case CREATE_REPORT_FAILURE:
+      return state.set('reportStatus', 'allowed');
 
     default:
       return state;

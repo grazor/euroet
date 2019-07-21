@@ -27,6 +27,17 @@ const makeSelectIsUpdating = () =>
     selectProductsPageDomain,
     productsState => productsState.get('isUpdating'),
   );
+export const makeSelectReports = () =>
+  createSelector(
+    selectProductsPageDomain,
+    productsState => productsState.get('reports').toJS(),
+  );
+
+export const makeSelectReportStatus = () =>
+  createSelector(
+    selectProductsPageDomain,
+    productsState => productsState.get('reportStatus'),
+  );
 
 export {
   selectProductsPageDomain,

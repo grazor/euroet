@@ -9,6 +9,7 @@ import {
   PRODUCT_DELETE_REQUEST,
   PRODUCT_UPDATE_REQUEST,
   PROJECT_INFO_REQUEST,
+  CREATE_REPORT_REQUEST,
 } from './constants';
 
 export function fetchProject(slug) {
@@ -50,5 +51,12 @@ export function deleteProduct(projectSlug, slug) {
     type: PRODUCT_DELETE_REQUEST,
     projectSlug,
     slug,
+  };
+}
+
+export function createReport(projectSlug) {
+  return {
+    type: CREATE_REPORT_REQUEST,
+    projectSlug,
   };
 }

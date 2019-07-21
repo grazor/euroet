@@ -21,6 +21,9 @@ import {
   PROJECT_INFO_FAILURE,
   PROJECT_INFO_REQUEST,
   PROJECT_INFO_SUCCESS,
+  CREATE_REPORT_FAILURE,
+  CREATE_REPORT_REQUEST,
+  CREATE_REPORT_SUCCESS,
 } from './constants';
 
 function* getProjectInfo({ slug }) {
@@ -29,11 +32,12 @@ function* getProjectInfo({ slug }) {
   };
 
   try {
-    const [project, products] = yield all([
+    const [project, products, reports] = yield all([
       call(fetchJSON, `/api/projects/${slug}/`, options),
       call(fetchJSON, `/api/projects/${slug}/products/`, options),
+      call(fetchJSON, `/api/projects/${slug}/reports/`, options),
     ]);
-    yield put({ type: PROJECT_INFO_SUCCESS, products, project });
+    yield put({ type: PROJECT_INFO_SUCCESS, products, project, reports });
   } catch (error) {
     let message;
     switch (error.status) {
@@ -129,11 +133,33 @@ function* deleteProduct({ projectSlug, slug }) {
   }
 }
 
+function* createReport({ projectSlug }) {
+  const options = {
+    method: 'POST',
+  };
+
+  const baseUrl = `/api/projects/${projectSlug}/reports/`;
+
+  try {
+    const report = yield call(fetchJSON, baseUrl, options);
+    yield put({ type: CREATE_REPORT_SUCCESS, report });
+  } catch (error) {
+    yield put({ type: CREATE_REPORT_FAILURE });
+    if (error.status >= 500) {
+      yield put(notifyError('Internal server error'));
+    } else {
+      yield put(notifyApiError(error.status, error.data));
+    }
+  }
+}
+
 function* Saga() {
   yield takeLatest(PROJECT_INFO_REQUEST, getProjectInfo);
   yield takeLatest(PRODUCT_CREATE_REQUEST, addProduct);
   yield takeLatest(PRODUCT_UPDATE_REQUEST, updateProduct);
   yield takeLatest(PRODUCT_DELETE_REQUEST, deleteProduct);
+
+  yield takeLatest(CREATE_REPORT_REQUEST, createReport);
 }
 
 export default Saga;
