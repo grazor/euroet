@@ -9,13 +9,16 @@ User = get_user_model()
 
 
 class Component(ComponentBase):
-    code = models.CharField(max_length=63, db_index=True, null=True, blank=True, unique=True)
+    code = models.CharField(max_length=63, db_index=True, null=True, blank=True)
 
     collection = models.ForeignKey(Collection, blank=True, null=True, on_delete=models.SET_NULL)
     manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True, on_delete=models.SET_NULL)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('code', 'collection')
 
     def __str__(self) -> str:
         return f'{self.code}: {self.name}'
