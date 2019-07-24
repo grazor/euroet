@@ -4,4 +4,8 @@ from django.contrib.auth.admin import UserAdmin
 
 User = get_user_model()
 
-admin.site.register(User, UserAdmin)
+
+@admin.register(User)
+class UserAdmin(UserAdmin):
+    list_display = UserAdmin.list_display + ('last_login',)
+
