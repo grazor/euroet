@@ -62,7 +62,7 @@ function renderSuggestion(suggestion, { isHighlighted }) {
   const manufacturer =
     (suggestion.manufacturer && suggestion.manufacturer.name) || '';
   const price = suggestion.price ? `${suggestion.price} ₽` : '';
-  const sideText = [manufacturer, price].filter(x => x).join(', ');
+  const sideText = [price, manufacturer].filter(x => x).join(', ');
 
   const style = {
     minWidth: 300,
