@@ -22,19 +22,12 @@ class Entry(ComponentBase, OrderedModel):
 
     qty = models.IntegerField(_('Quantity'), validators=(MinValueValidator(1),), default=1)
 
-    code = models.CharField(max_length=63, null=True, blank=True)
-    manufacturer_name = models.CharField(max_length=255, null=True, blank=True)
-    collection_name = models.CharField(max_length=255, null=True, blank=True)
-    collection_discount = models.DecimalField(
-        _('default discount'),
-        max_digits=5,
-        decimal_places=2,
-        default=Decimal(0),
-        validators=(MinValueValidator(Decimal(-100.0)), MaxValueValidator(Decimal(100.0))),
+    custom_name = models.CharField(max_length=255, null=True, blank=True)
+    custom_price = models.DecimalField(
+        max_digits=12, decimal_places=3, default=Decimal(0), validators=(MinValueValidator(Decimal(0)),)
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
-    synced_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
     order_with_respect_to = ('group',)
@@ -45,33 +38,42 @@ class Entry(ComponentBase, OrderedModel):
     def __str__(self) -> str:
         return f'{self.group_id} <- {self.code} (#{self.qty})'
 
+    @property
+    def name(self) -> str:
+        return self.prototype.name if self.prototype else self.custom_name
+
+    @property
+    def price(self) -> Decimal:
+        return self.prototype.price if self.prototype else self.custom_price
+
+    @property
+    def code(self) -> str:
+        return self.prototype.code if self.prototype else ''
+
+    @property
+    def description(self) -> str:
+        return self.prototype.description if self.prototype else ''
+
+    @property
+    def manufacturer_name(self) -> str:
+        return self.prototype.manufacturer.name if self.prototype and self.prototype.manufacturer else ''
+
+    @property
+    def collection_name(self) -> str:
+        return self.prototype.collection.name if self.prototype and self.prototype.collection else ''
+
+    @property
+    def collection_discount(self) -> Decimal:
+        return self.prototype.collection.discount if self.prototype and self.prototype.collection else ''
+
     @classmethod
     def add_component_from_prototype(cls: T, group: Group, component: Component, qty: int = 1) -> T:
-        return cls.objects.create(
-            group=group,
-            prototype=component,
-            qty=qty,
-            code=component.code,
-            name=component.name,
-            description=component.description,
-            price=component.price,
-            manufacturer_name=component.manufacturer and component.manufacturer.name,
-            collection_name=component.collection and component.collection.name,
-            collection_discount=component.collection and component.collection.discount or Decimal(0),
-        )
+        return cls.objects.create(group=group, prototype=component, qty=qty)
 
     @classmethod
     def create_component(cls: T, group: Group, name: str, price: Optional[Decimal] = None, qty: int = 1) -> T:
         return cls.objects.create(
-            group=group,
-            prototype=None,
-            qty=qty,
-            code=None,
-            name=name,
-            description=None,
-            price=price or Decimal(0),
-            manufacturer_name=None,
-            collection_name=None,
+            group=group, prototype=None, qty=qty, custom_name=name, custom_price=price or Decimal(0)
         )
 
     @property
@@ -81,37 +83,7 @@ class Entry(ComponentBase, OrderedModel):
 
     @property
     def total_price(self) -> Decimal:
-        discount = (self.collection_discount or Decimal(0.0)) / Decimal(100.0)
-        return self.price * (Decimal(1) - discount) * Decimal(self.qty)
-
-    @property
-    def is_consistent(self) -> bool:
-        return self.prototype and self.synced_at >= self.prototype.modified_at or True
-
-    def make_consistent(self) -> None:
-        if not self.prototype:
-            return
-
-        self.code = self.prototype.code
-        self.name = self.prototype.name
-        self.description = self.prototype.description
-        self.price = self.prototype.price
-        self.manufacturer_name = self.prototype.manufacturer and self.prototype.manufacturer.name
-        self.collection_name = self.prototype.collection and self.prototype.collection.name
-        self.collection_discount = self.prototype.collection and self.prototype.collection.discount or Decimal(0)
-        self.synced_at = timezone.now()
-        self.save(
-            update_fields=[
-                'code',
-                'name',
-                'description',
-                'price',
-                'manufacturer_name',
-                'collection_name',
-                'collection_discount',
-                'synced_at',
-            ]
-        )
+        return self.discount_price_of_one * Decimal(self.qty)
 
     def extract_component(self) -> None:
         raise NotImplementedError()

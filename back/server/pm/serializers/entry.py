@@ -22,8 +22,6 @@ class EntrySerializer(serializers.ModelSerializer):
             'collection_name',
             'collection_discount',
             'qty',
-            'synced_at',
-            'is_consistent',
             'order',
         )
 

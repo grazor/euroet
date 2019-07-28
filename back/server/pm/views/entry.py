@@ -30,7 +30,9 @@ class EntryViewset(
 
     def get_queryset(self):
         product = self.request.product
-        qs = Group.objects.filter(product_id=product.id).prefetch_related('entries', 'entries__prototype')
+        qs = Group.objects.filter(product_id=product.id).prefetch_related(
+            'entries', 'entries__prototype', 'entries__prototype__manufacturer', 'entries__prototype__collection'
+        )
         return qs
 
     def update(self, request, *args, **kwargs):
@@ -53,11 +55,11 @@ class EntryViewset(
         )
         update_fields = []
         if serializer.validated_data.get('name'):
-            entry.name = serializer.validated_data['name']
-            update_fields.append('name')
+            entry.custom_name = serializer.validated_data['name']
+            update_fields.append('custom_name')
         if serializer.validated_data.get('price') is not None:
-            entry.price = serializer.validated_data['price']
-            update_fields.append('price')
+            entry.custom_price = serializer.validated_data['price']
+            update_fields.append('custom_price')
         if update_fields:
             entry.save(update_fields=update_fields)
         return Response(EntrySerializer(entry).data)
