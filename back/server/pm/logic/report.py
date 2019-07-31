@@ -1,4 +1,6 @@
+import re
 from uuid import uuid4
+from string import ascii_uppercase
 from typing import Any, Tuple, Mapping, Iterable
 from decimal import Decimal
 from functools import reduce
@@ -13,12 +15,16 @@ from server.users.models import User
 
 ColumnConfig = namedtuple('ColumnConfig', ['start', 'end', 'width', 'options'])
 
+COLS = ascii_uppercase  # 26 is enough for now
+RC_REGEX = re.compile(r'R(\[(-?\d+)\])?C(\[(-?\d+)\])?')
+
 SHEET_REPORT_NAME = 'Расчёт КП'
 SHEET_CLIENT_NAME = 'КП клиенту'
 SHEET_COMPOENTNS_PIVOT = 'Сводная'
 
 PROJECT_PAGE_COMPUTATION_CAPTIONS = ('Заказчик:', 'Номер счёта:', 'Объект:', 'Дата расчёта:')
 PROJECT_PAGE_NOTES_CAPTION = 'Примечания по сделанному расчету:'
+
 
 REPORT_HEAD = (
     'Артикул',
@@ -42,8 +48,11 @@ PROJECTS_HEAD = (
     'Программирование, RUR',
     'Упаковка',
     'Планируемая себестоимость РК RUR с НДС',
+    '',
     'Стоимость сборки за изделия RUR с НДС',
+    '',
     'Планируемый GM по изделию',
+    '',
     'Стоимость за единицу RUR с НДС',
     'Стоимость изделий RUR с НДС',
     'Планируемая себестоимость + расходники на кол-во изделий RUR с НДС',
@@ -66,8 +75,13 @@ PROJECT_PAGE_COLUMNS = (
     ColumnConfig(start=3, end=4, width=8, options={'align': 'center'}),
     ColumnConfig(start=5, end=5, width=18, options=None),
     ColumnConfig(start=6, end=7, width=13, options=None),
-    ColumnConfig(start=8, end=10, width=18, options=None),
-    ColumnConfig(start=11, end=13, width=21, options=None),
+    ColumnConfig(start=8, end=8, width=18, options=None),
+    ColumnConfig(start=9, end=9, width=4, options=None),
+    ColumnConfig(start=10, end=10, width=18, options=None),
+    ColumnConfig(start=11, end=11, width=4, options=None),
+    ColumnConfig(start=12, end=12, width=18, options=None),
+    ColumnConfig(start=13, end=13, width=4, options=None),
+    ColumnConfig(start=14, end=16, width=21, options=None),
 )
 
 
@@ -80,6 +94,19 @@ def combine(*rules: Mapping):
     return reduce(lambda a, b: {**a, **b}, rules)
 
 
+def cell(col, row, fixed=False):
+    colname = (fixed and '$' or '') + COLS[col]
+    rowname = (fixed and '$' or '') + str(row + 1)
+    return f'{colname}{rowname}'
+
+
+def rc(formula: str, col: int, row: int) -> str:
+    replacement = lambda match: cell(col=col + int(match.group(4) or 0), row=row + int(match.group(2) or 0))
+    b = re.sub(RC_REGEX, replacement, formula)
+    print(f'{formula} {row} {col} -> {b}')
+    return b
+
+
 def init_formats(workbook) -> Mapping[str, Any]:
     small = {'font_size': 8}
     bold = {'bold': True}
@@ -89,7 +116,7 @@ def init_formats(workbook) -> Mapping[str, Any]:
     bordered = {'border': 1}
     bordered2 = {'border': 2}
 
-    num_percent = {'num_format': '0 \%'}
+    num_percent = {'num_format': '0%'}
     num_rub = {'num_format': '0.00 ₽'}
 
     bg_yellow = {'bg_color': '#FFFF00'}
@@ -119,9 +146,11 @@ def init_formats(workbook) -> Mapping[str, Any]:
         'project_products_thead_markup': (project_products_thead, bg_green),
         'project_products_thead_markup_value': (project_products_thead, bg_yellow, num_percent),
         'project_products_item': (small, bordered),
-        'project_products_item_name': (project_products_item, fc_blue),
+        'project_products_item_idx': (project_products_item, centered),
+        'project_products_item_name': (project_products_item, bold, fc_blue),
         'project_products_item_qty': (project_products_item, centered),
         'project_products_item_price': (project_products_item, bg_light_green, num_rub),
+        'project_products_item_markup': (project_products_item, centered, num_percent),
         # product sheet
         'product_name': (bold, bordered2, bg_yellow),
         'product_total_price': (bordered2, centered, bg_yellow),
@@ -195,24 +224,66 @@ def write_computation_internal_page(worksheet, formats: Mapping[str, Any], repor
 
     # Projects table head
     worksheet.set_row(row, 30)
+    percent_row = row + 1
     for col, caption in enumerate(PROJECTS_HEAD):
         if col == 5:
-            worksheet.merge_range(row, col, row + 1, col, caption, formats['project_products_thead_price'])
-        elif col < 8 or col > 10:
-            worksheet.merge_range(row, col, row + 1, col, caption, formats['project_products_thead'])
-        else:
-            worksheet.write_string(row, col, caption, formats['project_products_thead_markup'])
-            worksheet.write_number(row + 1, col, (col - 7) * 5, formats['project_products_thead_markup_value'])
+            worksheet.merge_range(row, col, percent_row, col, caption, formats['project_products_thead_price'])
+        elif col < 8 or col > 13:
+            worksheet.merge_range(row, col, percent_row, col, caption, formats['project_products_thead'])
+        elif col % 2 == 0:
+            worksheet.merge_range(row, col, row, col + 1, caption, formats['project_products_thead_markup'])
+            worksheet.merge_range(
+                percent_row,
+                col,
+                percent_row,
+                col + 1,
+                (col - 7) * 5.0 / 100.0,
+                formats['project_products_thead_markup_value'],
+            )
 
     # Projects list
-    row += 1
+    row += 2
+    total_row = row + len(reports) + 2
     for idx, (product, project_sheet) in enumerate(reports, start=1):
-        worksheet.write_number(row + idx, 0, idx, formats['project_products_item'])
-        worksheet.write_string(row + idx, 1, product.name, formats['project_products_item_name'])
-        worksheet.write_string(row + idx, 2, '', formats['project_products_item'])
-        worksheet.write_string(row + idx, 3, '', formats['project_products_item'])
-        worksheet.write_number(row + idx, 4, 1, formats['project_products_item_qty'])
-        worksheet.write_formula(row + idx, 5, f'\'{project_sheet.name}\'!$H$1', formats['project_products_item_price'])
+        worksheet.write_number(row, 0, idx, formats['project_products_item_idx'])
+        worksheet.write_string(row, 1, product.name, formats['project_products_item_name'])
+        worksheet.write_string(row, 2, '', formats['project_products_item'])
+        worksheet.write_string(row, 3, '', formats['project_products_item'])
+        worksheet.write_number(row, 4, 1, formats['project_products_item_qty'])
+        worksheet.write_formula(row, 5, f'\'{project_sheet.name}\'!$H$1', formats['project_products_item_price'])
+        worksheet.write_string(row, 6, f'', formats['project_products_item_price'])
+        worksheet.write_string(row, 7, f'', formats['project_products_item_price'])
+
+        for j in range(3):
+            worksheet.write_formula(
+                row,
+                9 + j * 2,
+                cell(col=8 + j * 2, row=percent_row, fixed=True),
+                formats['project_products_item_markup'],
+            )
+
+        worksheet.write_formula(row, 8, rc('RC[-3]*RC[1]', row=row, col=8), formats['project_products_item_price'])
+        worksheet.write_formula(
+            row,
+            10,
+            rc(
+                f'((RC[-5] + RC[-2] + RC[-3]) * RC[1] + RC[-4] + 5000 / {cell(4, total_row, True)}) * RC[-6]',
+                row=row,
+                col=10,
+            ),
+            formats['project_products_item_price'],
+        )
+        worksheet.write_formula(
+            row,
+            12,
+            rc(
+                f'IF(RC[1]<0.05,((RC[-7]+RC[-6]+RC[-5]+RC[-4])*RC[-8]+RC[-2])*0.05/0.95,((RC[-7]+RC[-6]+RC[-5]+RC[-4])*RC[-8]+RC[-2])*RC[1]/(1-RC[1]))',
+                row=row,
+                col=10,
+            ),
+            formats['project_products_item_price'],
+        )
+        row += 1
 
 
 def report_product(product: Product, author: User) -> Report:
