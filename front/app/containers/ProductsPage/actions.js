@@ -19,13 +19,14 @@ export function fetchProject(slug) {
   };
 }
 
-export function addProduct({ projectSlug, name, slug, description }) {
+export function addProduct({ projectSlug, name, slug, description, qty }) {
   return {
     type: PRODUCT_CREATE_REQUEST,
     projectSlug,
     name,
     slug,
     description,
+    qty,
   };
 }
 
@@ -35,6 +36,7 @@ export function updateProduct({
   name,
   slug,
   description,
+  qty,
 }) {
   return {
     type: PRODUCT_UPDATE_REQUEST,
@@ -43,6 +45,7 @@ export function updateProduct({
     name,
     slug,
     description,
+    qty,
   };
 }
 

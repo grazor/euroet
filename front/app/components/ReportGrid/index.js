@@ -69,6 +69,7 @@ const ReportCard = ({ report, classes }) => (
         fullWidth
         component="a"
         href={report.download_url}
+        target="_self"
         download
       >
         <DownloadIcon className={classes.leftIcon} />

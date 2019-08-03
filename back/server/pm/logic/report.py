@@ -1,10 +1,10 @@
 import re
 from uuid import uuid4
 from string import ascii_uppercase
-from typing import Any, Tuple, Mapping, Iterable
+from typing import Any, Tuple, Mapping, Iterable, Optional
 from decimal import Decimal
 from functools import reduce
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 
 import xlsxwriter
 
@@ -24,6 +24,7 @@ SHEET_COMPOENTNS_PIVOT = 'Сводная'
 
 PROJECT_PAGE_COMPUTATION_CAPTIONS = ('Заказчик:', 'Номер счёта:', 'Объект:', 'Дата расчёта:')
 PROJECT_PAGE_NOTES_CAPTION = 'Примечания по сделанному расчету:'
+TOTAL_CAPTION = 'ИТОГО:'
 
 
 REPORT_HEAD = (
@@ -58,9 +59,27 @@ PROJECTS_HEAD = (
     'Планируемая себестоимость + расходники на кол-во изделий RUR с НДС',
 )
 
+PROJECTS_HEAD_PRICING = (
+    ('Полная стоимость проекта RUR с НДС:', 15),
+    ('Планируемый бюджет ПРОИЗВОДСТВА_RUR с НДС:', 10),
+    ('Планируемая прибыль ПРОЕКТА_RUR с НДС:', 12),
+    ('Планируемая себестоимость + РК_RUR с НДС', 16),
+)
+
+CLIENT_HEAD = (
+    '№',
+    'Наименование изделия',
+    'Тип корпуса',
+    'Степень защиты',
+    'Кол-во изделий',
+    'Стоимость за единицу RUR с НДС',
+    'Стоимость изделий RUR с НДС',
+    'Срок поставки',
+)
+
 PRODUCT_PAGE_COLUMNS = (
     ColumnConfig(start=0, end=0, width=20, options=None),
-    ColumnConfig(start=1, end=1, width=100, options=None),
+    ColumnConfig(start=1, end=1, width=64, options=None),
     ColumnConfig(start=2, end=4, width=10, options={'align': 'center'}),
     ColumnConfig(start=5, end=5, width=14, options={'align': 'center'}),
     ColumnConfig(start=6, end=6, width=10, options={'align': 'center'}),
@@ -69,19 +88,24 @@ PRODUCT_PAGE_COLUMNS = (
 )
 
 PROJECT_PAGE_COLUMNS = (
-    ColumnConfig(start=0, end=0, width=3.5, options={'align': 'center'}),
-    ColumnConfig(start=1, end=1, width=80, options=None),
-    ColumnConfig(start=2, end=2, width=18, options={'align': 'center'}),
-    ColumnConfig(start=3, end=4, width=8, options={'align': 'center'}),
-    ColumnConfig(start=5, end=5, width=18, options=None),
-    ColumnConfig(start=6, end=7, width=13, options=None),
-    ColumnConfig(start=8, end=8, width=18, options=None),
+    ColumnConfig(start=0, end=0, width=3, options={'align': 'center'}),
+    ColumnConfig(start=1, end=1, width=64, options=None),
+    ColumnConfig(start=2, end=2, width=14, options={'align': 'center'}),
+    ColumnConfig(start=3, end=4, width=7, options={'align': 'center'}),
+    ColumnConfig(start=5, end=5, width=14, options=None),
+    ColumnConfig(start=6, end=7, width=10, options=None),
+    ColumnConfig(start=8, end=8, width=13, options=None),
     ColumnConfig(start=9, end=9, width=4, options=None),
-    ColumnConfig(start=10, end=10, width=18, options=None),
+    ColumnConfig(start=10, end=10, width=13, options=None),
     ColumnConfig(start=11, end=11, width=4, options=None),
-    ColumnConfig(start=12, end=12, width=18, options=None),
+    ColumnConfig(start=12, end=12, width=13, options=None),
     ColumnConfig(start=13, end=13, width=4, options=None),
-    ColumnConfig(start=14, end=16, width=21, options=None),
+    ColumnConfig(start=14, end=16, width=16, options=None),
+)
+
+CLIENT_PAGE_COLUMNS = PROJECT_PAGE_COLUMNS[:3] + (
+    ColumnConfig(start=5, end=6, width=PROJECT_PAGE_COLUMNS[12].width, options=None),
+    ColumnConfig(start=7, end=7, width=14, options=None),
 )
 
 
@@ -122,6 +146,7 @@ def init_formats(workbook) -> Mapping[str, Any]:
     bg_yellow = {'bg_color': '#FFFF00'}
     bg_dark_yellow = {'bg_color': '#FFCC00'}
     bg_light_cyan = {'bg_color': '#33CCCC'}
+    bg_pale_blue = {'bg_color': '#99ccff'}
     bg_green = {'bg_color': '#00FF00'}
     bg_light_green = {'bg_color': '#CCFFCC'}
 
@@ -141,16 +166,28 @@ def init_formats(workbook) -> Mapping[str, Any]:
         'project_info_field': ({'top': 2, 'bottom': 2},),
         'project_notes_title': (underlined, project_notes),
         'project_notes_entry': (project_notes,),
+        'project_pricing_head_caption_name': (bold, bordered2, bg_dark_yellow),
+        'project_pricing_head_caption_value': (bold, bordered2, bg_dark_yellow, num_rub),
+        'project_pricing_head_item_name': (bold, bordered2, bg_pale_blue),
+        'project_pricing_head_item_value': (bold, bordered2, bg_yellow, num_rub),
         'project_products_thead': (project_products_thead, bg_light_cyan),
         'project_products_thead_price': (project_products_thead, bg_yellow),
         'project_products_thead_markup': (project_products_thead, bg_green),
         'project_products_thead_markup_value': (project_products_thead, bg_yellow, num_percent),
-        'project_products_item': (small, bordered),
+        'project_products_item': (project_products_item,),
         'project_products_item_idx': (project_products_item, centered),
         'project_products_item_name': (project_products_item, bold, fc_blue),
         'project_products_item_qty': (project_products_item, centered),
         'project_products_item_price': (project_products_item, bg_light_green, num_rub),
-        'project_products_item_markup': (project_products_item, centered, num_percent),
+        'project_products_item_markup': (project_products_item, centered, bg_yellow, num_percent),
+        'project_products_item_markup_value': (project_products_item, num_rub),
+        'project_products_total_qty': (project_products_item, centered, bg_yellow, {'bottom': 2}),
+        'project_products_blank_line': (project_products_item, bg_light_cyan),
+        'project_products_bottom': (project_products_item, {'top': 1, 'bottom': 2}),
+        # client sheet
+        'client_total_caption': (small, bold, bordered, bg_light_cyan),
+        'client_total_value': (small, bold, bordered, bg_dark_yellow, num_rub),
+        'client_products_bottom': (project_products_item, bg_light_cyan, {'top': 1, 'bottom': 2}),
         # product sheet
         'product_name': (bold, bordered2, bg_yellow),
         'product_total_price': (bordered2, centered, bg_yellow),
@@ -168,19 +205,22 @@ def write_group(worksheet, row: int, row_format, group: Group) -> None:
         worksheet.write_string(row, i, '', row_format)
 
 
-def write_entry(worksheet, row: int, row_format, entry: Entry) -> None:
-    worksheet.write_string(row, 0, entry.code or '', row_format)
-    worksheet.write_string(row, 1, entry.name or '', row_format)
-    worksheet.write_number(row, 2, entry.qty or 0, row_format)
-    worksheet.write_string(row, 3, 'шт.', row_format)
-    worksheet.write_number(row, 4, 1, row_format)
-    worksheet.write_number(row, 5, entry.discount_price_of_one, row_format)
-    worksheet.write_number(row, 6, 1, row_format)
-    worksheet.write_number(row, 7, entry.total_price, row_format)
-    worksheet.write_string(row, 8, entry.manufacturer_name or '', row_format)
+def write_entry(worksheet, row: int, formats, entry: Entry) -> None:
+    default_format = formats['project_products_item']
+    worksheet.write_string(row, 0, entry.code or '', default_format)
+    worksheet.write_string(row, 1, entry.name or '', default_format)
+    worksheet.write_number(row, 2, entry.qty or 0, formats['project_products_item_idx'])
+    worksheet.write_string(row, 3, 'шт.', default_format)
+    worksheet.write_number(row, 4, 1, formats['project_products_item_idx'])
+    worksheet.write_number(row, 5, entry.discount_price_of_one, formats['project_products_item_markup_value'])
+    worksheet.write_number(row, 6, 1, formats['project_products_item_idx'])
+    worksheet.write_number(row, 7, entry.total_price, formats['project_products_item_markup_value'])
+    worksheet.write_string(row, 8, entry.manufacturer_name or '', default_format)
 
 
-def write_product_page(worksheet, formats: Mapping[str, Any], product: Product) -> None:
+def write_product_page(
+    worksheet, formats: Mapping[str, Any], product: Product, counts: Optional[Mapping[Any, Entry]] = None
+) -> None:
     worksheet_set_columns(worksheet, PRODUCT_PAGE_COLUMNS)
     worksheet.write_string(0, 0, product.name, formats['product_name'])
 
@@ -197,7 +237,12 @@ def write_product_page(worksheet, formats: Mapping[str, Any], product: Product) 
         write_group(worksheet, row, formats['product_components_group'], group)
         row += 1
         for entry in group.entries.all():
-            write_entry(worksheet, row, formats['product_components_entry'], entry)
+            if counts is not None:
+                if entry.prototype:
+                    counts[entry.prototype] += entry.qty * group.product.qty
+                else:
+                    counts[entry] += entry.qty * group.product.qty
+            write_entry(worksheet, row, formats, entry)
             total_price += entry.total_price
             row += 1
 
@@ -223,6 +268,7 @@ def write_computation_internal_page(worksheet, formats: Mapping[str, Any], repor
         row += 1
 
     # Projects table head
+    row += 1
     worksheet.set_row(row, 30)
     percent_row = row + 1
     for col, caption in enumerate(PROJECTS_HEAD):
@@ -241,49 +287,163 @@ def write_computation_internal_page(worksheet, formats: Mapping[str, Any], repor
                 formats['project_products_thead_markup_value'],
             )
 
+    # Right table
+    for idx, (caption, col) in enumerate(PROJECTS_HEAD_PRICING):
+        if idx == 0:
+            style_name = formats['project_pricing_head_caption_name']
+            style_value = formats['project_pricing_head_caption_value']
+        else:
+            style_name = formats['project_pricing_head_item_name']
+            style_value = formats['project_pricing_head_item_value']
+
+        worksheet.merge_range(2 + idx, 8, 2 + idx, 13, caption, style_name)
+        worksheet.write_formula(2 + idx, 14, f'SUM({cell(row=13, col=col)}:{cell(row=1000, col=col)})', style_name)
+
     # Projects list
     row += 2
-    total_row = row + len(reports) + 2
-    for idx, (product, project_sheet) in enumerate(reports, start=1):
-        worksheet.write_number(row, 0, idx, formats['project_products_item_idx'])
-        worksheet.write_string(row, 1, product.name, formats['project_products_item_name'])
+    first_item_row = row
+    total_row = row + len(reports) + 4
+    for idx, (product, project_sheet) in enumerate(reports + [(None, None)] * 3, start=1):
+        if product:
+            worksheet.write_number(row, 0, idx, formats['project_products_item_idx'])
+            worksheet.write_number(row, 4, product.qty, formats['project_products_item_qty'])
+            worksheet.write_formula(row, 5, f'\'{project_sheet.name}\'!$H$1', formats['project_products_item_price'])
+        else:
+            worksheet.write_string(row, 0, '', formats['project_products_item_idx'])
+            worksheet.write_string(row, 4, '', formats['project_products_item_qty'])
+            worksheet.write_string(row, 5, '', formats['project_products_item_price'])
+            worksheet.write_string(row, 8, '', formats['project_products_item_markup_value'])
+            worksheet.write_string(row, 10, '', formats['project_products_item_markup_value'])
+            worksheet.write_string(row, 12, '', formats['project_products_item_markup_value'])
+
+            worksheet.write_string(row, 14, '', formats['project_products_item_markup_value'])
+            worksheet.write_string(row, 15, '', formats['project_products_item_markup_value'])
+            worksheet.write_string(row, 16, '', formats['project_products_item_markup_value'])
+
+        worksheet.write_string(row, 1, product and product.name or '', formats['project_products_item_name'])
         worksheet.write_string(row, 2, '', formats['project_products_item'])
         worksheet.write_string(row, 3, '', formats['project_products_item'])
-        worksheet.write_number(row, 4, 1, formats['project_products_item_qty'])
-        worksheet.write_formula(row, 5, f'\'{project_sheet.name}\'!$H$1', formats['project_products_item_price'])
         worksheet.write_string(row, 6, f'', formats['project_products_item_price'])
         worksheet.write_string(row, 7, f'', formats['project_products_item_price'])
 
         for j in range(3):
+            if product:
+                worksheet.write_formula(
+                    row,
+                    9 + j * 2,
+                    cell(col=8 + j * 2, row=percent_row, fixed=True),
+                    formats['project_products_item_markup'],
+                )
+            else:
+                worksheet.write_string(row, 9 + j * 2, '', formats['project_products_item_markup'])
+
+        if product:
+            worksheet.write_formula(
+                row, 8, rc('RC[-3]*RC[1]', row=row, col=8), formats['project_products_item_markup_value']
+            )
             worksheet.write_formula(
                 row,
-                9 + j * 2,
-                cell(col=8 + j * 2, row=percent_row, fixed=True),
-                formats['project_products_item_markup'],
+                10,
+                rc(
+                    f'((RC[-5] + RC[-2] + RC[-3]) * RC[1] + RC[-4] + 5000 / {cell(4, total_row, True)}) * RC[-6]',
+                    row=row,
+                    col=10,
+                ),
+                formats['project_products_item_markup_value'],
+            )
+            worksheet.write_formula(
+                row,
+                12,
+                rc(
+                    f'IF(RC[1]<0.05,((RC[-7]+RC[-6]+RC[-5]+RC[-4])*RC[-8]+RC[-2])*0.05/0.95,((RC[-7]+RC[-6]+RC[-5]+RC[-4])*RC[-8]+RC[-2])*RC[1]/(1-RC[1]))',
+                    row=row,
+                    col=12,
+                ),
+                formats['project_products_item_markup_value'],
             )
 
-        worksheet.write_formula(row, 8, rc('RC[-3]*RC[1]', row=row, col=8), formats['project_products_item_price'])
-        worksheet.write_formula(
-            row,
-            10,
-            rc(
-                f'((RC[-5] + RC[-2] + RC[-3]) * RC[1] + RC[-4] + 5000 / {cell(4, total_row, True)}) * RC[-6]',
-                row=row,
-                col=10,
-            ),
-            formats['project_products_item_price'],
-        )
-        worksheet.write_formula(
-            row,
-            12,
-            rc(
-                f'IF(RC[1]<0.05,((RC[-7]+RC[-6]+RC[-5]+RC[-4])*RC[-8]+RC[-2])*0.05/0.95,((RC[-7]+RC[-6]+RC[-5]+RC[-4])*RC[-8]+RC[-2])*RC[1]/(1-RC[1]))',
-                row=row,
-                col=10,
-            ),
-            formats['project_products_item_price'],
-        )
+            worksheet.write_formula(
+                row,
+                14,
+                rc('IF(RC[-10]>0,RC[1]/RC[-10],0)', row=row, col=14),
+                formats['project_products_item_markup_value'],
+            )
+            worksheet.write_formula(
+                row,
+                15,
+                rc('(RC[-10]+RC[-8]+RC[-7])*RC[-11]+RC[-5]+RC[-3]', row=row, col=15),
+                formats['project_products_item_markup_value'],
+            )
+            worksheet.write_formula(
+                row, 16, rc('(RC[-11]+RC[-8])*RC[-12]', row=row, col=16), formats['project_products_item_markup_value']
+            )
+
         row += 1
+
+    # Blank lines
+    for i in range(17):
+        worksheet.write_string(row, i, '', formats['project_products_blank_line'])
+        worksheet.write_string(row + 1, i, '', formats['project_products_bottom'])
+
+    # Total count
+    row += 2
+    worksheet.write_formula(
+        total_row,
+        4,
+        f'SUM({cell(row=first_item_row, col=4)}:{cell(row=row-3,col=4)})',
+        formats['project_products_total_qty'],
+    )
+
+
+def write_computation_external_page(worksheet, formats: Mapping[str, Any], reports_count: int, internal_sheet) -> None:
+    worksheet_set_columns(worksheet, CLIENT_PAGE_COLUMNS)
+
+    worksheet.write_string(0, 5, TOTAL_CAPTION, formats['client_total_caption'])
+    worksheet.write_formula(
+        0, 6, f'SUM({cell(row=3, col=6)}:{cell(row=3+reports_count,col=6)})', formats['client_total_value']
+    )
+
+    # Table head
+    row = 2
+    worksheet.set_row(row, 30)
+    for idx, caption in enumerate(CLIENT_HEAD):
+        worksheet.write_string(row, idx, caption, formats['project_products_thead'])
+
+    row += 1
+    for i in range(reports_count):
+        worksheet.write_number(row, 0, i + 1, formats['project_products_item_idx'])
+        worksheet.write_string(row, 7, '', formats['project_products_item_idx'])
+        for j in range(6):
+            col = j + 1 if j < 4 else j + 9
+            style = formats['project_products_item'] if j < 4 else formats['project_products_item_markup_value']
+            worksheet.write_formula(row, j + 1, f'\'{internal_sheet.name}\'!{cell(row=i+13, col=col)}', style)
+        row += 1
+
+    # Blank lines
+    for i in range(8):
+        worksheet.write_string(row, i, '', formats['project_products_item'])
+        worksheet.write_string(row + 1, i, '', formats['client_products_bottom'])
+
+
+def write_summary_page(worksheet, formats: Mapping[str, Any], counts) -> None:
+    worksheet_set_columns(worksheet, PRODUCT_PAGE_COLUMNS)
+
+    worksheet.set_row(2, 30)
+    for col, head in enumerate(REPORT_HEAD):
+        worksheet.write_string(2, col, head, formats['product_components_thead'])
+
+    row = 3
+    for item, count in sorted(counts.items(), key=lambda x: x[0].code or 'z' * 100):
+        if isinstance(item, Entry):
+            write_entry(worksheet, row, formats, item)
+        else:
+            entry = Entry(prototype=item, qty=count)
+            write_entry(worksheet, row, formats, entry)
+        row += 1
+
+    worksheet.write_formula(
+        0, 7, f'SUM({cell(row=4, col=7)}:{cell(row=1000, col=7)})', formats['project_pricing_head_item_value']
+    )
 
 
 def report_product(product: Product, author: User) -> Report:
@@ -314,13 +474,16 @@ def report_project(project: Project, author: User) -> Report:
     formats = init_formats(workbook)
 
     reports = []
+    counts = defaultdict(int)
     products = project.products.all().order_by('created_at')
     for product in products:
         worksheet = workbook.add_worksheet(product.name[:31])
-        write_product_page(worksheet, formats, product)
+        write_product_page(worksheet, formats, product, counts)
         reports.append((product, worksheet))
 
     write_computation_internal_page(report_sheet, formats, reports)
+    write_computation_external_page(client_sheet, formats, len(reports), report_sheet)
+    write_summary_page(pivot_sheet, formats, counts)
 
     workbook.close()
     report.complete = True

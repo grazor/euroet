@@ -23,6 +23,7 @@ const getInitialState = () => ({
   name: '',
   slug: '',
   description: '',
+  qty: 1,
 
   autoSlug: true,
   originalSlug: undefined,
@@ -69,6 +70,7 @@ class ProductDialog extends React.Component {
         name: product.name,
         slug: product.slug,
         description: product.description,
+        qty: product.qty,
         originalSlug: product.slug,
         autoSlug: false,
       });
@@ -138,6 +140,16 @@ class ProductDialog extends React.Component {
               onChange={this.onChange('description')}
               value={this.state.description}
               multiline
+              fullWidth
+            />
+            <TextField
+              margin="dense"
+              id="qty"
+              label="Quantity"
+              onChange={this.onChange('qty')}
+              value={this.state.qty}
+              type="number"
+              inputProps={{ min: 1 }}
               fullWidth
             />
           </DialogContent>

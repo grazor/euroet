@@ -19,6 +19,7 @@ class ProductsTable extends React.Component {
   columns = [
     { name: 'Name', options: { filter: false, sort: true } },
     { name: 'Description', options: { filter: false, sort: true } },
+    { name: 'qty', options: { filter: false, sort: true } },
     { name: 'Updated by', options: { filter: false, sort: true } },
     {
       name: 'Last update',
@@ -33,6 +34,7 @@ class ProductsTable extends React.Component {
     return products.map(p => [
       p.name,
       p.description,
+      p.qty,
       <UserCell product={p} sortkey={getUserSortKey(p).fullName} />,
       <DateCell
         product={p}

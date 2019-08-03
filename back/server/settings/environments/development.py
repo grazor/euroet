@@ -17,7 +17,6 @@ from server.settings.components.common import MIDDLEWARE, INSTALLED_APPS
 
 DEBUG = True
 
-
 # Register dev apps
 
 INSTALLED_APPS += ('debug_toolbar', 'nplusone.ext.django', 'webpack_loader', 'django_extensions')

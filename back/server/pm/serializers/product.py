@@ -24,6 +24,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'slug',
             'name',
             'description',
+            'qty',
             'project',
             'author',
             'created_by',
