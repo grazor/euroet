@@ -30,12 +30,79 @@ RowRenderer.propTypes = {
   row: PropTypes.object.isRequired,
 };
 
+const parsePaste = str =>
+  str.split(/\r\n|\n|\r/).map(row => row.split('\t').filter(r => r));
+
 class ComponentsGrid extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { expandedGroups: new Set() };
+    this.state = {
+      expandedGroups: new Set(),
+      selectedRow: null,
+      selectedTop: null,
+      selectedBottom: null,
+    };
     this.paperRef = React.createRef();
+
+    document.addEventListener('copy', this.handleCopy);
+    document.addEventListener('paste', this.handlePaste);
   }
+
+  componentWillUnmount = () => {
+    this.removeAllListeners();
+  };
+
+  removeAllListeners = () => {
+    document.removeEventListener('copy', this.handleCopy);
+    document.removeEventListener('paste', this.handlePaste);
+  };
+
+  onCellsSelected = selection => {
+    this.setState({
+      selectedRow: selection.startCell.rowIdx,
+      selectedTop: selection.topLeft.rowIdx,
+      selectedBottom: selection.bottomRight.rowIdx,
+    });
+  };
+
+  handleCopy = e => {
+    e.preventDefault();
+    const { selectedTop, selectedBottom } = this.state;
+    if (!selectedTop || !selectedBottom) {
+      return;
+    }
+    const rows = this.mapComponentsToGridData();
+    const selectedRows = rows.slice(selectedTop, selectedBottom + 1);
+    const copied = selectedRows
+      .filter(row => !row.empty && !row.group && row.code)
+      .map(row => [row.code, row.qty].join('\t'))
+      .join('\n');
+    e.clipboardData.setData('text/plain', copied);
+  };
+
+  handlePaste = e => {
+    e.preventDefault();
+    const { selectedRow } = this.state;
+    if (selectedRow === null) {
+      return;
+    }
+
+    const row = this.mapComponentsToGridData()[selectedRow];
+    if (row.group && row.empty) {
+      return;
+    }
+    const pasteData = parsePaste(e.clipboardData.getData('text/plain'));
+    pasteData.forEach(entry => {
+      const qty = parseInt(entry[1], 10);
+      if (entry.length !== 2 || qty === NaN) {
+        return;
+      }
+      this.props.addComponentByCode(row.groupId, entry[0], qty);
+    });
+    const { expandedGroups } = this.state;
+    expandedGroups.add(row.groupId);
+    this.setState({ expandedGroups });
+  };
 
   columns = [
     { key: 'expand', width: 58, editable: false },
@@ -183,6 +250,7 @@ class ComponentsGrid extends React.Component {
           expanded: this.state.expandedGroups.has(group.id),
           numberSiblings: components.length,
           id: group.id,
+          groupId: group.id,
           code: group.name,
           total: group.total_price !== null ? group.total_price : '',
         },
@@ -255,6 +323,7 @@ class ComponentsGrid extends React.Component {
           getSubRowDetails={this.getSubRowDetails()}
           onCellExpand={this.onCellExpand()}
           rowRenderer={RowRenderer}
+          cellRangeSelection={{ onComplete: this.onCellsSelected }}
           enableCellSelect
         />
       </Paper>
@@ -271,6 +340,7 @@ ComponentsGrid.propTypes = {
   renameGroup: PropTypes.func.isRequired,
   deleteGroup: PropTypes.func.isRequired,
   addComponent: PropTypes.func.isRequired,
+  addComponentByCode: PropTypes.func.isRequired,
   newComponent: PropTypes.func.isRequired,
   updateCustomComponent: PropTypes.func.isRequired,
   deleteComponent: PropTypes.func.isRequired,

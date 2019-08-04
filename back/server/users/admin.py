@@ -8,4 +8,3 @@ User = get_user_model()
 @admin.register(User)
 class UserAdmin(UserAdmin):
     list_display = UserAdmin.list_display + ('last_login',)
-

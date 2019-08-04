@@ -5,6 +5,7 @@
  */
 
 import {
+  ADD_COMPONENT_BY_CODE_REQUEST,
   ADD_COMPONENT_REQUEST,
   ADD_GROUP_REQUEST,
   BULK_UPDATE_QTY_REQUEST,
@@ -94,6 +95,23 @@ export function addComponent(
     productSlug,
     group: groupId,
     component,
+    qty,
+  };
+}
+
+export function addComponentByCode(
+  projectSlug,
+  productSlug,
+  groupId,
+  code,
+  qty = 1,
+) {
+  return {
+    type: ADD_COMPONENT_BY_CODE_REQUEST,
+    projectSlug,
+    productSlug,
+    group: groupId,
+    code,
     qty,
   };
 }

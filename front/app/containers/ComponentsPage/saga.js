@@ -5,6 +5,7 @@ import { isNull, omitBy } from 'lodash';
 import { notifyWarning } from 'containers/App/actions';
 
 import {
+  ADD_COMPONENT_BY_CODE_REQUEST,
   ADD_COMPONENT_FAILURE,
   ADD_COMPONENT_REQUEST,
   ADD_COMPONENT_SUCCESS,
@@ -233,6 +234,24 @@ function* addComponent({ projectSlug, productSlug, group, component, qty }) {
   }
 }
 
+function* addComponentByCode({ projectSlug, productSlug, group, code, qty }) {
+  const options = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ group, code, qty }),
+  };
+
+  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/components/code/`;
+
+  try {
+    const added = yield call(fetchJSON, baseUrl, options);
+    yield put({ type: ADD_COMPONENT_SUCCESS, component: added, group });
+    yield put(fetchGroup(projectSlug, productSlug, group));
+  } catch (error) {
+    yield handleApiError(error, ADD_COMPONENT_FAILURE);
+  }
+}
+
 function* newComponent({ projectSlug, productSlug, group, name, qty }) {
   const options = {
     method: 'POST',
@@ -320,6 +339,7 @@ export default function* componentsPageSaga() {
   yield takeLatest(DELETE_GROUP_REQUEST, deleteGroup);
 
   yield takeLatest(ADD_COMPONENT_REQUEST, addComponent);
+  yield takeEvery(ADD_COMPONENT_BY_CODE_REQUEST, addComponentByCode);
   yield takeLatest(NEW_COMPONENT_REQUEST, newComponent);
   yield takeLatest(UPDATE_CUSTOM_COMPONENT_REQUEST, updateCustomComponent);
   yield takeLatest(BULK_UPDATE_QTY_REQUEST, bulkUpdateQty);

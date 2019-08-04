@@ -5,6 +5,7 @@ from server.pm.serializers.entry import (
     MoveEntrySerializer,
     GroupEntrySerializer,
     UpdateEntrySerializer,
+    ComponentCodeSerializer,
     ComponentCopySerializer,
     ComponentCreateSerializer,
 )

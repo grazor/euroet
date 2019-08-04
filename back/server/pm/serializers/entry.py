@@ -40,6 +40,12 @@ class ComponentCopySerializer(serializers.Serializer):
     qty = serializers.IntegerField(min_value=1)
 
 
+class ComponentCodeSerializer(serializers.Serializer):
+    group = serializers.IntegerField(min_value=1)
+    code = serializers.CharField()
+    qty = serializers.IntegerField(min_value=1)
+
+
 class ComponentCreateSerializer(serializers.Serializer):
     group = serializers.IntegerField(min_value=1)
     name = serializers.CharField(min_length=1)

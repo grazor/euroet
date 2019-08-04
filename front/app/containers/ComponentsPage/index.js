@@ -8,6 +8,7 @@ import EtBreadcumbs from 'components/Breadcumbs';
 import LoadingBar from 'components/LoadingBar';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ReportGrid from 'components/ReportGrid';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 import { bindActionCreators, compose } from 'redux';
@@ -17,11 +18,11 @@ import { withStyles } from '@material-ui/core/styles';
 
 import ComponentsGrid from './ComponentsGrid';
 import ProductDetail from './ProductDetail';
-import ReportGrid from 'components/ReportGrid';
 import reducer from './reducer';
 import saga from './saga';
 import {
   addComponent,
+  addComponentByCode,
   addGroup,
   bulkUpdateQty,
   createReport,
@@ -71,6 +72,7 @@ export class ComponentsPage extends React.Component {
       bulkUpdateQty: actionUpdateQty,
       getSuggestions: actionGetSuggestions,
       addComponent: actionAddComponent,
+      addComponentByCode: actionAddComponentByCode,
       newComponent: actionNewComponent,
       updateCustomComponent: actionUpdateCustomCommponent,
       addGroup: actionAddGroup,
@@ -102,6 +104,11 @@ export class ComponentsPage extends React.Component {
           renameGroup={actionRenameGroup.bind(null, projectSlug, productSlug)}
           deleteGroup={actionDeleteGroup.bind(null, projectSlug, productSlug)}
           addComponent={actionAddComponent.bind(null, projectSlug, productSlug)}
+          addComponentByCode={actionAddComponentByCode.bind(
+            null,
+            projectSlug,
+            productSlug,
+          )}
           newComponent={actionNewComponent.bind(null, projectSlug, productSlug)}
           updateCustomComponent={actionUpdateCustomCommponent.bind(
             null,
@@ -129,6 +136,7 @@ ComponentsPage.propTypes = {
   bulkUpdateQty: PropTypes.func.isRequired,
   getSuggestions: PropTypes.func.isRequired,
   addComponent: PropTypes.func.isRequired,
+  addComponentByCode: PropTypes.func.isRequired,
   newComponent: PropTypes.func.isRequired,
   updateCustomComponent: PropTypes.func.isRequired,
   addGroup: PropTypes.func.isRequired,
@@ -163,6 +171,7 @@ const mapDispatchToProps = dispatch =>
       bulkUpdateQty,
       getSuggestions,
       addComponent,
+      addComponentByCode,
       newComponent,
       updateCustomComponent,
       addGroup,

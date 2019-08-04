@@ -10,6 +10,7 @@ import Fab from '@material-ui/core/Fab';
 import LoadingBar from 'components/LoadingBar';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ReportGrid from 'components/ReportGrid';
 import injectReducer from 'utils/injectReducer';
 import injectSaga from 'utils/injectSaga';
 import { bindActionCreators, compose } from 'redux';
@@ -18,7 +19,6 @@ import { createStructuredSelector } from 'reselect';
 import { find } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 
-import ReportGrid from 'components/ReportGrid';
 import ProductDialog from './ProductDialog';
 import ProductsTable from './ProductsTable';
 import ProjectDetail from './ProjectDetail';
@@ -26,18 +26,18 @@ import reducer from './reducer';
 import saga from './saga';
 import {
   addProduct,
+  createReport,
   deleteProduct,
   fetchProject,
   updateProduct,
-  createReport,
 } from './actions';
 import {
   makeSelectIsLoading,
   makeSelectIsUpdating,
   makeSelectProducts,
   makeSelectProject,
-  makeSelectReports,
   makeSelectReportStatus,
+  makeSelectReports,
 } from './selectors';
 
 const styles = theme => ({

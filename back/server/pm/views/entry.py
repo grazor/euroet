@@ -11,6 +11,7 @@ from server.pm.serializers import (
     MoveEntrySerializer,
     GroupEntrySerializer,
     UpdateEntrySerializer,
+    ComponentCodeSerializer,
     ComponentCopySerializer,
     ComponentCreateSerializer,
 )
@@ -77,6 +78,23 @@ class EntryViewset(
         serializer.is_valid(raise_exception=True)
 
         component = get_object_or_404(Component, id=serializer.validated_data['component'])
+        group = get_object_or_404(Group, id=serializer.validated_data['group'])
+        entry = Entry.add_component_from_prototype(
+            group=group, component=component, qty=serializer.validated_data['qty']
+        )
+
+        return Response(EntrySerializer(entry).data)
+
+    @action(detail=False, methods=['post'], name='Add component from prototype by code')
+    def code(self, request, *args, **kwargs):
+        product = request.product
+        serializer = ComponentCodeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            component = get_object_or_404(Component, code=serializer.validated_data['code'])
+        except Component.MultipleObjectsReturned:
+            return response(status=status.HTTP_409_CONFLICT)
         group = get_object_or_404(Group, id=serializer.validated_data['group'])
         entry = Entry.add_component_from_prototype(
             group=group, component=component, qty=serializer.validated_data['qty']

@@ -1,6 +1,5 @@
 import AddIcon from '@material-ui/icons/Add';
 import Avatar from '@material-ui/core/Avatar';
-import { compose } from 'redux';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -14,6 +13,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import UserAvatar from 'components/UserAvatar';
+import { compose } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -137,4 +137,3 @@ ReportGrid.propTypes = {
 const withStyle = withStyles(styles);
 
 export default compose(withStyle)(ReportGrid);
-
