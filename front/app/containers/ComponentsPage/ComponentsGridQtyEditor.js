@@ -68,7 +68,7 @@ class QtyEditor extends React.Component {
     const { height } = this.props;
     return (
       <QtyField
-        value={value}
+        value={value || 0}
         height={height}
         handleChange={this.handleChange}
       />

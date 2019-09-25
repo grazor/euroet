@@ -37,7 +37,8 @@ class ComponentsGrid extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      expandedGroups: new Set(),
+      collapsedGroups: new Set(),
+      groupsInitialized: false,
       selectedRow: null,
       selectedTop: null,
       selectedBottom: null,
@@ -50,6 +51,18 @@ class ComponentsGrid extends React.Component {
 
   componentWillUnmount = () => {
     this.removeAllListeners();
+  };
+
+  componentWillMount = () => {
+    if (this.state.groupsInitialized) {
+      return;
+    }
+    const { components } = this.props;
+    const groups = new Set();
+    components.forEach(group => {
+      groups.add(group.id);
+    });
+    this.setState({ collapsedGroups: groups, groupsInitialized: true });
   };
 
   removeAllListeners = () => {
@@ -104,9 +117,9 @@ class ComponentsGrid extends React.Component {
       }
       this.props.addComponentByCode(row.groupId, entry[0], qty);
     });
-    const { expandedGroups } = this.state;
-    expandedGroups.add(row.groupId);
-    this.setState({ expandedGroups });
+    const { collapsedGroups } = this.state;
+    collapsedGroups.delete(row.groupId);
+    this.setState({ collapsedGroups });
   };
 
   columns = [
@@ -252,14 +265,14 @@ class ComponentsGrid extends React.Component {
         {
           group: true,
           empty: false,
-          expanded: this.state.expandedGroups.has(group.id),
+          expanded: !this.state.collapsedGroups.has(group.id),
           numberSiblings: components.length,
           id: group.id,
           groupId: group.id,
           code: group.name,
           total: group.total_price !== null ? group.total_price : '',
         },
-        !this.state.expandedGroups.has(group.id)
+        this.state.collapsedGroups.has(group.id)
           ? []
           : union(
               group.entries.map(c => ({
@@ -304,13 +317,13 @@ class ComponentsGrid extends React.Component {
         };
 
   onCellExpand = () => ({ expandArgs: { expanded }, rowData: { id } }) => {
-    const { expandedGroups } = this.state;
+    const { collapsedGroups } = this.state;
     if (!expanded) {
-      expandedGroups.add(id);
+      collapsedGroups.delete(id);
     } else {
-      expandedGroups.delete(id);
+      collapsedGroups.add(id);
     }
-    this.setState({ expandedGroups });
+    this.setState({ collapsedGroups });
   };
 
   render() {
