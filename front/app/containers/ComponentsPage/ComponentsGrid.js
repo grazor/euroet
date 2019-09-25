@@ -71,6 +71,9 @@ class ComponentsGrid extends React.Component {
   };
 
   onCellsSelected = selection => {
+    if (!selection || !selection.startCell) {
+      return;
+    }
     this.setState({
       selectedRow: selection.startCell.rowIdx,
       selectedTop: selection.topLeft.rowIdx,
