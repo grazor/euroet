@@ -83,15 +83,15 @@ PRODUCT_PAGE_COLUMNS = (
     ColumnConfig(start=2, end=4, width=10, options={'align': 'center'}),
     ColumnConfig(start=5, end=5, width=14, options={'align': 'center'}),
     ColumnConfig(start=6, end=6, width=10, options={'align': 'center'}),
-    ColumnConfig(start=7, end=7, width=14, options={'align': 'center'}),
-    ColumnConfig(start=8, end=8, width=14, options={'align': 'center'}),
+    ColumnConfig(start=7, end=7, width=17, options={'align': 'center'}),
+    ColumnConfig(start=8, end=8, width=17, options={'align': 'center'}),
 )
 
 PROJECT_PAGE_COLUMNS = (
     ColumnConfig(start=0, end=0, width=3, options={'align': 'center'}),
     ColumnConfig(start=1, end=1, width=64, options=None),
     ColumnConfig(start=2, end=2, width=14, options={'align': 'center'}),
-    ColumnConfig(start=3, end=4, width=7, options={'align': 'center'}),
+    ColumnConfig(start=3, end=4, width=8, options={'align': 'center'}),
     ColumnConfig(start=5, end=5, width=14, options=None),
     ColumnConfig(start=6, end=7, width=10, options=None),
     ColumnConfig(start=8, end=8, width=13, options=None),
@@ -100,12 +100,16 @@ PROJECT_PAGE_COLUMNS = (
     ColumnConfig(start=11, end=11, width=4, options=None),
     ColumnConfig(start=12, end=12, width=13, options=None),
     ColumnConfig(start=13, end=13, width=4, options=None),
-    ColumnConfig(start=14, end=16, width=16, options=None),
+    ColumnConfig(start=14, end=16, width=17, options=None),
 )
 
-CLIENT_PAGE_COLUMNS = PROJECT_PAGE_COLUMNS[:3] + (
+CLIENT_PAGE_COLUMNS = (
+    ColumnConfig(start=0, end=0, width=3, options={'align': 'center'}),
+    ColumnConfig(start=1, end=1, width=64, options=None),
+    ColumnConfig(start=2, end=2, width=14, options={'align': 'center'}),
+    ColumnConfig(start=3, end=4, width=8, options={'align': 'center'}),
     ColumnConfig(start=5, end=6, width=PROJECT_PAGE_COLUMNS[12].width, options=None),
-    ColumnConfig(start=7, end=7, width=14, options=None),
+    ColumnConfig(start=7, end=7, width=18, options=None),
 )
 
 
@@ -141,7 +145,7 @@ def init_formats(workbook) -> Mapping[str, Any]:
     bordered2 = {'border': 2}
 
     num_percent = {'num_format': '0%'}
-    num_rub = {'num_format': '0.00 ₽'}
+    num_rub = {'num_format': '### ### ### ##0.00 ₽'}
 
     bg_yellow = {'bg_color': '#FFFF00'}
     bg_dark_yellow = {'bg_color': '#FFCC00'}
@@ -190,7 +194,7 @@ def init_formats(workbook) -> Mapping[str, Any]:
         'client_products_bottom': (project_products_item, bg_light_cyan, {'top': 1, 'bottom': 2}),
         # product sheet
         'product_name': (bold, bordered2, bg_yellow),
-        'product_total_price': (bordered2, centered, bg_yellow),
+        'product_total_price': (bordered2, centered, bg_yellow, num_rub),
         'product_components_thead': (small, bold, wrap, centered, bordered2, bg_dark_yellow),
         'product_components_group': (bold, bordered, bg_light_cyan, fc_dark_blue),
         'product_components_entry': (project_products_item,),
@@ -222,7 +226,7 @@ def write_product_page(
     worksheet, formats: Mapping[str, Any], product: Product, counts: Optional[Mapping[Any, Entry]] = None
 ) -> None:
     worksheet_set_columns(worksheet, PRODUCT_PAGE_COLUMNS)
-    worksheet.write_string(0, 0, product.name, formats['product_name'])
+    worksheet.merge_range(0, 0, 0, 1, product.name, formats['product_name'])
 
     worksheet.set_row(2, 30)
     for col, head in enumerate(REPORT_HEAD):
@@ -238,10 +242,7 @@ def write_product_page(
         row += 1
         for entry in group.entries.all():
             if counts is not None:
-                if entry.prototype:
-                    counts[entry.prototype] += entry.qty * group.product.qty
-                else:
-                    counts[entry] += entry.qty * group.product.qty
+                counts[entry.prototype or entry] += entry.qty * group.product.qty
             write_entry(worksheet, row, formats, entry)
             total_price += entry.total_price
             row += 1
@@ -249,9 +250,7 @@ def write_product_page(
     worksheet.write_number(0, 7, total_price, formats['product_total_price'])
 
 
-def write_computation_internal_page(
-    worksheet, formats: Mapping[str, Any], reports: Iterable[Tuple[Any, Any]]
-) -> None:
+def write_computation_internal_page(worksheet, formats: Mapping[str, Any], reports: Iterable[Tuple[Any, Any]]) -> None:
     worksheet_set_columns(worksheet, PROJECT_PAGE_COLUMNS)
 
     # Captiopns
@@ -299,7 +298,7 @@ def write_computation_internal_page(
             style_value = formats['project_pricing_head_item_value']
 
         worksheet.merge_range(2 + idx, 8, 2 + idx, 13, caption, style_name)
-        worksheet.write_formula(2 + idx, 14, f'SUM({cell(row=13, col=col)}:{cell(row=1000, col=col)})', style_name)
+        worksheet.write_formula(2 + idx, 14, f'SUM({cell(row=13, col=col)}:{cell(row=1000, col=col)})', style_value)
 
     # Projects list
     row += 2
@@ -310,10 +309,14 @@ def write_computation_internal_page(
             worksheet.write_number(row, 0, idx, formats['project_products_item_idx'])
             worksheet.write_number(row, 4, product.qty, formats['project_products_item_qty'])
             worksheet.write_formula(row, 5, f'\'{project_sheet.name}\'!$H$1', formats['project_products_item_price'])
+            worksheet.write_number(row, 6, 0, formats['project_products_item_price'])
+            worksheet.write_number(row, 7, 0, formats['project_products_item_price'])
         else:
             worksheet.write_string(row, 0, '', formats['project_products_item_idx'])
             worksheet.write_string(row, 4, '', formats['project_products_item_qty'])
             worksheet.write_string(row, 5, '', formats['project_products_item_price'])
+            worksheet.write_string(row, 6, '', formats['project_products_item_price'])
+            worksheet.write_string(row, 7, '', formats['project_products_item_price'])
             worksheet.write_string(row, 8, '', formats['project_products_item_markup_value'])
             worksheet.write_string(row, 10, '', formats['project_products_item_markup_value'])
             worksheet.write_string(row, 12, '', formats['project_products_item_markup_value'])
@@ -325,8 +328,6 @@ def write_computation_internal_page(
         worksheet.write_string(row, 1, product and product.name or '', formats['project_products_item_name'])
         worksheet.write_string(row, 2, '', formats['project_products_item'])
         worksheet.write_string(row, 3, '', formats['project_products_item'])
-        worksheet.write_string(row, 6, f'', formats['project_products_item_price'])
-        worksheet.write_string(row, 7, f'', formats['project_products_item_price'])
 
         for j in range(3):
             if product:
@@ -377,10 +378,7 @@ def write_computation_internal_page(
                 formats['project_products_item_markup_value'],
             )
             worksheet.write_formula(
-                row,
-                16,
-                rc('(RC[-11]+RC[-8])*RC[-12]', row=row, col=16),
-                formats['project_products_item_markup_value'],
+                row, 16, rc('(RC[-11]+RC[-8])*RC[-12]', row=row, col=16), formats['project_products_item_markup_value']
             )
 
         row += 1
@@ -400,9 +398,7 @@ def write_computation_internal_page(
     )
 
 
-def write_computation_external_page(
-    worksheet, formats: Mapping[str, Any], reports_count: int, internal_sheet
-) -> None:
+def write_computation_external_page(worksheet, formats: Mapping[str, Any], reports_count: int, internal_sheet) -> None:
     worksheet_set_columns(worksheet, CLIENT_PAGE_COLUMNS)
 
     worksheet.write_string(0, 5, TOTAL_CAPTION, formats['client_total_caption'])
@@ -448,9 +444,7 @@ def write_summary_page(worksheet, formats: Mapping[str, Any], counts) -> None:
             write_entry(worksheet, row, formats, entry)
         row += 1
 
-    worksheet.write_formula(
-        0, 7, f'SUM({cell(row=4, col=7)}:{cell(row=1000, col=7)})', formats['project_pricing_head_item_value']
-    )
+    worksheet.write_formula(0, 7, f'SUM({cell(row=3, col=7)}:{cell(row=1000, col=7)})', formats['product_total_price'])
 
 
 def report_product(product: Product, author: User) -> Report:
@@ -459,7 +453,7 @@ def report_product(product: Product, author: User) -> Report:
     filepath = settings.MEDIA_ROOT.joinpath(filename)
     workbook = xlsxwriter.Workbook(filepath)
     formats = init_formats(workbook)
-    worksheet = workbook.add_worksheet(product.name)
+    worksheet = workbook.add_worksheet(product.name[:31])
 
     write_product_page(worksheet, formats, product)
 
