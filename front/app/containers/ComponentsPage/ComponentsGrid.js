@@ -81,7 +81,13 @@ class ComponentsGrid extends React.Component {
   };
 
   handlePaste = e => {
+    const data = e.clipboardData.getData('text/plain');
+    if (!data.includes('\t')) {
+      return;
+    }
+
     e.preventDefault();
+    const pasteData = parsePaste(data);
     const { selectedRow } = this.state;
     if (selectedRow === null) {
       return;
@@ -91,7 +97,6 @@ class ComponentsGrid extends React.Component {
     if (row.group && row.empty) {
       return;
     }
-    const pasteData = parsePaste(e.clipboardData.getData('text/plain'));
     pasteData.forEach(entry => {
       const qty = parseInt(entry[1], 10);
       if (entry.length !== 2 || qty === NaN) {
