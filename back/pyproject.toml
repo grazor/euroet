@@ -6,17 +6,17 @@ build-backend = "poetry.masonry.api"
 [tool.poetry]
 name = "euroet"
 description = "Euroet engineering tools"
-version = "0.2.0"
+version = "0.3.0"
 readme = "README.md"
 authors = []
 
 
 [tool.poetry.dependencies]
 python = "3.6.*"
-django = "^2.1"
-django-split-settings = "^0.3"
-django-axes = "^4.5"
-django-csp = "^3.5"
+django = "^3.0"
+django-split-settings = "^1.0.0"
+django-axes = "^5.0.20"
+django-csp = {git = "https://github.com/mozilla/django-csp"}
 django-referrer-policy = "^1.0"
 django-health-check = "^3.9"
 gunicorn = "^19.9"
@@ -25,17 +25,25 @@ dump-env = "^0.2"
 bcrypt = "^3.1"
 psycopg2-binary = "^2.7"
 djangorestframework = "^3.9"
-django-rest-knox = "^3.4"
+django-rest-knox = "^4.1.0"
 colorhash = "^1.0"
 django-modeladmin-reorder = "^0.3.1"
 coreapi = "^2.3"
 pyparsing = "^2.4"
 XlsxWriter = "^1.1"
 django-ordered-model = "^3.3"
-django-constance = {version = "^2.4", extras = ["database"]}
+openpyxl = "^3.0"
+dramatiq = "^1.7"
+django-dramatiq = "^0.8.0"
+redis = "^3.3"
+django-debug-toolbar = "^2.1"
+six = "^1.13.0"
+django-picklefield = "^2.0"
+django-constance = {git = "https://github.com/jazzband/django-constance"}
+django-redis-cache = "^2.1.0"
 
 [tool.poetry.dev-dependencies]
-django-debug-toolbar = "^1.11"
+django-debug-toolbar = "^2.1"
 django-querycount = "^0.7"
 nplusone = "^1.0"
 wemake-python-styleguide = "^0.7"
@@ -61,7 +69,7 @@ yamllint = "^1.15"
 safety = "^1.8"
 dotenv-linter = "^0.1"
 polint = "^0.4"
-black = {version = "^18.3-alpha.0",allows-prereleases = true}
+black = {version = "^18.3-alpha.0",allow-prereleases = true}
 django-extensions = "^2.1"
 django-webpack-loader = "^0.6.0"
 isort = "^4.3"

@@ -16,7 +16,7 @@ import React from 'react';
 import injectSaga from 'utils/injectSaga';
 import { DAEMON } from 'utils/constants';
 import { Helmet } from 'react-helmet';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -49,7 +49,9 @@ export class App extends React.Component {
         <Notifier />
         <EuroetNav isAuthenticated={auth} user={user} logout={doLogout}>
           <Switch>
-            <Route exact path="/" component={IndexPage} />
+            <Route exact path="/">
+              <Redirect to="/projects" />
+            </Route>
             <LoginRoute
               exact
               path="/login"

@@ -20,17 +20,15 @@ ENV = environ['DJANGO_ENV']
 
 base_settings = [
     'components/common.py',
+    'components/dramatiq.py',
     'components/logging.py',
     'components/csp.py',
     'components/caches.py',
     'components/constance.py',
-
     # You can even use glob:
     # 'components/*.py'
-
     # Select the right env:
     'environments/{0}.py'.format(ENV),
-
     # Optionally override some settings:
     optional('environments/local.py'),
 ]

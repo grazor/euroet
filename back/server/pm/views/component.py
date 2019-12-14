@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions
+from rest_framework import views, viewsets, permissions
 from rest_framework.response import Response
 
 from server.pm.models import Component
@@ -17,3 +17,9 @@ class ComponentViewset(viewsets.ModelViewSet):
         components = find_components(code)
         serializer = ComponentSerializer(components, many=True)
         return Response(serializer.data)
+
+
+class ComponentImportView(views.APIView):
+    def post(self, request, *args, **kwargs):
+        if not request.files:
+            raise

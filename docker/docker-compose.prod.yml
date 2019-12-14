@@ -17,6 +17,14 @@ services:
       - webnet
     env_file: ./config/.env
 
+  redis:
+    image: redis:4.0.14-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - webnet
+    volumes:
+      - redis-data:/data
+
   caddy:
     image: "wemakeservices/caddy-docker:0.10.11-1"
     restart: unless-stopped
@@ -49,26 +57,29 @@ services:
         - logs:/var/log/share/
       environment:
         DJANGO_DATABASE_HOST: db
+        REDIS_HOST: redis
+        REDIS_PORT: 6379
     command: sh ./docker/django/gunicorn.sh
     depends_on:
       - db
+      - redis
     networks:
       - webnet
     expose:
       - 8000
 
-# This task is an example of how to extend existing ones:
-# some_wroker:
-#   <<: *web
-#   command: python manage.py worker_process
-#   deploy:
-#     replicas: 2
+  dramatiq:
+    <<: *web
+    command: python manage.py rundramatiq
+    deploy:
+      replicas: 1
 
 networks:
   webnet:
 
 volumes:
   pgdata:
+  redis-data:
   django-static:
   django-media:
   logs:

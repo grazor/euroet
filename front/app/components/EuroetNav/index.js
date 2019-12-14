@@ -9,7 +9,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/SwipeableDrawer';
 import GearIcon from '@material-ui/icons/Settings';
-import HomeIcon from '@material-ui/icons/Home';
 import IconButton from '@material-ui/core/IconButton';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
@@ -171,12 +170,6 @@ class PersistentDrawerLeft extends React.Component {
             </div>
             <Divider />
             <List>
-              <ListItem button key="Home" component={Link} to="/">
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Home" />
-              </ListItem>
               {isAuthenticated ? (
                 <React.Fragment>
                   <ListItem

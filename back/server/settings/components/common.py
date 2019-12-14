@@ -1,6 +1,6 @@
-"""
+'''
 Django settings for server project.
-"""
+'''
 
 import datetime as dt
 from typing import Tuple
@@ -28,6 +28,8 @@ INSTALLED_APPS: Tuple[str, ...] = (
     'admin_reorder',
     'constance',
     'constance.backends.database',
+    # tasks
+    'django_dramatiq',
     # rest:
     'rest_framework',
     'knox',
@@ -57,6 +59,8 @@ MIDDLEWARE: Tuple[str, ...] = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Admin:
     'admin_reorder.middleware.ModelAdminReorder',
+    # Axes
+    'axes.middleware.AxesMiddleware',
 )
 
 ROOT_URLCONF = 'server.urls'
@@ -79,6 +83,15 @@ DATABASES = {
         'HOST': config('DJANGO_DATABASE_HOST'),
         'PORT': config('DJANGO_DATABASE_PORT', cast=int),
         'CONN_MAX_AGE': config('CONN_MAX_AGE', cast=int, default=60),
+    }
+}
+
+# Cache
+
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': 'redis://{host}:{port}'.format(host=config('REDIS_HOST'), port=config('REDIS_PORT')),
     }
 }
 
@@ -154,7 +167,7 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'users.User'
 
-AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'axes.backends.AxesBackend')
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
