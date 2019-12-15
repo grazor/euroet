@@ -1,5 +1,6 @@
 from rest_framework import views, viewsets, permissions
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from server.pm.models import Component
 from server.pm.permissions import HasComponentsAccess
@@ -18,8 +19,8 @@ class ComponentViewset(viewsets.ModelViewSet):
         serializer = ComponentSerializer(components, many=True)
         return Response(serializer.data)
 
-
-class ComponentImportView(views.APIView):
-    def post(self, request, *args, **kwargs):
+    @action(detail=False, methods=['post'], name='Import components')
+    def import_file(self, request, *args, **kwargs):
+        __import__('pdb').set_trace()
         if not request.files:
             raise

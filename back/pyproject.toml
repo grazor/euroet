@@ -41,6 +41,7 @@ six = "^1.13.0"
 django-picklefield = "^2.0"
 django-constance = {git = "https://github.com/jazzband/django-constance"}
 django-redis-cache = "^2.1.0"
+drf-yasg = "^1.17.0"
 
 [tool.poetry.dev-dependencies]
 django-debug-toolbar = "^2.1"

@@ -4,11 +4,12 @@
 
 ## porivaev
 
-Team:
+Title: Sergey Porivaev.
+Location: Moscow, Russia.
 
 
 ## Technologies
 
-Language: English
+Language: Russian, English
 Doctype: HTML5
 Technologies: Python, Django

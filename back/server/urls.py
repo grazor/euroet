@@ -33,7 +33,10 @@ urlpatterns = [
 if settings.DEBUG:  # pragma: no cover
     import debug_toolbar  # noqa: Z435
     from django.conf.urls.static import static  # noqa: Z435
-    from rest_framework.documentation import include_docs_urls  # noqa: Z435
+    from rest_framework import permissions  # noqa: Z435
+    from drf_yasg.views import get_schema_view  # noqa: Z435
+
+    schema_view = get_schema_view(public=True, permission_classes=(permissions.AllowAny,))
 
     urlpatterns = (
         static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -41,7 +44,7 @@ if settings.DEBUG:  # pragma: no cover
             # URLs specific only to django-debug-toolbar:
             path('__debug__/', include(debug_toolbar.urls)),
             # Drf doc
-            path('docs/', include_docs_urls(title='Euroet API', authentication_classes=[], permission_classes=[])),
+            path('docs/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-swagger-ui'),
         ]
         + urlpatterns
     )

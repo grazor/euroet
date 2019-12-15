@@ -2,6 +2,8 @@ from tempfile import TemporaryFile
 
 import pytest
 
+from django.urls import reverse
+
 
 @pytest.fixture(scope='module', autouse=True, params=[''])
 def import_file(request):
@@ -10,5 +12,6 @@ def import_file(request):
         yield fp
 
 
-def test_import(import_file):
-    __import__('pdb').set_trace()
+def test_import(api_client):
+    url = reverse('component-import-file')
+    api_client.post(url)
