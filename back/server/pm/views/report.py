@@ -1,13 +1,8 @@
-from wsgiref.util import FileWrapper
-
-from django.http import HttpResponse
-from rest_framework import mixins, status, generics, viewsets, permissions
+from rest_framework import mixins, viewsets, permissions
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
 
-from server.pm.models import Report, Product, Project
+from server.pm.models import Report, Project
 from server.pm.permissions import HasProjectDetailAccess
 from server.pm.serializers import ReportSerializer
 from server.pm.logic.report import report_product, report_project

@@ -1,13 +1,9 @@
-from enum import Enum
-
 from colorhash import ColorHash
 
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import AbstractUser
-
-from server.lib.enum import as_choices
 
 
 class User(AbstractUser):

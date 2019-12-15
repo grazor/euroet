@@ -17,7 +17,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     # TODO: check production hosts
-    config('DOMAIN_NAME'),
+    config('DOMAIN_NAME')
 ]
 
 
@@ -35,27 +35,19 @@ MEDIA_ROOT = PurePath('/var/www/django/media')
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
-_PASS = 'django.contrib.auth.password_validation'
+_VALIDATION_PREFIX = 'django.contrib.auth.password_validation'
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': '{0}.UserAttributeSimilarityValidator'.format(_PASS),
-    },
-    {
-        'NAME': '{0}.MinimumLengthValidator'.format(_PASS),
-    },
-    {
-        'NAME': '{0}.CommonPasswordValidator'.format(_PASS),
-    },
-    {
-        'NAME': '{0}.NumericPasswordValidator'.format(_PASS),
-    },
+    {'NAME': '{0}.UserAttributeSimilarityValidator'.format(_VALIDATION_PREFIX)},
+    {'NAME': '{0}.MinimumLengthValidator'.format(_VALIDATION_PREFIX)},
+    {'NAME': '{0}.CommonPasswordValidator'.format(_VALIDATION_PREFIX)},
+    {'NAME': '{0}.NumericPasswordValidator'.format(_VALIDATION_PREFIX)},
 ]
 
 
 # Security
 # https://docs.djangoproject.com/en/1.11/topics/security/
 
-SECURE_HSTS_SECONDS = 518400
+SECURE_HSTS_SECONDS = 518_400
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 

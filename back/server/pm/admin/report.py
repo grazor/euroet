@@ -12,7 +12,7 @@ class ComponentAdmin(admin.ModelAdmin):
     list_select_related = ('project', 'product')
 
     def download(self, report):
-        return mark_safe(f'<a href="{report.download_url}">download</a>')
+        return mark_safe(f'<a href="{report.download_url}">download</a>')  # noqa: S703, S308
 
     download.short_description = 'Download url'
     download.allow_tags = True

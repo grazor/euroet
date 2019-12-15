@@ -2,8 +2,7 @@ from decimal import Decimal
 
 from rest_framework import serializers
 
-from server.pm.models import Entry, Group, Component
-from server.pm.serializers.component import ComponentSerializer
+from server.pm.models import Entry, Group
 
 
 class EntrySerializer(serializers.ModelSerializer):

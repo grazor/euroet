@@ -1,4 +1,4 @@
-from server.settings.components import BASE_DIR, config
+from server.settings.components import config
 
 DRAMATIQ_BROKER = {
     'BROKER': 'dramatiq.brokers.redis.RedisBroker',

@@ -1,6 +1,6 @@
-'''
+"""
 Django settings for server project.
-'''
+"""
 
 import datetime as dt
 from typing import Tuple

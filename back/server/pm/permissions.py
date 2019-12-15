@@ -1,6 +1,6 @@
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 
-from server.pm.models import Project, ProjectAccess, ProjectPermission
+from server.pm.models import Project, ProjectPermission
 from server.users.models import User
 
 
@@ -19,7 +19,6 @@ def can_access_project(user: User, project: Project, read_only: bool) -> bool:
 class CanAccessProject(BasePermission):
     def has_permission(self, request, view):
         user = request.user
-        read_only = request.method in SAFE_METHODS
         return any(
             [
                 user.has_perm(f'pm.{ProjectPermission.can_create_projects.name}'),

@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 import factory
 
 from server.pm.models import Entry

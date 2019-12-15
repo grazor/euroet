@@ -1,13 +1,7 @@
-from enum import Enum
 from uuid import uuid4
 
 from django.db import models
-from django.conf import settings
-from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext as _
-
-from server.lib.enum import as_choices
 
 User = get_user_model()
 

@@ -1,5 +1,5 @@
 from functools import reduce
-from collections import Counter, namedtuple
+from collections import namedtuple
 
 from openpyxl import load_workbook
 
@@ -18,7 +18,7 @@ ALLOWED_HEADERS = reduce(set.union, map(lambda x: x.columns, COLUMNS))
 
 
 def is_header(row):
-    headers = set()
+    pass
 
 
 def import_from_worksheet(sheet):

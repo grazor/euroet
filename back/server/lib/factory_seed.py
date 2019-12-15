@@ -15,12 +15,12 @@ faker = Faker(generator=EtGenerator())
 
 def get_seed_model(factory, nullable=True, generate=True, choose=True):
     """Returns randomly either None or existing instance of factory.Model or new one."""
-    Model = factory._meta.model
+    model_class = factory._meta.model
 
     actions = filter(None, {nullable and 'none', generate and 'generate', choose and 'choose'})
-    action = choice(list(actions))
+    action = choice(list(actions))  # noqa: S311
     if action == 'none':
         return None
     if action == 'generate':
         return factory()
-    return Model.objects.order_by('?').first()
+    return model_class.objects.order_by('?').first()

@@ -1,7 +1,6 @@
 from rest_framework import viewsets, permissions
-from django.shortcuts import get_object_or_404
 
-from server.pm.models import Group, Product
+from server.pm.models import Group
 from server.pm.permissions import HasProjectDetailAccess
 from server.pm.serializers import GroupSerializer
 from server.pm.views.product_detail_mixin import ProductDetailMixin

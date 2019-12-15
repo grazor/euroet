@@ -1,19 +1,13 @@
-from rest_framework import mixins, status, generics, viewsets, permissions
+from rest_framework import mixins, status, viewsets, permissions
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
 
-from server.pm.models import Entry, Group, Product, Component
+from server.pm.models import Entry, Group, Component
 from server.pm.permissions import HasProjectDetailAccess
 from server.pm.serializers import (
-    EntrySerializer,
-    MoveEntrySerializer,
-    GroupEntrySerializer,
-    UpdateEntrySerializer,
-    ComponentCodeSerializer,
-    ComponentCopySerializer,
-    ComponentCreateSerializer,
+    EntrySerializer, MoveEntrySerializer, GroupEntrySerializer, UpdateEntrySerializer, ComponentCodeSerializer,
+    ComponentCopySerializer, ComponentCreateSerializer,
 )
 from server.pm.views.product_detail_mixin import ProductDetailMixin
 
@@ -73,7 +67,6 @@ class EntryViewset(
 
     @action(detail=False, methods=['post'], name='Add component from prototype')
     def copy(self, request, *args, **kwargs):
-        product = request.product
         serializer = ComponentCopySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -87,14 +80,13 @@ class EntryViewset(
 
     @action(detail=False, methods=['post'], name='Add component from prototype by code')
     def code(self, request, *args, **kwargs):
-        product = request.product
         serializer = ComponentCodeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         try:
             component = get_object_or_404(Component, code=serializer.validated_data['code'])
         except Component.MultipleObjectsReturned:
-            return response(status=status.HTTP_409_CONFLICT)
+            return Response(status=status.HTTP_409_CONFLICT)
         group = get_object_or_404(Group, id=serializer.validated_data['group'])
         entry = Entry.add_component_from_prototype(
             group=group, component=component, qty=serializer.validated_data['qty']
@@ -104,7 +96,6 @@ class EntryViewset(
 
     @action(detail=False, methods=['post'], name='Add nonexistent component by name')
     def new(self, request, *args, **kwargs):
-        product = request.product
         serializer = ComponentCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         group = get_object_or_404(Group, id=serializer.validated_data['group'])

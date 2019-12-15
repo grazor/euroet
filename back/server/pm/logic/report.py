@@ -1,5 +1,6 @@
+# flake8: noqa: C901
+
 import re
-from uuid import uuid4
 from string import ascii_uppercase
 from typing import Any, Tuple, Mapping, Iterable, Optional
 from decimal import Decimal
@@ -128,11 +129,12 @@ def cell(col, row, fixed=False):
     return f'{colname}{rowname}'
 
 
+def _replacement(col: int, row: int, match):
+    return cell(col=col + int(match.group(4) or 0), row=row + int(match.group(2) or 0))
+
+
 def rc(formula: str, col: int, row: int) -> str:
-    replacement = lambda match: cell(col=col + int(match.group(4) or 0), row=row + int(match.group(2) or 0))
-    b = re.sub(RC_REGEX, replacement, formula)
-    print(f'{formula} {row} {col} -> {b}')
-    return b
+    return re.sub(RC_REGEX, lambda match: _replacement(col, row, match), formula)
 
 
 def init_formats(workbook) -> Mapping[str, Any]:
@@ -358,7 +360,10 @@ def write_computation_internal_page(worksheet, formats: Mapping[str, Any], repor
                 row,
                 12,
                 rc(
-                    f'IF(RC[1]<0.05,((RC[-7]+RC[-6]+RC[-5]+RC[-4])*RC[-8]+RC[-2])*0.05/0.95,((RC[-7]+RC[-6]+RC[-5]+RC[-4])*RC[-8]+RC[-2])*RC[1]/(1-RC[1]))',
+                    (
+                        f'IF(RC[1]<0.05,((RC[-7]+RC[-6]+RC[-5]+RC[-4])*RC[-8]+RC[-2])*0.05/0.95,'
+                        f'((RC[-7]+RC[-6]+RC[-5]+RC[-4])*RC[-8]+RC[-2])*RC[1]/(1-RC[1]))'
+                    ),
                     row=row,
                     col=12,
                 ),

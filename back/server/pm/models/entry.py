@@ -4,9 +4,7 @@ from decimal import Decimal
 from ordered_model.models import OrderedModel
 
 from django.db import models
-from django.utils import timezone
-from django.contrib.auth import get_user_model
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MinValueValidator
 from django.utils.translation import gettext as _
 
 from server.pm.models.group import Group

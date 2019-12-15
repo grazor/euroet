@@ -4,8 +4,7 @@ from rest_framework.response import Response
 from django.utils.translation import gettext as _
 from rest_framework.decorators import action
 
-from server.pm.models import Product, Project, ProjectAccess, ProjectPermission
-from server.users.models import User
+from server.pm.models import Product, Project, ProjectPermission
 from server.pm.permissions import CanAccessProject
 from server.pm.serializers import StarSerializer, ProjectSerializer
 

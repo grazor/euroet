@@ -5,7 +5,6 @@ from ordered_model.models import OrderedModel
 from django.db import models
 
 from server.pm.models.product import Product
-from server.pm.models.component import Component
 
 
 class Group(OrderedModel):

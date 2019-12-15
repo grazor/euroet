@@ -1,7 +1,7 @@
 import factory
 
 from server.pm.models import Group
-from server.lib.factory_seed import faker, get_seed_model
+from server.lib.factory_seed import faker
 from server.pm.factories.product import ProductFactory
 
 

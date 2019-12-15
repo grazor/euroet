@@ -1,4 +1,4 @@
-from rest_framework import views, viewsets, permissions
+from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
@@ -21,6 +21,5 @@ class ComponentViewset(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], name='Import components')
     def import_file(self, request, *args, **kwargs):
-        __import__('pdb').set_trace()
         if not request.files:
             raise

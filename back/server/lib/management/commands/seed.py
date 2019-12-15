@@ -1,4 +1,5 @@
-import random
+# flake8: noqa
+
 import logging
 from collections import namedtuple
 
@@ -28,8 +29,8 @@ class Command(BaseCommand):
             try:
                 kwargs = {'seed': True} if rule.seed_arg else {}
                 if rule.seed_max_id:
-                    Model = rule.Factory._meta.model
-                    sequence = Model.objects.aggregate(sequence=Max('id')).get('sequence')
+                    model_class = rule.Factory._meta.model
+                    sequence = model_class.objects.aggregate(sequence=Max('id')).get('sequence')
                     rule.Factory.reset_sequence(value=sequence, force=True)
 
                 rule.Factory.create_batch(rule.amount, **kwargs)
