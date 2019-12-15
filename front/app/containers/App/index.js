@@ -3,9 +3,9 @@
  * App
  */
 
+import ComponentsCatalog from 'containers/ComponentsCatalog/Loadable';
 import ComponentsPage from 'containers/ComponentsPage/Loadable';
 import EuroetNav from 'components/EuroetNav';
-import IndexPage from 'containers/IndexPage/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
 import LoginRoute from 'components/LoginRoute';
 import PrivateRoute from 'components/PrivateRoute';
@@ -56,6 +56,12 @@ export class App extends React.Component {
               exact
               path="/login"
               component={LoginPage}
+              isAuthenticated={auth}
+            />
+            <PrivateRoute
+              exact
+              path="/components"
+              component={ComponentsCatalog}
               isAuthenticated={auth}
             />
             <PrivateRoute

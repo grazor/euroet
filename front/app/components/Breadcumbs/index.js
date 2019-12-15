@@ -33,18 +33,19 @@ const styles = theme => ({
 /* eslint-disable react/prefer-stateless-function */
 class EtBreadcumbs extends React.Component {
   getBreadcumbs = () => {
-    const pathnames = location.pathname
+    const pathnames = location.pathname /* eslint-disable-line no-restricted-globals */
       .split('/')
-      .filter(x => x); /* eslint-disable-line no-restricted-globals */
+      .filter(x => x);
     const { projectName, productName } = this.props;
-    const path = [
-      {
-        name: 'Home',
-        href: '/',
-        key: 'home',
-        icon: HomeIcon,
-      },
-    ];
+    const path = [];
+    if (pathnames[0] === 'components') {
+      path.push({
+        name: 'Components',
+        href: '/components',
+        key: 'components',
+        icon: GearIcon,
+      });
+    }
     if (pathnames[0] !== 'project' && pathnames[0] !== 'projects') {
       return path;
     }

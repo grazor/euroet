@@ -183,18 +183,23 @@ class PersistentDrawerLeft extends React.Component {
                     </ListItemIcon>
                     <ListItemText primary="Projects" />
                   </ListItem>
-                  <ListItem button disabled key="Drafts">
+                  <ListItem
+                    button
+                    key="Components"
+                    component={Link}
+                    to="/components"
+                  >
                     <ListItemIcon>
                       <GearIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Drafts" />
+                    <ListItemText primary="Components" />
                   </ListItem>
                 </React.Fragment>
               ) : (
                 <div />
               )}
               {isAuthenticated ? (
-                ['Products', 'Components', 'Collections'].map((text, index) => (
+                ['Products', 'Drafts', 'Collections'].map((text, index) => (
                   <ListItem button disabled key={text}>
                     <ListItemIcon>
                       {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
@@ -250,6 +255,9 @@ PersistentDrawerLeft.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
+  user: PropTypes.object,
+  children: PropTypes.node,
 };
 
 const withStyle = withStyles(styles, { withTheme: true });

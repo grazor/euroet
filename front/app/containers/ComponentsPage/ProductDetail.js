@@ -2,6 +2,7 @@ import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
+import ReactDataGrid from 'react-data-grid';
 import { compose } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 

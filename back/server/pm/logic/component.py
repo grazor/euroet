@@ -38,12 +38,12 @@ def _get_by_description(query: str, max_count: int, exclude: Optional[Iterable[i
     )
 
 
-def find_components(query: Optional[str]) -> List[Component]:
+def find_components(query: Optional[str], max_results: Optional[int]) -> List[Component]:
     clean = (query or '').replace('%', '').strip()
     if len(clean) < 3:
         return []
 
-    max_results = config.SEARCH_RESULTS_TO_RETURN
+    max_results = max_results or config.SEARCH_RESULTS_TO_RETURN
     components = _get_by_code(clean, max_results)
     ids = set()
     for component in components:

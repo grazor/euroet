@@ -149,7 +149,10 @@ function* getSuggestions({ query }) {
       `${baseUrl}/?q=${query}`,
       options,
     );
-    yield put({ type: GET_SUGGESTIONS_SUCCESS, suggestions });
+    yield put({
+      type: GET_SUGGESTIONS_SUCCESS,
+      suggestions: suggestions.results,
+    });
   } catch (error) {
     yield handleApiError(error, GET_SUGGESTIONS_FAILURE);
   }
