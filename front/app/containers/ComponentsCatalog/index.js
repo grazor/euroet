@@ -11,14 +11,20 @@ import { createStructuredSelector } from 'reselect';
 import { bindActionCreators, compose } from 'redux';
 
 import EtBreadcumbs from 'components/Breadcumbs';
-import LoadingBar from 'components/LoadingBar';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import { makeSelectIsLoading, makeSelectCatalog } from './selectors';
+import {
+  makeSelectIsLoading,
+  makeSelectCatalog,
+  makeSelectCount,
+  makeSelectPage,
+} from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+import { makeSelectUser } from 'containers/App/selectors';
 
 import { loadComponents } from './actions';
+import { notifySuccess } from 'containers/App/actions';
 
 import CatalogGrid from './CatalogGrid';
 
@@ -29,11 +35,27 @@ export class ComponentsCatalog extends React.Component {
   }
 
   render() {
-    const { isLoading, catalog } = this.props;
+    const {
+      isLoading,
+      catalog,
+      loadComponents: load,
+      notifySuccess: success,
+      count,
+      page,
+      user,
+    } = this.props;
     return (
       <React.Fragment>
         <EtBreadcumbs />
-        {isLoading ? <LoadingBar /> : <CatalogGrid components={catalog} />}
+        <CatalogGrid
+          components={catalog}
+          loadComponents={load}
+          count={count}
+          page={page}
+          isLoading={isLoading}
+          notifySuccess={success}
+          canEdit={user ? user.can_edit_components : false}
+        />
       </React.Fragment>
     );
   }
@@ -43,15 +65,21 @@ ComponentsCatalog.propTypes = {
   loadComponents: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   catalog: PropTypes.array.isRequired,
+  count: PropTypes.number.isRequired,
+  page: PropTypes.number.isRequired,
+  user: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
   isLoading: makeSelectIsLoading(),
   catalog: makeSelectCatalog(),
+  count: makeSelectCount(),
+  page: makeSelectPage(),
+  user: makeSelectUser(),
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ loadComponents }, dispatch);
+  bindActionCreators({ loadComponents, notifySuccess }, dispatch);
 
 const withConnect = connect(
   mapStateToProps,

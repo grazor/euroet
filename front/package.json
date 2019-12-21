@@ -73,6 +73,7 @@
     "browserslist": "^4.6.6",
     "caniuse-lite": "^1.0.30000984",
     "chalk": "2.4.2",
+    "clipboard-copy": "^3.1.0",
     "compression": "1.7.4",
     "connected-react-router": "6.5.2",
     "copy-webpack-plugin": "^5.0.3",

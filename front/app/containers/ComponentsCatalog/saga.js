@@ -21,6 +21,7 @@ function* loadComponents({ page, filter }) {
       type: LOAD_COMPONENTS_SUCCESS,
       components: components.results,
       count: components.count,
+      page,
     });
   } catch (error) {
     yield put({ type: LOAD_COMPONENTS_FAILURE });

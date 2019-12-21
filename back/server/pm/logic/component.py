@@ -20,6 +20,7 @@ def _get_by_code(query: str, max_count: int, exclude: Optional[Iterable[int]] = 
 
 
 def _get_by_description(query: str, max_count: int, exclude: Optional[Iterable[int]] = None) -> List[Component]:
+    query = query.replace('*', ' ').replace('%', ' ').strip()
     queryset = Component.objects.all()
     if exclude:
         queryset = queryset.exclude(id__in=exclude)
@@ -39,7 +40,7 @@ def _get_by_description(query: str, max_count: int, exclude: Optional[Iterable[i
 
 
 def find_components(query: Optional[str], max_results: Optional[int]) -> List[Component]:
-    clean = (query or '').replace('%', '').strip()
+    clean = (query or '').replace('%', '').replace('**', '*').replace('**', '*').strip()
     if len(clean) < 3:
         return []
 

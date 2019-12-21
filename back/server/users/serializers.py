@@ -10,8 +10,13 @@ class UserTokenSerializer(AuthTokenSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    can_edit_components = serializers.SerializerMethodField()
+
+    def get_can_edit_components(self, obj):
+        return obj.has_perm('pm.change_component')
+
     class Meta:
         model = User
 
-        fields = ('id', 'username', 'first_name', 'last_name', 'initials', 'photo', 'color')
+        fields = ('id', 'username', 'first_name', 'last_name', 'initials', 'photo', 'color', 'can_edit_components')
         read_only_fields = ('id', 'initials', 'color')

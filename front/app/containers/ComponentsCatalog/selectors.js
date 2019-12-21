@@ -28,4 +28,21 @@ const makeSelectCatalog = () =>
     componentsState => componentsState.get('components').toJS(),
   );
 
-export { makeSelectIsLoading, makeSelectCatalog };
+const makeSelectCount = () =>
+  createSelector(
+    selectComponentsCatalogDomain,
+    componentsState => componentsState.get('count'),
+  );
+
+const makeSelectPage = () =>
+  createSelector(
+    selectComponentsCatalogDomain,
+    componentsState => componentsState.get('page'),
+  );
+
+export {
+  makeSelectIsLoading,
+  makeSelectCatalog,
+  makeSelectCount,
+  makeSelectPage,
+};

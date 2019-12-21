@@ -33,14 +33,17 @@ class EuroetTable extends React.Component {
   };
 
   render() {
-    const { columns, title, data } = this.props;
+    const { columns, title, data, options, ...rest } = this.props;
+
+    const tableOptions = { ...this.options, ...options };
 
     return (
       <MUIDataTable
         title={title}
         columns={columns}
-        options={this.options}
+        options={tableOptions}
         data={data}
+        {...rest}
       />
     );
   }
@@ -50,6 +53,7 @@ EuroetTable.propTypes = {
   columns: PropTypes.array.isRequired,
   title: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired,
+  options: PropTypes.object,
 };
 
 export default EuroetTable;
