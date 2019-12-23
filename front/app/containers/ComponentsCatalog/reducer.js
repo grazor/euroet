@@ -16,7 +16,7 @@ export const initialState = fromJS({
   page: 1,
   count: 0,
   filter: '',
-  isLoading: false,
+  isLoading: true,
 });
 
 function componentsCatalogReducer(state = initialState, action) {

@@ -11,6 +11,7 @@ import LoginRoute from 'components/LoginRoute';
 import PrivateRoute from 'components/PrivateRoute';
 import ProductsPage from 'containers/ProductsPage/Loadable';
 import ProjectsPage from 'containers/ProjectsPage/Loadable';
+import ComponentImportPage from 'containers/ComponentImportPage/Loadable';
 import PropTypes from 'prop-types';
 import React from 'react';
 import injectSaga from 'utils/injectSaga';
@@ -63,6 +64,12 @@ export class App extends React.Component {
               path="/components"
               component={ComponentsCatalog}
               isAuthenticated={auth}
+            />
+            <PrivateRoute
+              exact
+              path="/import"
+              isAuthenticated={auth}
+              component={ComponentImportPage}
             />
             <PrivateRoute
               exact

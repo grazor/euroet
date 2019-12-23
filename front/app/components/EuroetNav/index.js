@@ -194,6 +194,14 @@ class PersistentDrawerLeft extends React.Component {
                     </ListItemIcon>
                     <ListItemText primary="Components" />
                   </ListItem>
+                  {user && user.can_edit_components ? (
+                    <ListItem button key="Import" component={Link} to="/import">
+                      <ListItemIcon>
+                        <GearIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Import" />
+                    </ListItem>
+                  ) : null}
                 </React.Fragment>
               ) : (
                 <div />
