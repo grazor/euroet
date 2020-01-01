@@ -9,3 +9,4 @@ from server.pm.models.component import Component
 from server.pm.models.collection import Collection
 from server.pm.models.manufacturer import Manufacturer
 from server.pm.models.project_access import ProjectAccess
+from server.pm.models.component_import import ComponentImport

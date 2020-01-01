@@ -1,26 +1,23 @@
 import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 
-/**
- * Direct selector to the componentImportPage state domain
- */
-
 const selectComponentImportPageDomain = state =>
   state.get('componentImportPage', initialState);
 
-/**
- * Other specific selectors
- */
-
-/**
- * Default selector used by ComponentImportPage
- */
-
-const makeSelectComponentImportPage = () =>
+const makeSelectImports = () =>
   createSelector(
     selectComponentImportPageDomain,
-    substate => substate.toJS(),
+    substate => substate.get('imports').toJS(),
   );
 
-export default makeSelectComponentImportPage;
-export { selectComponentImportPageDomain };
+const makeSelectIsLoading = () =>
+  createSelector(
+    selectComponentImportPageDomain,
+    substate => substate.get('isLoading'),
+  );
+
+export {
+  selectComponentImportPageDomain,
+  makeSelectIsLoading,
+  makeSelectImports,
+};

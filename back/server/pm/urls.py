@@ -6,6 +6,7 @@ from server.pm.views.report import ProductReportViewset, ProjectReportViewset
 from server.pm.views.product import ProductViewset
 from server.pm.views.project import ProjectViewset
 from server.pm.views.component import ComponentViewset
+from server.pm.views.component_import import ComponentImportViewset
 
 PROJECT_URL_PREFIX = r'projects/(?P<project_slug>[\w_-]+)'
 PROJECT_VIEW_PREFIX = r'{0}/products'.format(PROJECT_URL_PREFIX)
@@ -17,6 +18,7 @@ PRODUCT_REPORT_VIEW_PREFIX = r'{0}/reports'.format(ENTRY_URL_PREFIX)
 
 router = routers.DefaultRouter()
 router.register('components', ComponentViewset, basename='component')
+router.register('import', ComponentImportViewset, basename='component_import')
 router.register('projects', ProjectViewset, basename='project')
 router.register(PROJECT_VIEW_PREFIX, ProductViewset, basename='product')
 router.register(GROUP_VIEW_PREFIX, GroupViewset, basename='group')

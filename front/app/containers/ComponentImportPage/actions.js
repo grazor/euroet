@@ -4,10 +4,17 @@
  *
  */
 
-import { DEFAULT_ACTION } from './constants';
+import { IMPORTS_REQUEST, IMPORT_FILE_REQUEST } from './constants';
 
-export function defaultAction() {
+export function loadImportsHistory() {
   return {
-    type: DEFAULT_ACTION,
+    type: IMPORTS_REQUEST,
+  };
+}
+
+export function importFile(file) {
+  return {
+    type: IMPORT_FILE_REQUEST,
+    file,
   };
 }

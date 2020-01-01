@@ -34,9 +34,14 @@ if settings.DEBUG:  # pragma: no cover
     import debug_toolbar  # noqa: Z435
     from django.conf.urls.static import static  # noqa: Z435
     from rest_framework import permissions  # noqa: Z435
+    from drf_yasg import openapi  # noqa: Z435
     from drf_yasg.views import get_schema_view  # noqa: Z435
 
-    schema_view = get_schema_view(public=True, permission_classes=(permissions.AllowAny,))
+    schema_view = get_schema_view(
+        openapi.Info(title='Et API', default_version='v1', description='Et API'),
+        public=True,
+        permission_classes=(permissions.AllowAny,),
+    )
 
     urlpatterns = (
         static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
