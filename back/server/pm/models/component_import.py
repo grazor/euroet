@@ -21,6 +21,7 @@ class ComponentImport(models.Model):
 
     uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
 
+    original_name = models.CharField(max_length=255, null=True, blank=True)
     import_file = models.FilePathField(
         max_length=255, null=True, blank=True, path=settings.MEDIA_ROOT.joinpath('imports').as_posix()
     )

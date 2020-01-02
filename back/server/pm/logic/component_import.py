@@ -1,10 +1,10 @@
-from typing import List, Union, Mapping, Optional
+from typing import Union, Optional
 from decimal import Decimal
 from collections import namedtuple
 
 from openpyxl import load_workbook
 
-from server.pm.models import ComponentImport
+from server.pm.models import Component, Collection, Manufacturer, ComponentImport
 
 Column = namedtuple('Column', ['field', 'columns', 'is_required'])
 
@@ -18,6 +18,7 @@ COLUMNS = (
 )
 
 REQUIRED = {col.field for col in COLUMNS if col.is_required}
+ALL = {col.field for col in COLUMNS}
 
 
 def process_component(
@@ -27,8 +28,32 @@ def process_component(
     description: Optional[str] = None,
     collection: Optional[str] = None,
     manufacturer: Optional[str] = None,
-) -> List[Mapping]:
-    return []
+) -> None:
+    collection_instance = None
+    if collection:
+        collection_instance, _ = Collection.objects.get_or_create(name=collection)
+
+    manufacturer_instance = None
+    if collection:
+        manufacturer_instance, _ = Manufacturer.objects.get_or_create(name=manufacturer)
+
+    component = Component.objects.filter(code=code, collection=collection_instance)
+    if component.exists():
+        component = component.get()
+        component.name = name
+        component.description = description or component.description
+        component.price = price
+        component.manufacturer = manufacturer_instance or component.manufacturer
+        component.save(update_fields=['name', 'description', 'price', 'manufacturer'])
+    else:
+        Component.objects.create(
+            code=code,
+            name=name,
+            price=price,
+            description=description,
+            collection=collection_instance,
+            manufacturer=manufacturer_instance,
+        )
 
 
 def get_header_mapping(row):
@@ -45,30 +70,35 @@ def get_header_mapping(row):
 
 def import_from_worksheet(sheet):
     values = sheet.values
-    rown = 0
+    rows = 0
     for row in values:
-        rown += 1
+        rows += 1
         mapping = get_header_mapping(row)
         if mapping:
             break
     else:
-        return 0, 0, [{'type': 'error', 'sheet': sheet.name, 'error': 'Missing header row'}]
+        return 0, 0, [{'type': 'error', 'sheet': sheet.title, 'error': 'Missing header row'}]
 
-    rows, processed = 0, 0
+    processed = 0
     errors = []
     for row in values:
-        rown += 1
+        rows += 1
         component = {field: row[index] for field, index in mapping.items()}
         fields = {key for key, value in component.items() if value}
         if fields.issuperset(REQUIRED):
-            rows += 1
-            component_errors = process_component(**component)
-            if not errors:
-                processed += 1
-            else:
-                errors.extend(component_errors)
+            process_component(**component)
+            processed += 1
+        elif fields.intersection(ALL):
+            errors.append(
+                {
+                    'type': 'warning',
+                    'sheet': sheet.title,
+                    'row': rows,
+                    'error': 'Missing required fields {0}'.format(', '.join(fields.difference(REQUIRED))),
+                }
+            )
 
-    return row, processed, []
+    return rows, processed, errors
 
 
 def import_from_workbook(import_info):
@@ -79,7 +109,7 @@ def import_from_workbook(import_info):
             rows, processed, sheet_errors = import_from_worksheet(wb[sheet_name])
         except Exception as exc:
             rows, processed = 0, 0
-            sheet_errors = {'type': 'error', 'sheet': sheet_name, 'error': str(exc)}
+            sheet_errors = [{'type': 'error', 'sheet': sheet_name, 'error': str(exc)}]
         finally:
             import_info.rows = (import_info.rows or 0) + rows
             import_info.processed = (import_info.processed or 0) + processed

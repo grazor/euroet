@@ -27,7 +27,7 @@ class ComponentImportViewset(
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data['data']
 
-        import_data = ComponentImport.objects.create()
+        import_data = ComponentImport.objects.create(original_name=data.name[:255])
         *_, file_type = data.name.split('.')
         if file_type not in {'csv', 'xlsx'}:
             raise exceptions.ParseError(detail='Unsupported file extension')

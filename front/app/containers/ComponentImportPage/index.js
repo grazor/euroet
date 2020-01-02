@@ -27,11 +27,20 @@ export class ComponentImportPage extends React.Component {
   }
 
   render() {
-    const { isLoading, imports, importFile: importFileRequest } = this.props;
+    const {
+      isLoading,
+      imports,
+      importFile: importFileRequest,
+      loadImportsHistory: reload,
+    } = this.props;
     return (
       <div>
         <ImportArea importFile={importFileRequest} />
-        <ImportHistory imports={imports} isLoading={isLoading} />
+        <ImportHistory
+          imports={imports}
+          isLoading={isLoading}
+          reload={reload}
+        />
       </div>
     );
   }

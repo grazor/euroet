@@ -5,6 +5,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import RemoveIcon from '@material-ui/icons/Remove';
 import PropTypes from 'prop-types';
 import LoadingBar from 'components/LoadingBar';
 import Moment from 'react-moment';
@@ -21,7 +22,7 @@ const styles = theme => ({
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
-    flexBasis: '10%',
+    width: '120px',
   },
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(15),
@@ -35,7 +36,19 @@ const styles = theme => ({
 });
 
 class ImportHistory extends React.Component {
-  state = { expanded: 'panel1' };
+  state = { expanded: 'panel1', interval: null };
+
+  componentDidMount() {
+    const interval = setInterval(() => this.props.reload(true), 3000);
+    this.setState({ interval });
+  }
+
+  componentWillUnmount() {
+    if (this.state.interval) {
+      clearInterval(this.state.interval);
+      this.setState({ interval: null });
+    }
+  }
 
   handleChange = panel => (event, isExpanded) => {
     this.setState({ expanded: isExpanded ? panel : false });
@@ -60,6 +73,7 @@ class ImportHistory extends React.Component {
       <Paper elevation={3} className={classes.root}>
         {imports.map(entry => (
           <ExpansionPanel
+            key={entry.uuid}
             expanded={expanded === entry.uuid}
             onChange={
               entry.errors && entry.errors.length > 0
@@ -71,37 +85,50 @@ class ImportHistory extends React.Component {
               expandIcon={
                 entry.errors && entry.errors.length > 0 ? (
                   <ExpandMoreIcon />
-                ) : null
+                ) : (
+                  <RemoveIcon />
+                )
               }
               aria-controls={`${entry.uuid}-content`}
               id={`${entry.uuid}-header`}
             >
-              <Typography className={classes.heading}>
+              <Typography
+                className={classes.heading}
+                key={`${entry.uuid}-status`}
+              >
                 {entry.status}
               </Typography>
-              <Typography className={classes.secondaryHeading}>
-                {entry.created_at}
-              </Typography>
-              <Typography className={classes.notes}></Typography>
-              <Tooltip
-                title={
-                  <Moment
-                    date={entry.created_at}
-                    locale="ru"
-                    format="HH:mm DD.MM.YYYY"
-                    unix
-                  />
-                }
+              <Typography
+                className={classes.secondaryHeading}
+                key={`${entry.uuid}-name`}
               >
-                <Moment date={entry.created_at} fromNow locale="ru" unix />
-              </Tooltip>
+                {entry.original_name}{' '}
+                {entry.processed ? `${entry.processed} | ${entry.rows}` : ''}
+              </Typography>
+              <Typography className={classes.notes} key={`${entry.uuid}-ts`}>
+                <Tooltip
+                  title={
+                    <Moment
+                      date={entry.created_at}
+                      locale="ru"
+                      format="HH:mm DD.MM.YYYY"
+                      unix
+                    />
+                  }
+                >
+                  <Moment date={entry.created_at} fromNow locale="ru" unix />
+                </Tooltip>
+              </Typography>
             </ExpansionPanelSummary>
             {entry.errors && entry.errors.length > 0 ? (
               <ExpansionPanelDetails>
-                <Typography>
-                  Nulla facilisi. Phasellus sollicitudin nulla et quam mattis
-                  feugiat. Aliquam eget maximus est, id dignissim quam.
-                </Typography>
+                {entry.errors.map((error, index) => (
+                  <Typography key={`${entry.uuid}-error-${index}`}>
+                    {index + 1}. {error.type} at {error.sheet}
+                    {error.row ? ` (row ${error.row})` : ''} &mdash;{' '}
+                    {error.error}
+                  </Typography>
+                ))}
               </ExpansionPanelDetails>
             ) : null}
           </ExpansionPanel>
@@ -115,6 +142,7 @@ ImportHistory.propTypes = {
   classes: PropTypes.object.isRequired,
   imports: PropTypes.array.isRequired,
   isLoading: PropTypes.bool.isRequired,
+  reload: PropTypes.func.isRequired,
 };
 
 const withStyle = withStyles(styles);

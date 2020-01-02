@@ -10,7 +10,17 @@ class ComponentImportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ComponentImport
-        read_only_fields = ['uuid', 'status', 'created_at', 'author', 'complete', 'rows', 'processed', 'errors']
+        read_only_fields = [
+            'uuid',
+            'status',
+            'original_name',
+            'created_at',
+            'author',
+            'complete',
+            'rows',
+            'processed',
+            'errors',
+        ]
         fields = read_only_fields + ['created_by']
 
 

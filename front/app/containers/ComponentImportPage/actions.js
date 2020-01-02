@@ -6,9 +6,10 @@
 
 import { IMPORTS_REQUEST, IMPORT_FILE_REQUEST } from './constants';
 
-export function loadImportsHistory() {
+export function loadImportsHistory(silent = false) {
   return {
     type: IMPORTS_REQUEST,
+    silent,
   };
 }
 

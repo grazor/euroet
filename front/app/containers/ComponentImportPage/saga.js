@@ -13,7 +13,7 @@ import {
   IMPORT_FILE_FAILURE,
 } from './constants';
 
-function* loadImports() {
+function* loadImports({ silent }) {
   try {
     const imports = yield call(fetchJSON, '/api/import/', { method: 'GET' });
     yield put({
@@ -21,11 +21,13 @@ function* loadImports() {
       imports: imports.results,
     });
   } catch (error) {
-    yield put({ type: IMPORTS_FAILURE });
-    if (error.status >= 500) {
-      yield put(notifyError('Internal server error'));
-    } else {
-      yield put(notifyApiError(error.status, error.data));
+    if (!silent) {
+      yield put({ type: IMPORTS_FAILURE });
+      if (error.status >= 500) {
+        yield put(notifyError('Internal server error'));
+      } else {
+        yield put(notifyApiError(error.status, error.data));
+      }
     }
   }
 }

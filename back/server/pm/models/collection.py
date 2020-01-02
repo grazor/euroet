@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 
 
 class Collection(models.Model):
-    name = models.CharField(max_length=255, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     description = models.TextField(max_length=4095, null=True, blank=True)
 
     discount = models.DecimalField(
