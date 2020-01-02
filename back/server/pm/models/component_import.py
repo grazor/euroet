@@ -38,6 +38,10 @@ class ComponentImport(models.Model):
     def download_url(self):
         return f'/media/imports/{self.uuid}.xlsx'
 
+    @property
+    def full_path(self):
+        return settings.MEDIA_ROOT.joinpath(self.import_file)
+
     class Meta:
         ordering = ('-created_at',)
 

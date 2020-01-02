@@ -3,6 +3,7 @@ from drf_yasg.utils import swagger_auto_schema
 from django.conf import settings
 from rest_framework import mixins, parsers, response, viewsets, exceptions, permissions
 
+from server.pm.tasks import import_components_task
 from server.pm.models import ComponentImport
 from server.pm.permissions import HasComponentsAccess
 from server.pm.serializers import ComponentImportSerializer, ComponentImportRequestSerializer
@@ -41,5 +42,7 @@ class ComponentImportViewset(
         import_data.import_file = f'imports/{filename}'
         import_data.status = ComponentImport.ImportStatus.QUEUED.value
         import_data.save(update_fields=['import_file', 'status'])
+
+        import_components_task.send(str(import_data.uuid))
 
         return response.Response(ComponentImportSerializer(import_data).data)

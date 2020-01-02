@@ -12,6 +12,7 @@ from typing import Tuple
 
 from server.settings.components import BASE_DIR
 from server.settings.components.common import MIDDLEWARE, INSTALLED_APPS
+from server.settings.components.dramatiq import DRAMATIQ_BROKER
 
 # Setting the development status:
 
@@ -48,6 +49,8 @@ MIDDLEWARE += (
     # Prints queries
     'server.lib.sql_debug_middleware.SqlDebugMiddleware',
 )
+
+DRAMATIQ_BROKER['MIDDLEWARE'].append('server.lib.queue_sync_middleware.QueueSyncMiddleware')
 
 
 def custom_show_toolbar(request):
