@@ -70,7 +70,7 @@ services:
 
   dramatiq:
     <<: *web
-    command: python manage.py rundramatiq
+    command: python3 manage.py rundramatiq --processes 1 --threads 2
     deploy:
       replicas: 1
 

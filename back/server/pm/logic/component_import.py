@@ -1,3 +1,5 @@
+import csv
+import logging
 from typing import Union, Optional
 from decimal import Decimal
 from collections import namedtuple
@@ -5,6 +7,8 @@ from collections import namedtuple
 from openpyxl import load_workbook
 
 from server.pm.models import Component, Collection, Manufacturer, ComponentImport
+
+logger = logging.getLogger(__name__)
 
 Column = namedtuple('Column', ['field', 'columns', 'is_required'])
 
@@ -68,20 +72,19 @@ def get_header_mapping(row):
     return mapping if mapping and set(mapping.keys()).issuperset(REQUIRED) else {}
 
 
-def import_from_worksheet(sheet):
-    values = sheet.values
+def process_rows(iter_rows, name):
     rows = 0
-    for row in values:
+    for row in iter_rows:
         rows += 1
         mapping = get_header_mapping(row)
         if mapping:
             break
     else:
-        return 0, 0, [{'type': 'error', 'sheet': sheet.title, 'error': 'Missing header row'}]
+        return 0, 0, [{'type': 'error', 'sheet': name, 'error': 'Missing header row'}]
 
     processed = 0
     errors = []
-    for row in values:
+    for row in iter_rows:
         rows += 1
         component = {field: row[index] for field, index in mapping.items()}
         fields = {key for key, value in component.items() if value}
@@ -92,7 +95,7 @@ def import_from_worksheet(sheet):
             errors.append(
                 {
                     'type': 'warning',
-                    'sheet': sheet.title,
+                    'sheet': name,
                     'row': rows,
                     'error': 'Missing required fields {0}'.format(', '.join(fields.difference(REQUIRED))),
                 }
@@ -101,12 +104,12 @@ def import_from_worksheet(sheet):
     return rows, processed, errors
 
 
-def import_from_workbook(import_info):
+def import_from_workbook(import_info: ComponentImport):
     wb = load_workbook(import_info.full_path)
 
     for sheet_name in wb.sheetnames:
         try:
-            rows, processed, sheet_errors = import_from_worksheet(wb[sheet_name])
+            rows, processed, sheet_errors = process_rows(wb[sheet_name].values, sheet_name)
         except Exception as exc:
             rows, processed = 0, 0
             sheet_errors = [{'type': 'error', 'sheet': sheet_name, 'error': str(exc)}]
@@ -117,13 +120,44 @@ def import_from_workbook(import_info):
             import_info.save(update_fields=['rows', 'processed', 'errors'])
 
 
+def import_csv(import_info: ComponentImport):
+    with open(import_info.full_path, 'r') as f:
+        reader = csv.reader(f)
+
+        try:
+            rows, processed, sheet_errors = process_rows(reader, 'csv')
+        except Exception as exc:
+            rows, processed = 0, 0
+            sheet_errors = [{'type': 'error', 'sheet': 'csv', 'error': str(exc)}]
+        finally:
+            import_info.rows = (import_info.rows or 0) + rows
+            import_info.processed = (import_info.processed or 0) + processed
+            import_info.errors.extend(sheet_errors)
+            import_info.save(update_fields=['rows', 'processed', 'errors'])
+
+
 def import_components(import_uuid: str):
-    import_info = ComponentImport.objects.get(uuid=import_uuid)
+    try:
+        import_info = ComponentImport.objects.get(uuid=import_uuid)
+    except ComponentImport.DoesNotExist:
+        logger.error('Missing component import task, uuid=%s', import_uuid)
+        return
+
+    if import_info.status != ComponentImport.ImportStatus.QUEUED.value:
+        logger.error('Got import task with invalid status, status=%s, uuid=%s', import_info.status, import_uuid)
+        return
+
     import_info.status = ComponentImport.ImportStatus.PROCESSING.value
     import_info.save(update_fields=['status'])
 
-    if import_info.import_file.split('.')[-1] == 'xlsx':
+    extension = import_info.import_file.split('.')[-1]
+    if extension == 'xlsx':
         import_from_workbook(import_info)
+        import_info.status = ComponentImport.ImportStatus.COMPLETE.value
+    elif extension == 'csv':
+        import_csv(import_info)
+        import_info.status = ComponentImport.ImportStatus.COMPLETE.value
+    else:
+        import_info.status = ComponentImport.ImportStatus.FAILED.value
 
-    import_info.status = ComponentImport.ImportStatus.COMPLETE.value
     import_info.save(update_fields=['status'])
