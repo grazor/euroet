@@ -71,6 +71,11 @@ services:
   dramatiq:
     <<: *web
     command: python3 manage.py rundramatiq --processes 1 --threads 2
+    depends_on:
+      - db
+      - redis
+    networks:
+      - webnet
 
 networks:
   webnet:
