@@ -95,13 +95,13 @@ PROJECT_PAGE_COLUMNS = (
     ColumnConfig(start=3, end=4, width=8, options={'align': 'center'}),
     ColumnConfig(start=5, end=5, width=14, options=None),
     ColumnConfig(start=6, end=7, width=10, options=None),
-    ColumnConfig(start=8, end=8, width=13, options=None),
+    ColumnConfig(start=8, end=8, width=14, options=None),
     ColumnConfig(start=9, end=9, width=4, options=None),
-    ColumnConfig(start=10, end=10, width=13, options=None),
+    ColumnConfig(start=10, end=10, width=14, options=None),
     ColumnConfig(start=11, end=11, width=4, options=None),
-    ColumnConfig(start=12, end=12, width=13, options=None),
+    ColumnConfig(start=12, end=12, width=14, options=None),
     ColumnConfig(start=13, end=13, width=4, options=None),
-    ColumnConfig(start=14, end=16, width=17, options=None),
+    ColumnConfig(start=14, end=16, width=19, options=None),
 )
 
 CLIENT_PAGE_COLUMNS = (
@@ -252,9 +252,7 @@ def write_product_page(
     worksheet.write_number(0, 7, total_price, formats['product_total_price'])
 
 
-def write_computation_internal_page(
-    worksheet, formats: Mapping[str, Any], reports: Iterable[Tuple[Any, Any]]
-) -> None:
+def write_computation_internal_page(worksheet, formats: Mapping[str, Any], reports: Iterable[Tuple[Any, Any]]) -> None:
     worksheet_set_columns(worksheet, PROJECT_PAGE_COLUMNS)
 
     # Captiopns
@@ -385,10 +383,7 @@ def write_computation_internal_page(
                 formats['project_products_item_markup_value'],
             )
             worksheet.write_formula(
-                row,
-                16,
-                rc('(RC[-11]+RC[-8])*RC[-12]', row=row, col=16),
-                formats['project_products_item_markup_value'],
+                row, 16, rc('(RC[-11]+RC[-8])*RC[-12]', row=row, col=16), formats['project_products_item_markup_value']
             )
 
         row += 1
@@ -408,9 +403,7 @@ def write_computation_internal_page(
     )
 
 
-def write_computation_external_page(
-    worksheet, formats: Mapping[str, Any], reports_count: int, internal_sheet
-) -> None:
+def write_computation_external_page(worksheet, formats: Mapping[str, Any], reports_count: int, internal_sheet) -> None:
     worksheet_set_columns(worksheet, CLIENT_PAGE_COLUMNS)
 
     worksheet.write_string(0, 5, TOTAL_CAPTION, formats['client_total_caption'])
@@ -429,7 +422,7 @@ def write_computation_external_page(
         worksheet.write_number(row, 0, i + 1, formats['project_products_item_idx'])
         worksheet.write_string(row, 7, '', formats['project_products_item_idx'])
         for j in range(6):
-            col = j + 1 if j < 4 else j + 9
+            col = j + 1 if j < 4 else j + 10
             style = formats['project_products_item'] if j < 4 else formats['project_products_item_markup_value']
             worksheet.write_formula(row, j + 1, f'\'{internal_sheet.name}\'!{cell(row=i+13, col=col)}', style)
         row += 1
@@ -456,9 +449,7 @@ def write_summary_page(worksheet, formats: Mapping[str, Any], counts) -> None:
             write_entry(worksheet, row, formats, entry)
         row += 1
 
-    worksheet.write_formula(
-        0, 7, f'SUM({cell(row=3, col=7)}:{cell(row=1000, col=7)})', formats['product_total_price']
-    )
+    worksheet.write_formula(0, 7, f'SUM({cell(row=3, col=7)}:{cell(row=1000, col=7)})', formats['product_total_price'])
 
 
 def report_product(product: Product, author: User) -> Report:
