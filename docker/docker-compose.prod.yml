@@ -1,11 +1,3 @@
----
-
-# This compose-file is production only. So, it should not be called directly.
-#
-# Instead, it should be a part of your deploy strategy.
-# This setup is supposed to be used with `docker-swarm`.
-# See `./docs/pages/template/production.rst` docs.
-
 version: "3.5"
 services:
   db:
@@ -45,11 +37,6 @@ services:
 
   web:
     <<: &web
-      build:
-        context: .
-        dockerfile: ./docker/django/Dockerfile
-        args:
-          DJANGO_ENV: production
       restart: unless-stopped
       volumes:
         - django-media:/var/www/django/media
