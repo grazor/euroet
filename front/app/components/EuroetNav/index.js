@@ -233,7 +233,7 @@ class PersistentDrawerLeft extends React.Component {
                   key="admin"
                   component={Link}
                   to="/admin"
-                  target="_self"
+                  target="_blank"
                 >
                   <ListItemIcon>
                     <AdminIcon />
