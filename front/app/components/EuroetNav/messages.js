@@ -5,7 +5,7 @@ export const scope = 'app.components.Header';
 export default defineMessages({
   appname: {
     id: `${scope}.appname`,
-    defaultMessage: 'Euroet',
+    defaultMessage: 'Engineering',
   },
   loginbutton: {
     id: `${scope}.loginmessage`,

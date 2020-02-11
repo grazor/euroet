@@ -39,6 +39,7 @@ services:
     <<: &web
       restart: unless-stopped
       volumes:
+        - ./config:/code/config
         - django-media:/var/www/django/media
         - django-static:/var/www/django/static
         - logs:/var/log/share/

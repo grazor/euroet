@@ -44,8 +44,11 @@ export class App extends React.Component {
 
     return (
       <div>
-        <Helmet titleTemplate="%s - Euroet" defaultTitle="Euroet">
-          <meta name="description" content="Euroet engineering application" />
+        <Helmet titleTemplate="%s - Engineering" defaultTitle="Engineering">
+          <meta
+            name="description"
+            content="Engineering engineering application"
+          />
         </Helmet>
         <Notifier />
         <EuroetNav isAuthenticated={auth} user={user} logout={doLogout}>
@@ -112,14 +115,8 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ fetchUser, logout }, dispatch);
 
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 const withSaga = injectSaga({ key: 'global', saga: authSaga, mode: DAEMON });
 
-export default compose(
-  withConnect,
-  withSaga,
-)(App);
+export default compose(withConnect, withSaga)(App);
