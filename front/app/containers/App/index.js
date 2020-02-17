@@ -115,8 +115,14 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ fetchUser, logout }, dispatch);
 
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
 
 const withSaga = injectSaga({ key: 'global', saga: authSaga, mode: DAEMON });
 
-export default compose(withConnect, withSaga)(App);
+export default compose(
+  withConnect,
+  withSaga,
+)(App);

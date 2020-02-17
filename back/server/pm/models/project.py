@@ -22,6 +22,8 @@ class ProjectPermission(Enum):
     can_view_all_projects = _('Can view all projects')
     can_edit_all_projects = _('Can edit all projects')
     can_remove_non_empty = _('Can remove non empty projects')
+    can_change_component = 'Can change components'
+    can_manage_project_reports = 'Can manage project level reports'
 
 
 class Project(DeactivateMixin, models.Model):

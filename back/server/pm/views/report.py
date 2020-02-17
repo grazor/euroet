@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 
 from server.pm.models import Report, Project
-from server.pm.permissions import HasProjectDetailAccess
+from server.pm.permissions import HasProjectDetailAccess, CanManageProjectReports
 from server.pm.serializers import ReportSerializer
 from server.pm.logic.report import report_product, report_project
 from server.pm.views.product_detail_mixin import ProductDetailMixin
@@ -28,7 +28,7 @@ class ProductReportViewset(
 
 class ProjectReportViewset(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = ReportSerializer
-    permission_classes = (permissions.IsAuthenticated, HasProjectDetailAccess)
+    permission_classes = (permissions.IsAuthenticated, HasProjectDetailAccess, CanManageProjectReports)
     pagination_class = None
 
     def initialize_request(self, request, *args, **kwargs):

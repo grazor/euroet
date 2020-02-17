@@ -39,6 +39,7 @@ import {
   makeSelectReportStatus,
   makeSelectReports,
 } from './selectors';
+import { makeSelectUser } from '../App/selectors';
 
 const styles = theme => ({
   root: {
@@ -115,6 +116,7 @@ class ProductsPage extends React.Component {
   render() {
     const {
       classes,
+      user,
       products,
       project,
       isLoading,
@@ -150,11 +152,13 @@ class ProductsPage extends React.Component {
           openProductPage={this.openProductPage}
           editProduct={this.editProduct}
         />
-        <ReportGrid
-          createReport={actionCreateReport.bind(null, project.slug)}
-          reports={reports}
-          reportStatus={reportStatus}
-        />
+        {user.can_manage_project_reports ? (
+          <ReportGrid
+            createReport={actionCreateReport.bind(null, project.slug)}
+            reports={reports}
+            reportStatus={reportStatus}
+          />
+        ) : null}
         <Fab
           color="primary"
           aria-label="Add"
@@ -183,6 +187,7 @@ ProductsPage.propTypes = {
   history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
+  user: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -192,6 +197,7 @@ const mapStateToProps = createStructuredSelector({
   reportStatus: makeSelectReportStatus(),
   isLoading: makeSelectIsLoading(),
   isUpdating: makeSelectIsUpdating(),
+  user: makeSelectUser(),
 });
 
 const mapDispatchToProps = dispatch =>

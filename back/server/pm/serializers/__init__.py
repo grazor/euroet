@@ -1,8 +1,13 @@
 # flake8: noqa
 
 from server.pm.serializers.entry import (
-    EntrySerializer, MoveEntrySerializer, GroupEntrySerializer, UpdateEntrySerializer, ComponentCodeSerializer,
-    ComponentCopySerializer, ComponentCreateSerializer,
+    EntrySerializer,
+    MoveEntrySerializer,
+    GroupEntrySerializer,
+    UpdateEntrySerializer,
+    ComponentCodeSerializer,
+    ComponentCopySerializer,
+    ComponentCreateSerializer,
 )
 from server.pm.serializers.group import GroupSerializer
 from server.pm.serializers.report import ReportSerializer

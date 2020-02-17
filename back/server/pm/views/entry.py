@@ -6,8 +6,13 @@ from rest_framework.decorators import action
 from server.pm.models import Entry, Group, Component
 from server.pm.permissions import HasProjectDetailAccess
 from server.pm.serializers import (
-    EntrySerializer, MoveEntrySerializer, GroupEntrySerializer, UpdateEntrySerializer, ComponentCodeSerializer,
-    ComponentCopySerializer, ComponentCreateSerializer,
+    EntrySerializer,
+    MoveEntrySerializer,
+    GroupEntrySerializer,
+    UpdateEntrySerializer,
+    ComponentCodeSerializer,
+    ComponentCopySerializer,
+    ComponentCreateSerializer,
 )
 from server.pm.views.product_detail_mixin import ProductDetailMixin
 

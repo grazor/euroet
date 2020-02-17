@@ -42,4 +42,10 @@ class HasProjectDetailAccess(BasePermission):
 class HasComponentsAccess(BasePermission):
     def has_permission(self, request, view):
         read_only = request.method in SAFE_METHODS
-        return read_only or request.user.has_perm('pm.can_manage_components')
+        return read_only or request.user.has_perm(f'pm.{ProjectPermission.can_change_component.name}')
+
+
+class CanManageProjectReports(BasePermission):
+    def has_permission(self, request, view):
+        read_only = request.method in SAFE_METHODS
+        return read_only or request.user.has_perm(f'pm.{ProjectPermission.can_manage_project_reports.name}')
