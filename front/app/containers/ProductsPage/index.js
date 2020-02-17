@@ -152,7 +152,7 @@ class ProductsPage extends React.Component {
           openProductPage={this.openProductPage}
           editProduct={this.editProduct}
         />
-        {user.can_manage_project_reports ? (
+        {user && user.can_manage_project_reports ? (
           <ReportGrid
             createReport={actionCreateReport.bind(null, project.slug)}
             reports={reports}
