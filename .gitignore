@@ -248,3 +248,5 @@ artifacts/
 
 # pytest:
 .pytest_cache/
+
+venv/

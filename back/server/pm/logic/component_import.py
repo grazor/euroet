@@ -38,7 +38,7 @@ def process_component(
         collection_instance, _ = Collection.objects.get_or_create(name=collection)
 
     manufacturer_instance = None
-    if collection:
+    if manufacturer: # было if collection
         manufacturer_instance, _ = Manufacturer.objects.get_or_create(name=manufacturer)
 
     component = Component.objects.filter(code=code, collection=collection_instance)
