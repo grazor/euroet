@@ -37,6 +37,11 @@ services:
 
   web:
     <<: &web
+      build:
+        context: .
+        dockerfile: ./docker/django/Dockerfile
+        args:
+          DJANGO_ENV: production
       restart: unless-stopped
       volumes:
         - ./config:/code/config
