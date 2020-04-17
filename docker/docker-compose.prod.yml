@@ -18,7 +18,7 @@ services:
       - redis-data:/data
 
   caddy:
-    image: "wemakeservices/caddy-docker:0.10.11-1"
+    image: "abiosoft/caddy:latest"
     restart: unless-stopped
     env_file: ./config/.env
     volumes:
