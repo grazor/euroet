@@ -5,7 +5,8 @@ from server.pm.models import Entry, Group
 
 class EntryInline(admin.TabularInline):
     raw_id_fields = ('prototype',)
-    fields = ('prototype', 'code', 'name', 'price', 'collection_discount', 'qty')
+    readonly_fields = ('code', 'name', 'price', 'collection_discount')
+    fields = ('prototype', 'qty') + readonly_fields
     autocomplete_fields = ('prototype',)
     model = Entry
     extra = 1

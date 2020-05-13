@@ -468,7 +468,16 @@ def report_product(product: Product, author: User) -> Report:
     filepath = settings.MEDIA_ROOT.joinpath(filename)
     workbook = xlsxwriter.Workbook(filepath)
     formats = init_formats(workbook)
-    worksheet = workbook.add_worksheet(product.name[:31])
+    worksheet = workbook.add_worksheet(
+        product.name[:31]
+        .replace('/', '')
+        .replace('[', '')
+        .replace(']', '')
+        .replace(':', '')
+        .replace('*', '')
+        .replace('?', '')
+        .replace('\\', '')
+    )
 
     write_product_page(worksheet, formats, product)
 
