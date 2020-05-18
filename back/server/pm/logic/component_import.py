@@ -33,12 +33,17 @@ def process_component(
     collection: Optional[str] = None,
     manufacturer: Optional[str] = None,
 ) -> None:
+    code, name = code.strip(), name.strip()
+    description = description and description.stip()
+    collection = collection and collection.strip()
+    manufacturer = manufacturer and manufacturer.strip()
+
     collection_instance = None
     if collection:
         collection_instance, _ = Collection.objects.get_or_create(name=collection)
 
     manufacturer_instance = None
-    if manufacturer: # было if collection
+    if manufacturer:
         manufacturer_instance, _ = Manufacturer.objects.get_or_create(name=manufacturer)
 
     component = Component.objects.filter(code=code, collection=collection_instance)
