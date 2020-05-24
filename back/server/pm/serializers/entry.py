@@ -42,6 +42,7 @@ class ComponentCopySerializer(serializers.Serializer):
 class ComponentCodeSerializer(serializers.Serializer):
     group = serializers.IntegerField(min_value=1)
     code = serializers.CharField()
+    collection = serializers.CharField(allow_blank=True)
     qty = serializers.IntegerField(min_value=1)
 
 

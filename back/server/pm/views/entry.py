@@ -88,8 +88,12 @@ class EntryViewset(
         serializer = ComponentCodeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        queryset = Component.objects.filter(code=serializer.validated_data['code'])
+        if serializer.validated_data['collection']:
+            queryset = queryset.filter(collection__name=serializer.validated_data['collection'])
+
         try:
-            component = get_object_or_404(Component, code=serializer.validated_data['code'])
+            component = get_object_or_404(queryset)
         except Component.MultipleObjectsReturned:
             return Response(status=status.HTTP_409_CONFLICT)
         group = get_object_or_404(Group, id=serializer.validated_data['group'])

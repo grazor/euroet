@@ -105,6 +105,7 @@ export function addComponentByCode(
   groupId,
   code,
   qty = 1,
+  collectionName = ''
 ) {
   return {
     type: ADD_COMPONENT_BY_CODE_REQUEST,
@@ -113,6 +114,7 @@ export function addComponentByCode(
     group: groupId,
     code,
     qty,
+    collectionName,
   };
 }
 

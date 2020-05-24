@@ -91,7 +91,7 @@ class ComponentsGrid extends React.Component {
     const selectedRows = rows.slice(selectedTop, selectedBottom + 1);
     const copied = selectedRows
       .filter(row => !row.empty && !row.group && row.code)
-      .map(row => [row.code, row.qty].join('\t'))
+      .map(row => [row.code, row.qty, row.collectionName].join('\t'))
       .join('\n');
     e.clipboardData.setData('text/plain', copied);
   };
@@ -115,10 +115,10 @@ class ComponentsGrid extends React.Component {
     }
     pasteData.forEach(entry => {
       const qty = parseInt(entry[1], 10);
-      if (entry.length !== 2 || qty === NaN) {
+      if ((entry.length !== 2 && entry.length !== 3) || qty === NaN) {
         return;
       }
-      this.props.addComponentByCode(row.groupId, entry[0], qty);
+      this.props.addComponentByCode(row.groupId, entry[0], qty, entry[2]);
     });
     const { collapsedGroups } = this.state;
     collapsedGroups.delete(row.groupId);

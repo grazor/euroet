@@ -237,11 +237,11 @@ function* addComponent({ projectSlug, productSlug, group, component, qty }) {
   }
 }
 
-function* addComponentByCode({ projectSlug, productSlug, group, code, qty }) {
+function* addComponentByCode({ projectSlug, productSlug, group, code, qty, collectionName }) {
   const options = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ group, code, qty }),
+    body: JSON.stringify({ group, code, qty, collection: collectionName }),
   };
 
   const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/components/code/`;
