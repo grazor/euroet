@@ -23,6 +23,7 @@ import saga from './saga';
 import {
   addComponent,
   addComponentByCode,
+  addGroupWithContents,
   addGroup,
   bulkUpdateQty,
   createReport,
@@ -73,6 +74,7 @@ export class ComponentsPage extends React.Component {
       getSuggestions: actionGetSuggestions,
       addComponent: actionAddComponent,
       addComponentByCode: actionAddComponentByCode,
+      addGroupWithContents: actionAddGroupWithContents,
       newComponent: actionNewComponent,
       updateCustomComponent: actionUpdateCustomCommponent,
       addGroup: actionAddGroup,
@@ -109,6 +111,11 @@ export class ComponentsPage extends React.Component {
             projectSlug,
             productSlug,
           )}
+          addGroupWithContents={actionAddGroupWithContents.bind(
+            null,
+            projectSlug,
+            productSlug,
+          )}
           newComponent={actionNewComponent.bind(null, projectSlug, productSlug)}
           updateCustomComponent={actionUpdateCustomCommponent.bind(
             null,
@@ -137,6 +144,7 @@ ComponentsPage.propTypes = {
   getSuggestions: PropTypes.func.isRequired,
   addComponent: PropTypes.func.isRequired,
   addComponentByCode: PropTypes.func.isRequired,
+  addGroupWithContents: PropTypes.func.isRequired,
   newComponent: PropTypes.func.isRequired,
   updateCustomComponent: PropTypes.func.isRequired,
   addGroup: PropTypes.func.isRequired,
@@ -172,6 +180,7 @@ const mapDispatchToProps = dispatch =>
       getSuggestions,
       addComponent,
       addComponentByCode,
+      addGroupWithContents,
       newComponent,
       updateCustomComponent,
       addGroup,

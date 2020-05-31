@@ -33,6 +33,26 @@ RowRenderer.propTypes = {
 const parsePaste = str =>
   str.split(/\r\n|\n|\r/).map(row => row.split('\t').filter(r => r));
 
+const splitPaste = data => {
+  const nogroup = [];
+  const group = [];
+  let inGroup = false;
+  for (let i = 0; i < data.length; i++) {
+    const entry = data[i];
+    if (entry.length == 1) {
+      inGroup = true;
+      group.push({ name: entry[0], entries: [] });
+      continue;
+    }
+    if (inGroup) {
+      group[group.length - 1].entries.push(entry);
+    } else {
+      nogroup.push(entry);
+    }
+  }
+  return { group, nogroup };
+};
+
 class ComponentsGrid extends React.Component {
   constructor(props) {
     super(props);
@@ -82,40 +102,57 @@ class ComponentsGrid extends React.Component {
   };
 
   handleCopy = e => {
-    e.preventDefault();
     const { selectedTop, selectedBottom } = this.state;
-    if (!selectedTop || !selectedBottom) {
+    if (selectedTop === undefined || selectedBottom === undefined) {
       return;
     }
+    e.preventDefault();
+    const { components } = this.props;
     const rows = this.mapComponentsToGridData();
     const selectedRows = rows.slice(selectedTop, selectedBottom + 1);
-    const copied = selectedRows
-      .filter(row => !row.empty && !row.group && row.code)
-      .map(row => [row.code, row.qty, row.collectionName].join('\t'))
-      .join('\n');
-    e.clipboardData.setData('text/plain', copied);
+    const copied = [];
+    do {
+      const row = selectedRows.shift();
+      if (!row.empty && (row.group || row.code)) {
+        copied.push([row.code, row.qty, row.collectionName].join('\t'));
+
+        if (row.group && !row.expanded) {
+          let group;
+          for (let i = 0; i < components.length; i++) {
+            if (components[i].id == row.id) {
+              group = components[i];
+              break;
+            }
+          }
+          if (group) {
+            for (let i = 0; i < group.entries.length; i++) {
+              const e = group.entries[i];
+              if (e.code) {
+                copied.push([e.code, e.qty, e.collection_name].join('\t'));
+              }
+            }
+          }
+        }
+      }
+    } while (selectedRows.length > 0);
+    e.clipboardData.setData('text/plain', copied.join('\n'));
   };
 
-  handlePaste = e => {
-    const data = e.clipboardData.getData('text/plain');
-    if (!data.includes('\t')) {
+  pasteIntoGroup = items => {
+    if (!items || items.length == 0) {
       return;
     }
-
-    e.preventDefault();
-    const pasteData = parsePaste(data);
     const { selectedRow } = this.state;
     if (selectedRow === null) {
       return;
     }
-
     const row = this.mapComponentsToGridData()[selectedRow];
     if (row.group && row.empty) {
       return;
     }
-    pasteData.forEach(entry => {
+    items.forEach(entry => {
       const qty = parseInt(entry[1], 10);
-      if ((entry.length !== 2 && entry.length !== 3) || qty === NaN) {
+      if ((entry.length !== 2 && entry.length !== 3) || isNaN(qty)) {
         return;
       }
       this.props.addComponentByCode(row.groupId, entry[0], qty, entry[2]);
@@ -123,6 +160,32 @@ class ComponentsGrid extends React.Component {
     const { collapsedGroups } = this.state;
     collapsedGroups.delete(row.groupId);
     this.setState({ collapsedGroups });
+  };
+
+  pasteGroupWithContents = items => {
+    if (!items || items.length == 0) {
+      return;
+    }
+    items
+      .filter(e => e.entries.length > 0)
+      .forEach(e => {
+        this.props.pasteGroupWithContents(e.name, e.entries);
+      });
+  };
+
+  handlePaste = e => {
+    const data = e.clipboardData.getData('text/plain');
+    if (!data.includes('\t')) {
+      return false;
+    }
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    const pasteData = parsePaste(data);
+    const { group, nogroup } = splitPaste(pasteData);
+    this.pasteGroupWithContents(group);
+    this.pasteIntoGroup(nogroup);
+    return true;
   };
 
   columns = [
@@ -362,6 +425,7 @@ ComponentsGrid.propTypes = {
   deleteGroup: PropTypes.func.isRequired,
   addComponent: PropTypes.func.isRequired,
   addComponentByCode: PropTypes.func.isRequired,
+  addGroupWithContents: PropTypes.func.isRequired,
   newComponent: PropTypes.func.isRequired,
   updateCustomComponent: PropTypes.func.isRequired,
   deleteComponent: PropTypes.func.isRequired,
