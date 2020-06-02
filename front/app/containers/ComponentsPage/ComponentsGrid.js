@@ -37,9 +37,9 @@ const splitPaste = data => {
   const nogroup = [];
   const group = [];
   let inGroup = false;
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data.length; i += 1) {
     const entry = data[i];
-    if (entry.length == 1) {
+    if (entry.length === 1 && entry[0].trim() !== '') {
       inGroup = true;
       group.push({ name: entry[0], entries: [] });
       continue;
@@ -135,7 +135,7 @@ class ComponentsGrid extends React.Component {
         }
       }
     } while (selectedRows.length > 0);
-    e.clipboardData.setData('text/plain', copied.join('\n'));
+    e.clipboardData.setData('text/plain', ' \n' + copied.join('\n'));
   };
 
   pasteIntoGroup = items => {
@@ -163,29 +163,34 @@ class ComponentsGrid extends React.Component {
   };
 
   pasteGroupWithContents = items => {
-    if (!items || items.length == 0) {
+    const { addGroupWithContents } = this.props;
+    if (!items || items.length === 0) {
       return;
     }
     items
       .filter(e => e.entries.length > 0)
       .forEach(e => {
-        this.props.pasteGroupWithContents(e.name, e.entries);
+        const items = e.entries.map(i => ({
+          code: i[0],
+          qty: i[1],
+          collection: i.length >= 3 ? i[2] : '',
+        }));
+        addGroupWithContents(e.name, items);
       });
   };
 
   handlePaste = e => {
     const data = e.clipboardData.getData('text/plain');
     if (!data.includes('\t')) {
-      return false;
+      return true;
     }
     e.preventDefault();
-    e.stopImmediatePropagation();
 
     const pasteData = parsePaste(data);
     const { group, nogroup } = splitPaste(pasteData);
     this.pasteGroupWithContents(group);
     this.pasteIntoGroup(nogroup);
-    return true;
+    return false;
   };
 
   columns = [
@@ -280,7 +285,10 @@ class ComponentsGrid extends React.Component {
 
     if (
       fromRow !== toRow ||
-      !('code' in updated || 'name' in updated || 'price' in updated)
+      !('code' in updated || 'name' in updated || 'price' in updated) ||
+      ((!updated.code || updated.code.trim() === '') &&
+        (!updated.name || updated.name.trim() === '') &&
+        (!updated.price || updated.price.trim === ''))
     ) {
       // Supporting groups or codes or names or prices
       // Not supporting bulk updates for groups and components
@@ -425,6 +433,7 @@ ComponentsGrid.propTypes = {
   deleteGroup: PropTypes.func.isRequired,
   addComponent: PropTypes.func.isRequired,
   addComponentByCode: PropTypes.func.isRequired,
+  addGroupWithContents: PropTypes.func.isRequired,
   addGroupWithContents: PropTypes.func.isRequired,
   newComponent: PropTypes.func.isRequired,
   updateCustomComponent: PropTypes.func.isRequired,

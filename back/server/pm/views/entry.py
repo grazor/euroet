@@ -13,6 +13,8 @@ from server.pm.serializers import (
     ComponentCodeSerializer,
     ComponentCopySerializer,
     ComponentCreateSerializer,
+    ComponentGroupPasteSerializer,
+    GroupSerializer,
 )
 from server.pm.views.product_detail_mixin import ProductDetailMixin
 
@@ -102,6 +104,29 @@ class EntryViewset(
         )
 
         return Response(EntrySerializer(entry).data)
+
+    @action(detail=False, methods=['post'], name='Paste whole group with contents')
+    def paste_group(self, request, *args, **kwargs):
+        serializer = ComponentGroupPasteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        data = serializer.validated_data
+        group, _ = Group.objects.get_or_create(product=self.request.product, name=data['name'])
+
+        entries = []
+        for item in data['items']:
+            queryset = Component.objects.filter(code=item['code'])
+            if item['collection']:
+                queryset = queryset.filter(collection__name=item['collection'])
+
+            try:
+                component = queryset.get()
+            except (Component.DoesNotExist, Component.MultipleObjectsReturned):
+                pass
+
+            entries.append(Entry.add_component_from_prototype(group=group, component=component, qty=item['qty']))
+
+        return Response({'group': GroupSerializer(group).data, 'entries': EntrySerializer(entries, many=True).data})
 
     @action(detail=False, methods=['post'], name='Add nonexistent component by name')
     def new(self, request, *args, **kwargs):
