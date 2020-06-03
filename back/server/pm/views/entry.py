@@ -111,7 +111,7 @@ class EntryViewset(
         serializer.is_valid(raise_exception=True)
 
         data = serializer.validated_data
-        group, _ = Group.objects.get_or_create(product=self.request.product, name=data['name'])
+        group = Group.objects.create(product=self.request.product, name=data['name'])
 
         entries = []
         for item in data['items']:

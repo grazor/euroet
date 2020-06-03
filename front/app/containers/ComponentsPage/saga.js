@@ -274,14 +274,7 @@ function* addGroupWithContents({ projectSlug, productSlug, name, items }) {
 
   try {
     const { group, entries } = yield call(fetchJSON, baseUrl, options);
-    yield put({ type: ADD_GROUP_SUCCESS, group });
-    for (let i = 0; i < entries.length; i += 1) {
-      yield put({
-        type: ADD_COMPONENT_SUCCESS,
-        group: group.id,
-        component: entries[i],
-      });
-    }
+    yield put({ type: ADD_GROUP_SUCCESS, group, entries });
     yield put(fetchGroup(projectSlug, productSlug, group.id));
   } catch (error) {
     yield handleApiError(error, ADD_GROUP_FAILURE);

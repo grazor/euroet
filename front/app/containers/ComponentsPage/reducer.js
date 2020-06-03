@@ -105,15 +105,10 @@ function componentsPageReducer(state = initialState, action) {
       return state.set('suggestions', fromJS(action.suggestions));
 
     case ADD_GROUP_SUCCESS:
-      const exists = state
-        .get('components')
-        .filter(g => g.get('id') === action.group.id);
-
-      if (exists.size > 0) {
-        return state;
-      }
       return state.update('components', components =>
-        components.push(fromJS({ ...action.group, entries: [] })),
+        components.push(
+          fromJS({ ...action.group, entries: action.entries || [] }),
+        ),
       );
 
     case RENAME_GROUP_SUCCESS:

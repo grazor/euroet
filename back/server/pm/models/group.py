@@ -15,7 +15,6 @@ class Group(OrderedModel):
 
     class Meta:
         ordering = ('product', 'order')
-        unique_together = ('product', 'name')
 
     @property
     def total_price(self):
