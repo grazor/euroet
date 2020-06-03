@@ -43,6 +43,9 @@ export const ADD_COMPONENT_FAILURE = 'app/ComponentsPage/ADD_COMPONENT_FAILURE';
 export const ADD_COMPONENT_BY_CODE_REQUEST =
   'app/ComponentsPage/ADD_COMPONENT_BY_CODE_REQUEST';
 
+export const ADD_GROUP_WITH_CONTENTS_REQUEST =
+  'app/ComponentsPage/ADD_GROUP_WITH_CONTENTS_REQUEST';
+
 export const NEW_COMPONENT_REQUEST = 'app/ComponentsPage/NEW_COMPONENT_REQUEST';
 export const NEW_COMPONENT_SUCCESS = 'app/ComponentsPage/NEW_COMPONENT_SUCCESS';
 export const NEW_COMPONENT_FAILURE = 'app/ComponentsPage/NEW_COMPONENT_FAILURE';

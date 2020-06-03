@@ -6,6 +6,7 @@
 
 import {
   ADD_COMPONENT_BY_CODE_REQUEST,
+  ADD_GROUP_WITH_CONTENTS_REQUEST,
   ADD_COMPONENT_REQUEST,
   ADD_GROUP_REQUEST,
   BULK_UPDATE_QTY_REQUEST,
@@ -105,7 +106,7 @@ export function addComponentByCode(
   groupId,
   code,
   qty = 1,
-  collectionName = ''
+  collectionName = '',
 ) {
   return {
     type: ADD_COMPONENT_BY_CODE_REQUEST,
@@ -115,6 +116,16 @@ export function addComponentByCode(
     code,
     qty,
     collectionName,
+  };
+}
+
+export function addGroupWithContents(projectSlug, productSlug, name, items) {
+  return {
+    type: ADD_GROUP_WITH_CONTENTS_REQUEST,
+    projectSlug,
+    productSlug,
+    name,
+    items,
   };
 }
 

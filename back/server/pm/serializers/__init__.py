@@ -8,6 +8,7 @@ from server.pm.serializers.entry import (
     ComponentCodeSerializer,
     ComponentCopySerializer,
     ComponentCreateSerializer,
+    ComponentGroupPasteSerializer,
 )
 from server.pm.serializers.group import GroupSerializer
 from server.pm.serializers.report import ReportSerializer

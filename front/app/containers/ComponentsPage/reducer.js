@@ -106,7 +106,9 @@ function componentsPageReducer(state = initialState, action) {
 
     case ADD_GROUP_SUCCESS:
       return state.update('components', components =>
-        components.push(fromJS({ ...action.group, entries: [] })),
+        components.push(
+          fromJS({ ...action.group, entries: action.entries || [] }),
+        ),
       );
 
     case RENAME_GROUP_SUCCESS:

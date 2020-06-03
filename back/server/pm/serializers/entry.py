@@ -39,11 +39,19 @@ class ComponentCopySerializer(serializers.Serializer):
     qty = serializers.IntegerField(min_value=1)
 
 
-class ComponentCodeSerializer(serializers.Serializer):
-    group = serializers.IntegerField(min_value=1)
+class ComponentAddSerializer(serializers.Serializer):
     code = serializers.CharField()
     collection = serializers.CharField(allow_blank=True)
     qty = serializers.IntegerField(min_value=1)
+
+
+class ComponentCodeSerializer(ComponentAddSerializer):
+    group = serializers.IntegerField(min_value=1)
+
+
+class ComponentGroupPasteSerializer(serializers.Serializer):
+    name = serializers.CharField(min_length=1)
+    items = serializers.ListField(child=ComponentAddSerializer())
 
 
 class ComponentCreateSerializer(serializers.Serializer):

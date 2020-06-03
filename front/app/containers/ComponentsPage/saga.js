@@ -6,6 +6,7 @@ import { notifyWarning } from 'containers/App/actions';
 
 import {
   ADD_COMPONENT_BY_CODE_REQUEST,
+  ADD_GROUP_WITH_CONTENTS_REQUEST,
   ADD_COMPONENT_FAILURE,
   ADD_COMPONENT_REQUEST,
   ADD_COMPONENT_SUCCESS,
@@ -237,7 +238,14 @@ function* addComponent({ projectSlug, productSlug, group, component, qty }) {
   }
 }
 
-function* addComponentByCode({ projectSlug, productSlug, group, code, qty, collectionName }) {
+function* addComponentByCode({
+  projectSlug,
+  productSlug,
+  group,
+  code,
+  qty,
+  collectionName,
+}) {
   const options = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -252,6 +260,24 @@ function* addComponentByCode({ projectSlug, productSlug, group, code, qty, colle
     yield put(fetchGroup(projectSlug, productSlug, group));
   } catch (error) {
     yield handleApiError(error, ADD_COMPONENT_FAILURE);
+  }
+}
+
+function* addGroupWithContents({ projectSlug, productSlug, name, items }) {
+  const options = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, items }),
+  };
+
+  const baseUrl = `/api/projects/${projectSlug}/products/${productSlug}/components/paste_group/`;
+
+  try {
+    const { group, entries } = yield call(fetchJSON, baseUrl, options);
+    yield put({ type: ADD_GROUP_SUCCESS, group, entries });
+    yield put(fetchGroup(projectSlug, productSlug, group.id));
+  } catch (error) {
+    yield handleApiError(error, ADD_GROUP_FAILURE);
   }
 }
 
@@ -343,6 +369,7 @@ export default function* componentsPageSaga() {
 
   yield takeLatest(ADD_COMPONENT_REQUEST, addComponent);
   yield takeEvery(ADD_COMPONENT_BY_CODE_REQUEST, addComponentByCode);
+  yield takeEvery(ADD_GROUP_WITH_CONTENTS_REQUEST, addGroupWithContents);
   yield takeLatest(NEW_COMPONENT_REQUEST, newComponent);
   yield takeLatest(UPDATE_CUSTOM_COMPONENT_REQUEST, updateCustomComponent);
   yield takeLatest(BULK_UPDATE_QTY_REQUEST, bulkUpdateQty);
