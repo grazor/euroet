@@ -285,10 +285,7 @@ class ComponentsGrid extends React.Component {
 
     if (
       fromRow !== toRow ||
-      !('code' in updated || 'name' in updated || 'price' in updated) ||
-      ((!updated.code || updated.code.trim() === '') &&
-        (!updated.name || updated.name.trim() === '') &&
-        (!updated.price || updated.price.trim === ''))
+      !('code' in updated || 'name' in updated || 'price' in updated)
     ) {
       // Supporting groups or codes or names or prices
       // Not supporting bulk updates for groups and components
