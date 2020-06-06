@@ -20,12 +20,14 @@ import { find } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 
 import ProductDialog from './ProductDialog';
+import CopyDialog from './CopyDialog';
 import ProductsTable from './ProductsTable';
 import ProjectDetail from './ProjectDetail';
 import reducer from './reducer';
 import saga from './saga';
 import {
   addProduct,
+  copyProduct,
   createReport,
   deleteProduct,
   fetchProject,
@@ -63,6 +65,7 @@ const styles = theme => ({
 class ProductsPage extends React.Component {
   state = {
     showProductDialog: false,
+    showCopyDialog: false,
     product: null,
   };
 
@@ -88,6 +91,10 @@ class ProductsPage extends React.Component {
     this.setState({ showProductDialog: isOn, product: null });
   };
 
+  onToggleCopyDialog = isOn => () => {
+    this.setState({ showCopyDialog: isOn, product: null });
+  };
+
   onSubmitAction = ({ originalSlug, ...rest }) => {
     const {
       project: { slug: projectSlug },
@@ -98,6 +105,20 @@ class ProductsPage extends React.Component {
     } else {
       this.props.updateProduct({ projectSlug, originalSlug, ...rest });
     }
+  };
+
+  onCopyAction = ({ slug, copySlug, originalSlug }) => {
+    const {
+      project: { slug: projectSlug },
+    } = this.props;
+
+    this.setState({ showCopyDialog: false, product: null });
+    this.props.copyProduct({
+      projectSlug,
+      copySlug,
+      productSlug: originalSlug,
+      targetSlug: slug,
+    });
   };
 
   onDeleteAction = slug => {
@@ -111,6 +132,11 @@ class ProductsPage extends React.Component {
   editProduct = slug => () => {
     const product = find(this.props.products, ['slug', slug]);
     this.setState({ showProductDialog: true, product });
+  };
+
+  copyProduct = slug => () => {
+    const product = find(this.props.products, ['slug', slug]);
+    this.setState({ showCopyDialog: true, product });
   };
 
   render() {
@@ -145,12 +171,19 @@ class ProductsPage extends React.Component {
           onSubmit={this.onSubmitAction}
           onDelete={this.onDeleteAction}
         />
+        <CopyDialog
+          product={this.state.product}
+          open={this.state.showCopyDialog}
+          onCancel={this.onToggleCopyDialog(false)}
+          onSubmit={this.onCopyAction}
+        />
         <EtBreadcumbs projectName={project.name} />
         <ProjectDetail project={project} />
         <ProductsTable
           products={products}
           openProductPage={this.openProductPage}
           editProduct={this.editProduct}
+          copyProduct={this.copyProduct}
         />
         {user && user.can_manage_project_reports ? (
           <ReportGrid
@@ -176,6 +209,7 @@ ProductsPage.propTypes = {
   fetchProject: PropTypes.func.isRequired,
   addProduct: PropTypes.func.isRequired,
   updateProduct: PropTypes.func.isRequired,
+  copyProduct: PropTypes.func.isRequired,
   deleteProduct: PropTypes.func.isRequired,
   project: PropTypes.object.isRequired,
   products: PropTypes.array.isRequired,
@@ -205,6 +239,7 @@ const mapDispatchToProps = dispatch =>
     {
       fetchProject,
       addProduct,
+      copyProduct,
       updateProduct,
       deleteProduct,
       createReport,

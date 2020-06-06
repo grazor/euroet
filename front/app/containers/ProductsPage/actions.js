@@ -7,6 +7,7 @@
 import {
   CREATE_REPORT_REQUEST,
   PRODUCT_CREATE_REQUEST,
+  PRODUCT_COPY_REQUEST,
   PRODUCT_DELETE_REQUEST,
   PRODUCT_UPDATE_REQUEST,
   PROJECT_INFO_REQUEST,
@@ -27,6 +28,21 @@ export function addProduct({ projectSlug, name, slug, description, qty }) {
     slug,
     description,
     qty,
+  };
+}
+
+export function copyProduct({
+  projectSlug,
+  productSlug,
+  targetSlug,
+  copySlug,
+}) {
+  return {
+    type: PRODUCT_COPY_REQUEST,
+    projectSlug,
+    productSlug,
+    targetSlug,
+    copySlug,
   };
 }
 
