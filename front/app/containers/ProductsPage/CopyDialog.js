@@ -8,6 +8,9 @@ import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import { compose } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
 
 const styles = () => ({
   buttonsRoot: {
@@ -28,7 +31,7 @@ class CopyDialog extends React.Component {
   state = getInitialState();
 
   componentWillReceiveProps(nextProps) {
-    const { product } = nextProps;
+    const { product, currentProjectSlug } = nextProps;
     if ((product || {}).slug === this.state.originalSlug) {
       return;
     }
@@ -36,6 +39,7 @@ class CopyDialog extends React.Component {
       this.setState({
         originalSlug: product.slug,
         copySlug: `${product.slug}_copy`,
+        slug: currentProjectSlug,
       });
     }
   }
@@ -55,7 +59,7 @@ class CopyDialog extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, projectSuggest } = this.props;
     return (
       <div>
         <Dialog
@@ -67,15 +71,18 @@ class CopyDialog extends React.Component {
         >
           <DialogTitle id="form-dialog-title">Copy product</DialogTitle>
           <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Target"
-              onChange={this.onChange('slug')}
-              value={this.state.slug}
+            <InputLabel id="target-slug-label">Target Project</InputLabel>
+            <Select
+              labelId="target-slug-label"
+              id="target-slug-select"
               fullWidth
-            />
+              value={this.state.slug}
+              onChange={this.onChange('slug')}
+            >
+              {projectSuggest.map(s => (
+                <MenuItem value={s.slug}>{s.name}</MenuItem>
+              ))}
+            </Select>
             <TextField
               autoFocus
               margin="dense"
@@ -104,6 +111,8 @@ CopyDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
+  projectSuggest: PropTypes.array.isRequired,
+  currentProjectSlug: PropTypes.string.isRequired,
   product: PropTypes.object,
   classes: PropTypes.object.isRequired,
 };

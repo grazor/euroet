@@ -31,6 +31,7 @@ import {
   createReport,
   deleteProduct,
   fetchProject,
+  fetchSuggest,
   updateProduct,
 } from './actions';
 import {
@@ -40,6 +41,7 @@ import {
   makeSelectProject,
   makeSelectReportStatus,
   makeSelectReports,
+  makeSelectProjectSuggest,
 } from './selectors';
 import { makeSelectUser } from '../App/selectors';
 
@@ -76,6 +78,7 @@ class ProductsPage extends React.Component {
       },
     } = this.props;
     this.props.fetchProject(slug);
+    this.props.fetchSuggest();
   }
 
   openProductPage = slug => () => {
@@ -148,6 +151,7 @@ class ProductsPage extends React.Component {
       isLoading,
       isUpdating,
       reports,
+      projectSuggest,
       reportStatus,
       match: {
         params: { slug },
@@ -176,6 +180,8 @@ class ProductsPage extends React.Component {
           open={this.state.showCopyDialog}
           onCancel={this.onToggleCopyDialog(false)}
           onSubmit={this.onCopyAction}
+          projectSuggest={projectSuggest}
+          currentProjectSlug={project.slug}
         />
         <EtBreadcumbs projectName={project.name} />
         <ProjectDetail project={project} />
@@ -207,6 +213,7 @@ class ProductsPage extends React.Component {
 
 ProductsPage.propTypes = {
   fetchProject: PropTypes.func.isRequired,
+  fetchSuggest: PropTypes.func.isRequired,
   addProduct: PropTypes.func.isRequired,
   updateProduct: PropTypes.func.isRequired,
   copyProduct: PropTypes.func.isRequired,
@@ -221,6 +228,7 @@ ProductsPage.propTypes = {
   history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
+  projectSuggest: PropTypes.array.isRequired,
   user: PropTypes.object,
 };
 
@@ -231,6 +239,7 @@ const mapStateToProps = createStructuredSelector({
   reportStatus: makeSelectReportStatus(),
   isLoading: makeSelectIsLoading(),
   isUpdating: makeSelectIsUpdating(),
+  projectSuggest: makeSelectProjectSuggest(),
   user: makeSelectUser(),
 });
 
@@ -238,6 +247,7 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       fetchProject,
+      fetchSuggest,
       addProduct,
       copyProduct,
       updateProduct,

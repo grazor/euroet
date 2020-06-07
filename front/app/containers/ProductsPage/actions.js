@@ -6,6 +6,7 @@
 
 import {
   CREATE_REPORT_REQUEST,
+  PROJECT_SUGGEST_REQUEST,
   PRODUCT_CREATE_REQUEST,
   PRODUCT_COPY_REQUEST,
   PRODUCT_DELETE_REQUEST,
@@ -17,6 +18,12 @@ export function fetchProject(slug) {
   return {
     type: PROJECT_INFO_REQUEST,
     slug,
+  };
+}
+
+export function fetchSuggest() {
+  return {
+    type: PROJECT_SUGGEST_REQUEST,
   };
 }
 

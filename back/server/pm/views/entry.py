@@ -7,6 +7,7 @@ from server.pm.models import Entry, Group, Component
 from server.pm.permissions import HasProjectDetailAccess
 from server.pm.serializers import (
     EntrySerializer,
+    GroupSerializer,
     MoveEntrySerializer,
     GroupEntrySerializer,
     UpdateEntrySerializer,
@@ -14,7 +15,6 @@ from server.pm.serializers import (
     ComponentCopySerializer,
     ComponentCreateSerializer,
     ComponentGroupPasteSerializer,
-    GroupSerializer,
 )
 from server.pm.views.product_detail_mixin import ProductDetailMixin
 

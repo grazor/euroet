@@ -8,6 +8,13 @@ export const PROJECT_INFO_REQUEST = 'app/ProductsPage/PROJECT_INFO_REQUEST';
 export const PROJECT_INFO_SUCCESS = 'app/ProductsPage/PROJECT_INFO_SUCCESS';
 export const PROJECT_INFO_FAILURE = 'app/ProductsPage/PROJECT_INFO_FAILURE';
 
+export const PROJECT_SUGGEST_REQUEST =
+  'app/ProductsPage/PROJECT_SUGGEST_REQUEST';
+export const PROJECT_SUGGEST_SUCCESS =
+  'app/ProductsPage/PROJECT_SUGGEST_SUCCESS';
+export const PROJECT_SUGGEST_FAILURE =
+  'app/ProductsPage/PROJECT_SUGGEST_FAILURE';
+
 export const PRODUCT_CREATE_REQUEST = 'app/ProductsPage/PRODUCT_CREATE_REQUEST';
 export const PRODUCT_CREATE_SUCCESS = 'app/ProductsPage/PRODUCT_CREATE_SUCCESS';
 export const PRODUCT_CREATE_FAILURE = 'app/ProductsPage/PRODUCT_CREATE_FAILURE';

@@ -7,6 +7,7 @@ import {
   notifySuccess,
   notifyWarning,
 } from 'containers/App/actions';
+import { fetchProject } from './actions';
 
 import {
   CREATE_REPORT_FAILURE,
@@ -27,6 +28,9 @@ import {
   PROJECT_INFO_FAILURE,
   PROJECT_INFO_REQUEST,
   PROJECT_INFO_SUCCESS,
+  PROJECT_SUGGEST_FAILURE,
+  PROJECT_SUGGEST_REQUEST,
+  PROJECT_SUGGEST_SUCCESS,
 } from './constants';
 
 function* getProjectInfo({ slug }) {
@@ -172,7 +176,7 @@ function* copyProduct({ projectSlug, productSlug, targetSlug, copySlug }) {
       `/api/projects/${projectSlug}/products/${productSlug}/copy/`,
       options,
     );
-    yield put({ type: PRODUCT_COPY_SUCCESS, product });
+    yield put({ type: PRODUCT_COPY_SUCCESS, product, targetSlug });
     yield put(notifySuccess('Product has been copied'));
   } catch (error) {
     yield put({ type: PRODUCT_COPY_FAILURE });
@@ -184,8 +188,23 @@ function* copyProduct({ projectSlug, productSlug, targetSlug, copySlug }) {
   }
 }
 
+function* getProjectSuggest() {
+  const options = {
+    method: 'GET',
+  };
+
+  try {
+    const projects = yield call(fetchJSON, '/api/projects/', options);
+    yield put({ type: PROJECT_SUGGEST_SUCCESS, projects });
+  } catch (error) {
+    yield put({ type: PROJECT_SUGGEST_FAILURE });
+    yield put(notifyWarning('Failed to fetch suggest'));
+  }
+}
+
 function* Saga() {
   yield takeLatest(PROJECT_INFO_REQUEST, getProjectInfo);
+  yield takeLatest(PROJECT_SUGGEST_REQUEST, getProjectSuggest);
   yield takeLatest(PRODUCT_CREATE_REQUEST, addProduct);
   yield takeLatest(PRODUCT_UPDATE_REQUEST, updateProduct);
   yield takeLatest(PRODUCT_DELETE_REQUEST, deleteProduct);
