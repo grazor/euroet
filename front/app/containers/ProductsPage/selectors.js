@@ -39,6 +39,12 @@ export const makeSelectReportStatus = () =>
     productsState => productsState.get('reportStatus'),
   );
 
+export const makeSelectProjectSuggest = () =>
+  createSelector(
+    selectProductsPageDomain,
+    productsState => productsState.get('projectSuggest').toJS(),
+  );
+
 export {
   selectProductsPageDomain,
   makeSelectProject,

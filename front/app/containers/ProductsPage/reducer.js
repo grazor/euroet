@@ -22,6 +22,9 @@ import {
   PROJECT_INFO_FAILURE,
   PROJECT_INFO_REQUEST,
   PROJECT_INFO_SUCCESS,
+  PRODUCT_COPY_SUCCESS,
+  PROJECT_SUGGEST_FAILURE,
+  PROJECT_SUGGEST_SUCCESS,
 } from './constants';
 
 export const initialState = fromJS({
@@ -31,6 +34,8 @@ export const initialState = fromJS({
   isLoading: false,
   isUpdating: false,
   reportStatus: 'allowed',
+
+  projectSuggest: [],
 });
 
 function productsPageReducer(state = initialState, action) {
@@ -89,6 +94,23 @@ function productsPageReducer(state = initialState, action) {
 
     case CREATE_REPORT_FAILURE:
       return state.set('reportStatus', 'allowed');
+
+    case PRODUCT_COPY_SUCCESS:
+      if (action.productSlug === state.get('project').get('slug')) {
+        return state.update('products', products =>
+          products.push(fromJS(action.product)),
+        );
+      }
+      return state;
+
+    case PROJECT_SUGGEST_FAILURE:
+      return state.set('projectSuggest', fromJS([]));
+
+    case PROJECT_SUGGEST_SUCCESS:
+      return state.set(
+        'projectSuggest',
+        fromJS(action.projects.map(p => ({ slug: p.slug, name: p.name }))),
+      );
 
     default:
       return state;

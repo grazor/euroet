@@ -32,3 +32,8 @@ class ProductSerializer(serializers.ModelSerializer):
             'modified_at',
             'project_name',
         )
+
+
+class ProductCopySerializer(serializers.Serializer):
+    target_project_slug = serializers.SlugField()
+    copy_slug = serializers.SlugField()

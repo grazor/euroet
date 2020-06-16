@@ -92,6 +92,7 @@ def process_rows(iter_rows, name):
     for row in iter_rows:
         rows += 1
         component = {field: row[index] for field, index in mapping.items()}
+        component['code'] = str(component['code'])
         fields = {key for key, value in component.items() if value}
         if fields.issuperset(REQUIRED):
             process_component(**component)

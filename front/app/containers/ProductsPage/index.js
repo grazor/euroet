@@ -20,15 +20,18 @@ import { find } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 
 import ProductDialog from './ProductDialog';
+import CopyDialog from './CopyDialog';
 import ProductsTable from './ProductsTable';
 import ProjectDetail from './ProjectDetail';
 import reducer from './reducer';
 import saga from './saga';
 import {
   addProduct,
+  copyProduct,
   createReport,
   deleteProduct,
   fetchProject,
+  fetchSuggest,
   updateProduct,
 } from './actions';
 import {
@@ -38,6 +41,7 @@ import {
   makeSelectProject,
   makeSelectReportStatus,
   makeSelectReports,
+  makeSelectProjectSuggest,
 } from './selectors';
 import { makeSelectUser } from '../App/selectors';
 
@@ -63,6 +67,7 @@ const styles = theme => ({
 class ProductsPage extends React.Component {
   state = {
     showProductDialog: false,
+    showCopyDialog: false,
     product: null,
   };
 
@@ -73,6 +78,7 @@ class ProductsPage extends React.Component {
       },
     } = this.props;
     this.props.fetchProject(slug);
+    this.props.fetchSuggest();
   }
 
   openProductPage = slug => () => {
@@ -88,6 +94,10 @@ class ProductsPage extends React.Component {
     this.setState({ showProductDialog: isOn, product: null });
   };
 
+  onToggleCopyDialog = isOn => () => {
+    this.setState({ showCopyDialog: isOn, product: null });
+  };
+
   onSubmitAction = ({ originalSlug, ...rest }) => {
     const {
       project: { slug: projectSlug },
@@ -98,6 +108,20 @@ class ProductsPage extends React.Component {
     } else {
       this.props.updateProduct({ projectSlug, originalSlug, ...rest });
     }
+  };
+
+  onCopyAction = ({ slug, copySlug, originalSlug }) => {
+    const {
+      project: { slug: projectSlug },
+    } = this.props;
+
+    this.setState({ showCopyDialog: false, product: null });
+    this.props.copyProduct({
+      projectSlug,
+      copySlug,
+      productSlug: originalSlug,
+      targetSlug: slug,
+    });
   };
 
   onDeleteAction = slug => {
@@ -113,6 +137,11 @@ class ProductsPage extends React.Component {
     this.setState({ showProductDialog: true, product });
   };
 
+  copyProduct = slug => () => {
+    const product = find(this.props.products, ['slug', slug]);
+    this.setState({ showCopyDialog: true, product });
+  };
+
   render() {
     const {
       classes,
@@ -122,6 +151,7 @@ class ProductsPage extends React.Component {
       isLoading,
       isUpdating,
       reports,
+      projectSuggest,
       reportStatus,
       match: {
         params: { slug },
@@ -145,12 +175,21 @@ class ProductsPage extends React.Component {
           onSubmit={this.onSubmitAction}
           onDelete={this.onDeleteAction}
         />
+        <CopyDialog
+          product={this.state.product}
+          open={this.state.showCopyDialog}
+          onCancel={this.onToggleCopyDialog(false)}
+          onSubmit={this.onCopyAction}
+          projectSuggest={projectSuggest}
+          currentProjectSlug={project.slug}
+        />
         <EtBreadcumbs projectName={project.name} />
         <ProjectDetail project={project} />
         <ProductsTable
           products={products}
           openProductPage={this.openProductPage}
           editProduct={this.editProduct}
+          copyProduct={this.copyProduct}
         />
         {user && user.can_manage_project_reports ? (
           <ReportGrid
@@ -174,8 +213,10 @@ class ProductsPage extends React.Component {
 
 ProductsPage.propTypes = {
   fetchProject: PropTypes.func.isRequired,
+  fetchSuggest: PropTypes.func.isRequired,
   addProduct: PropTypes.func.isRequired,
   updateProduct: PropTypes.func.isRequired,
+  copyProduct: PropTypes.func.isRequired,
   deleteProduct: PropTypes.func.isRequired,
   project: PropTypes.object.isRequired,
   products: PropTypes.array.isRequired,
@@ -187,6 +228,7 @@ ProductsPage.propTypes = {
   history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
+  projectSuggest: PropTypes.array.isRequired,
   user: PropTypes.object,
 };
 
@@ -197,6 +239,7 @@ const mapStateToProps = createStructuredSelector({
   reportStatus: makeSelectReportStatus(),
   isLoading: makeSelectIsLoading(),
   isUpdating: makeSelectIsUpdating(),
+  projectSuggest: makeSelectProjectSuggest(),
   user: makeSelectUser(),
 });
 
@@ -204,7 +247,9 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       fetchProject,
+      fetchSuggest,
       addProduct,
+      copyProduct,
       updateProduct,
       deleteProduct,
       createReport,

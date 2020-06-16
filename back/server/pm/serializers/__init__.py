@@ -12,7 +12,7 @@ from server.pm.serializers.entry import (
 )
 from server.pm.serializers.group import GroupSerializer
 from server.pm.serializers.report import ReportSerializer
-from server.pm.serializers.product import ProductSerializer
+from server.pm.serializers.product import ProductSerializer, ProductCopySerializer
 from server.pm.serializers.project import StarSerializer, ProjectSerializer
 from server.pm.serializers.component import ComponentSerializer, CollectionSerializer, ManufacturerSerializer
 from server.pm.serializers.project_access import ProjectAccessSerializer

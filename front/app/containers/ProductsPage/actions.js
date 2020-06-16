@@ -6,7 +6,9 @@
 
 import {
   CREATE_REPORT_REQUEST,
+  PROJECT_SUGGEST_REQUEST,
   PRODUCT_CREATE_REQUEST,
+  PRODUCT_COPY_REQUEST,
   PRODUCT_DELETE_REQUEST,
   PRODUCT_UPDATE_REQUEST,
   PROJECT_INFO_REQUEST,
@@ -19,6 +21,12 @@ export function fetchProject(slug) {
   };
 }
 
+export function fetchSuggest() {
+  return {
+    type: PROJECT_SUGGEST_REQUEST,
+  };
+}
+
 export function addProduct({ projectSlug, name, slug, description, qty }) {
   return {
     type: PRODUCT_CREATE_REQUEST,
@@ -27,6 +35,21 @@ export function addProduct({ projectSlug, name, slug, description, qty }) {
     slug,
     description,
     qty,
+  };
+}
+
+export function copyProduct({
+  projectSlug,
+  productSlug,
+  targetSlug,
+  copySlug,
+}) {
+  return {
+    type: PRODUCT_COPY_REQUEST,
+    projectSlug,
+    productSlug,
+    targetSlug,
+    copySlug,
   };
 }
 

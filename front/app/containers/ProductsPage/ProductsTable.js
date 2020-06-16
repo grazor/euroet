@@ -29,7 +29,13 @@ class ProductsTable extends React.Component {
   ];
 
   mapProductsToTableData() {
-    const { products, classes, editProduct, openProductPage } = this.props;
+    const {
+      products,
+      classes,
+      editProduct,
+      copyProduct,
+      openProductPage,
+    } = this.props;
 
     return products.map(p => [
       p.name,
@@ -44,6 +50,7 @@ class ProductsTable extends React.Component {
       <ActionsCell
         product={p}
         editProduct={editProduct}
+        copyProduct={copyProduct}
         openProduct={openProductPage}
         className={classes.actionsColumn}
       />,
@@ -62,6 +69,7 @@ ProductsTable.propTypes = {
   products: PropTypes.array.isRequired,
   openProductPage: PropTypes.func.isRequired,
   editProduct: PropTypes.func.isRequired,
+  copyProduct: PropTypes.func.isRequired,
 };
 
 const withStyle = withStyles(styles);
