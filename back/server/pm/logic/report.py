@@ -148,7 +148,7 @@ def init_formats(workbook) -> Mapping[str, Any]:
     bordered2 = {'border': 2}
 
     num_percent = {'num_format': '0%'}
-    num_rub = {'num_format': '### ### ### ##0.00 ₽'}
+    num_rub = {'num_format': '€ ### ### ### ##0.00'}
 
     bg_yellow = {'bg_color': '#FFFF00'}
     bg_dark_yellow = {'bg_color': '#FFCC00'}

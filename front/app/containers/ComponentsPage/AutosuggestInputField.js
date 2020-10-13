@@ -61,7 +61,7 @@ function renderSuggestion(suggestion, { isHighlighted }) {
   const matchCode = suggestion.match_code || false;
   const manufacturer =
     (suggestion.manufacturer && suggestion.manufacturer.name) || '';
-  const price = suggestion.price ? `${suggestion.price} ₽` : '';
+  const price = suggestion.price ? `€ ${suggestion.price}` : '';
   const sideText = [price, manufacturer].filter(x => x).join(', ');
 
   const style = {
