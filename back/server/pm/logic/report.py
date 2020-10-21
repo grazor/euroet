@@ -353,7 +353,7 @@ def write_computation_internal_page(
                 row,
                 10,
                 rc(
-                    f'((RC[-5] + RC[-2] + RC[-3]) * RC[1] + RC[-4] + 5000 / {cell(4, total_row, True)}) * RC[-6]',
+                    f'((RC[-5] + RC[-2] + RC[-3]) * RC[1] + RC[-4] + 50 / {cell(4, total_row, True)}) * RC[-6]',
                     row=row,
                     col=10,
                 ),
