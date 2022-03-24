@@ -91,7 +91,7 @@
     "loadable-components": "2.2.3",
     "lodash": "^4.17.14",
     "material-ui-dropzone": "^2.4.7",
-    "minimist": "1.2.0",
+    "minimist": "1.2.6",
     "moment": "^2.24.0",
     "mui-datatables": "^2.6.3",
     "notistack": "^0.8.8",
